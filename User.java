@@ -1,10 +1,6 @@
 public class User extends Appointment {
-    @NotEmpty
     private String firstName;
-    @NotEmpty
     private String lastName;
-    @Email
-    @NotEmpty
     private String email;
     private String password;
     private int phoneNumber;

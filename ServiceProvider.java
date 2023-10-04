@@ -1,20 +1,19 @@
+import java.sql.*;
+
 public class ServiceProvider {
-    @NotEmpty
+    
     private String firstName;
-    @NotEmpty
     private String lastName;
-    @Email
-    @NotEmpty
     private String email;
     private String password;
     private int phoneNumber;
     private String qualification;
     private int yearGraduated;
-    private int startTime;
-    private int stopTime;
+    private Time startTime;
+    private Time stopTime;
     private String[] days;
 
-    public ServiceProvider (String first, String last, String emailAddress, String pw, int phone, String qualif, int year, int start, int stop, String[] weekDays) {
+    public ServiceProvider (String first, String last, String emailAddress, String pw, int phone, String qualif, int year, Time start, Time stop, String[] weekDays) {
         firstName = first;
         lastName = last;
         email = emailAddress;
@@ -83,16 +82,16 @@ public class ServiceProvider {
         return yearGraduated;
     }
 
-    public void setOfficeHours(int start, int stop, String[] days){
+    public void setOfficeHours(Time start, Time stop, String[] days){
         startTime = start;
         stopTime = stop;
         this.days = days;
     }
 
-    public int getOfficeHoursStart(){
+    public Time getOfficeHoursStart(){
         return startTime;
     }
-    public int getOfficeHoursStop(){
+    public Time getOfficeHoursStop(){
         return stopTime;
     }
     public String[] getOfficeHoursDays(){

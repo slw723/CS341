@@ -1,23 +1,17 @@
+import java.sql.*;
+
 public class Appointment {
-    @Id
     private String apptId;
-    @NotEmpty
-    private LocalDate date;
-    @NotEmpty
-    private LocalTime time;
-
-    @NotEmpty
-    private LocalTime duration;
-
+    private Date date;
+    private Time time;
+    private Time duration;
     private String type;
-
-    @NotEmpty
     private Boolean booked;
 
     public Appointment(){ //empty constructor
 
     }
-    public Appointment(String id, LocalDate date, LocalTime time, LocalTime duration, String type, Boolean booked){
+    public Appointment(String id, Date date, Time time, Time duration, String type, Boolean booked){
         apptId = id;
         this.date = date;
         this.time = time;
@@ -33,28 +27,27 @@ public class Appointment {
         this.apptId = apptId;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate (LocalDate date) {
+    public void setDate (Date date) {
         this.date = date;
     }
 
-
-    public LocalTime getTime() {
+    public Time getTime() {
         return time;
     }
 
-    public void setTime (LocalTime time) {
+    public void setTime (Time time) {
         this.time = time;
     }
 
-    public LocalTime getDuration() {
+    public Time getDuration() {
         return duration;
     }
 
-    public void setDuration (LocalTime duration) {
+    public void setDuration (Time duration) {
         this.duration = duration;
     }
 

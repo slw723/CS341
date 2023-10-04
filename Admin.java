@@ -1,8 +1,6 @@
 public class Admin {
-    @Id
-    private String userId;
 
-    @NotEmpty
+    private String userId;
     private String password;
 
 
@@ -13,5 +11,9 @@ public class Admin {
 
     public Admin() { //empty constructor
 
+    }
+
+    public String getID(){
+        return userId;
     }
 }
