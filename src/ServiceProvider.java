@@ -1,19 +1,16 @@
-import java.sql.*;
 
 public class ServiceProvider {
     
     private String firstName;
     private String lastName;
     private String email;
-    private String password;
-    private int phoneNumber;
+    private byte[] password;
+    private long phoneNumber;
     private String qualification;
     private int yearGraduated;
-    private int startTime;
-    private int stopTime;
     private String type;
 
-    public ServiceProvider (String first, String last, String emailAddress, String pw, int phone, String qualif, int year, int start, int stop, String type) {
+    public ServiceProvider (String first, String last, String emailAddress, byte[] pw, long phone, String qualif, int year, String type) {
         firstName = first;
         lastName = last;
         email = emailAddress;
@@ -21,8 +18,6 @@ public class ServiceProvider {
         phoneNumber = phone;
         qualification = qualif;
         yearGraduated = year;
-        startTime = start;
-        stopTime = stop;
         this.type = type;
     }
 
@@ -50,19 +45,19 @@ public class ServiceProvider {
         email = emailAddress;
     }
 
-    public String getPassword() {
+    public byte[] getPassword() {
         return password;
     }
 
-    public void setPassword(String pw) {
+    public void setPassword(byte[] pw) {
         password = pw;
     }
 
-    public int getPhoneNumber() {
+    public long getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(int phone) {
+    public void setPhoneNumber(long phone) {
         phoneNumber = phone;
     }
 
@@ -80,18 +75,6 @@ public class ServiceProvider {
 
     public int getYearGraduated(){
         return yearGraduated;
-    }
-
-    public void setOfficeHours(int start, int stop){
-        startTime = start;
-        stopTime = stop;
-    }
-
-    public int getOfficeHoursStart(){
-        return startTime;
-    }
-    public int getOfficeHoursStop(){
-        return stopTime;
     }
     
     public void setType(String type){

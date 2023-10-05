@@ -1,10 +1,10 @@
 public class Admin {
 
     private String userId;
-    private String password;
+    private byte[] password;
 
 
-    public Admin(String id, String pw){
+    public Admin(String id, byte[] pw){
         userId = id;
         password = pw;
     }
@@ -15,5 +15,13 @@ public class Admin {
 
     public String getID(){
         return userId;
+    }
+
+    public void setPassword(byte[] pw){
+        password = pw;
+    }
+
+    public byte[] getPassword(){
+        return password;
     }
 }

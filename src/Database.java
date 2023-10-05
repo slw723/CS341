@@ -3,7 +3,7 @@ import java.sql.*;
 public class Database {
 
     private Connection connection;
-    private String url = "jdbc:mysql://localhost:3306/?user=root";
+    private String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=5628";
 
 
     public void connect() throws SQLException {
@@ -33,8 +33,8 @@ public class Database {
             stmt.setString(1, user.getFirstName());
             stmt.setString(2, user.getLastName());
             stmt.setString(3, user.getEmail());
-            stmt.setString(4, user.getPassword());
-            stmt.setInt(5, user.getPhoneNumber());
+            stmt.setBytes(4, user.getPassword());
+            stmt.setLong(5, user.getPhoneNumber());
 
             if(stmt.execute())
                 System.out.println("Inserted " + user.getEmail() + " into User");
@@ -56,19 +56,17 @@ public class Database {
     }
 
     public void insertSP(ServiceProvider sp){
-        String sql = "INSERT INTO ServiceProvider(FirstName, LastName, Email, Password, PhoneNum, StartTime, StopTime, Qualification, YearGraduated, Type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO ServiceProvider(FirstName, LastName, Email, Password, PhoneNum, Qualification, YearGraduated, Type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try{
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, sp.getFirstName());
             stmt.setString(2, sp.getLastName());
             stmt.setString(3, sp.getEmail());
-            stmt.setString(4, sp.getPassword());
-            stmt.setInt(5, sp.getPhoneNumber());
-            stmt.setInt(6, sp.getOfficeHoursStart());
-            stmt.setInt(7, sp.getOfficeHoursStop());
-            stmt.setString(8, sp.getQualifcation());
-            stmt.setInt(9, sp.getYearGraduated());
-            stmt.setString(10, sp.getType());
+            stmt.setBytes(4, sp.getPassword());
+            stmt.setLong(5, sp.getPhoneNumber());
+            stmt.setString(6, sp.getQualifcation());
+            stmt.setInt(7, sp.getYearGraduated());
+            stmt.setString(8, sp.getType());
 
             if(stmt.execute())
                 System.out.println("Inserted " + sp.getEmail() + " into ServiceProvider");
@@ -80,6 +78,33 @@ public class Database {
     }
 
     public void deleteSP(ServiceProvider sp){
+        String sql = "DELETE FROM ServiceProvider WHERE Email = \"" + sp.getEmail() + "\"";
+        try{
+            dbExecuteUpdate(sql);
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+
+        public void insertAdmin(Admin admin){
+        String sql = "INSERT INTO Admin(UserId, Password) VALUES (?, ?)";
+        try{
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, admin.getID());
+            stmt.setBytes(2, admin.getPassword());
+
+            if(stmt.execute())
+                System.out.println("Inserted " + admin.getID() + " into ServiceProvider");
+        }
+        catch(SQLException e){
+            System.out.println("Something went wrong.");
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteAdmin(ServiceProvider sp){
         String sql = "DELETE FROM ServiceProvider WHERE Email = \"" + sp.getEmail() + "\"";
         try{
             dbExecuteUpdate(sql);
