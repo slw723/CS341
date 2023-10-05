@@ -9,11 +9,11 @@ public class ServiceProvider {
     private int phoneNumber;
     private String qualification;
     private int yearGraduated;
-    private Time startTime;
-    private Time stopTime;
-    private String[] days;
+    private int startTime;
+    private int stopTime;
+    private String type;
 
-    public ServiceProvider (String first, String last, String emailAddress, String pw, int phone, String qualif, int year, Time start, Time stop, String[] weekDays) {
+    public ServiceProvider (String first, String last, String emailAddress, String pw, int phone, String qualif, int year, int start, int stop, String type) {
         firstName = first;
         lastName = last;
         email = emailAddress;
@@ -23,7 +23,7 @@ public class ServiceProvider {
         yearGraduated = year;
         startTime = start;
         stopTime = stop;
-        days = weekDays;
+        this.type = type;
     }
 
     public String getFirstName() {
@@ -82,19 +82,23 @@ public class ServiceProvider {
         return yearGraduated;
     }
 
-    public void setOfficeHours(Time start, Time stop, String[] days){
+    public void setOfficeHours(int start, int stop){
         startTime = start;
         stopTime = stop;
-        this.days = days;
     }
 
-    public Time getOfficeHoursStart(){
+    public int getOfficeHoursStart(){
         return startTime;
     }
-    public Time getOfficeHoursStop(){
+    public int getOfficeHoursStop(){
         return stopTime;
     }
-    public String[] getOfficeHoursDays(){
-        return days;
+    
+    public void setType(String type){
+        this.type = type;
+    }
+
+    public String getType(){
+        return type;
     }
 }

@@ -4,18 +4,16 @@ public class Appointment {
     private String apptId;
     private Date date;
     private Time time;
-    private Time duration;
     private String type;
-    private Boolean booked;
+    private int booked;
 
     public Appointment(){ //empty constructor
 
     }
-    public Appointment(String id, Date date, Time time, Time duration, String type, Boolean booked){
+    public Appointment(String id, Date date, Time time, String type, int booked){
         apptId = id;
         this.date = date;
         this.time = time;
-        this.duration = duration;
         this.type = type;
         this.booked = booked;
     }
@@ -43,14 +41,6 @@ public class Appointment {
         this.time = time;
     }
 
-    public Time getDuration() {
-        return duration;
-    }
-
-    public void setDuration (Time duration) {
-        this.duration = duration;
-    }
-
     public String getType() {
         return type;
     }
@@ -59,11 +49,11 @@ public class Appointment {
         this.type = type;
     }
 
-    public Boolean getBooked() {
+    public int getBooked() {
         return booked;
     }
 
-    public void setBooked (Boolean booked) {
+    public void setBooked (int booked) {
         this.booked = booked;
     }
 
