@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Gui",
+            "request": "launch",
+            "mainClass": "Gui",
+            "projectName": "CS341_720d8412"
+        },
+        {
+            "type": "java",
             "name": "Driver",
             "request": "launch",
             "mainClass": "Driver",
