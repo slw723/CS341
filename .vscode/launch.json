@@ -2,6 +2,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "UserHomePage",
+            "request": "launch",
+            "mainClass": "UserHomePage",
+            "projectName": "CS341_720d8412"
+        },
+        {
+            "type": "java",
+            "name": "UserBookPage",
+            "request": "launch",
+            "mainClass": "UserBookPage",
+            "projectName": "CS341_720d8412"
+        },
+        {
+            "type": "java",
             "name": "Gui",
             "request": "launch",
             "mainClass": "Gui",
