@@ -1,3 +1,5 @@
+package src;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -32,11 +34,11 @@ public class UserHomePage implements ActionListener {
 
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
-        
-        home = new JMenuItem("Home"); 
-        makeAppt = new JMenuItem("Make Appointment");  
-        history = new JMenuItem("History");      
-        
+
+        home = new JMenuItem("Home");
+        makeAppt = new JMenuItem("Make Appointment");
+        history = new JMenuItem("History");
+
         menu.add(home);
         menu.add(makeAppt);
         menu.add(history);
@@ -46,7 +48,7 @@ public class UserHomePage implements ActionListener {
         history.addActionListener(this);
 
         f.setJMenuBar(mb);
-        
+
         /* Make visible */
         f.setSize(800,800);
         f.setVisible(true);
@@ -61,9 +63,8 @@ public class UserHomePage implements ActionListener {
             f.setVisible(false);
             UserBookPage bp = new UserBookPage();
 
-
-
-
+        }
+        else if (e.getSource() == history) {
 
         }
     }
