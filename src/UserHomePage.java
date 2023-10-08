@@ -27,19 +27,6 @@ public class UserHomePage {
         User user;
         static Database db = new Database();
 
-    public static void main(String[] args){
-        // try{
-        //     db.connect();
-        //     System.out.println("Successful connection!");
-        // }
-        // catch(SQLException e){
-        //     System.out.println("Something went wrong.");
-        //     e.printStackTrace();
-        // }
-        // UserHomePage homePage = new UserHomePage(db);
-        
-    }
-
     public UserHomePage(Database db, User user){
         this.db = db;
         this.user = user;
@@ -108,13 +95,14 @@ public class UserHomePage {
         upcoming.setBounds(10, 50, upSize.width, upSize.height);
         p.add(upcoming);
 
+        // show the upcoming appointments if they exists
+        appointments = new JTable();
         int ret = populateUpcoming();
         if(ret == -1){
             noappts = new JLabel("No Upcoming Appointments");
-            noappts.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 5));
-            noappts.setForeground(new Color(33, 104, 105));
+            noappts.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 10));
             Dimension noSize = noappts.getPreferredSize();
-            noappts.setBounds(20, 60, noSize.width, noSize.height);
+            noappts.setBounds(20, 80, noSize.width, noSize.height);
             p.add(noappts);
         }
 
@@ -158,7 +146,7 @@ public class UserHomePage {
                         "\" AND Date >= date(NOW()) AND Time = time(NOW());";
             ResultSet rs = db.executeSQL(sql);
 
-            if(rs == null){
+            if(rs.next() == false){
                 return -1;
             }
             DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
