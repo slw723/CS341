@@ -7,20 +7,20 @@ public class Appointment {
     private Time time;
     private String type;
     private int booked;
-    String fk_user_email;
-    String fk_SP_email;
+    String UserEmail;
+    String SPEmail;
 
     public Appointment(){ //empty constructor
 
     }
-    public Appointment(String id, Date date, Time time, String type, int booked, String fk_user_email, String fk_SP_email){
+    public Appointment(String id, Date date, Time time, String type, int booked, String UserEmail, String SPEmail){
         apptId = id;
         this.date = date;
         this.time = time;
         this.type = type;
         this.booked = booked;
-        this.fk_user_email = fk_user_email;
-        this.fk_SP_email = fk_SP_email;
+        this.UserEmail = UserEmail;
+        this.SPEmail = SPEmail;
     }
     public String getApptId() {
         return apptId;
@@ -63,19 +63,19 @@ public class Appointment {
     }
 
     public String getUserEmail() {
-        return fk_user_email;
+        return UserEmail;
     }
 
     public void setUserEmail(String fk_user_email) {
-        this.fk_user_email = fk_user_email;
+        this.UserEmail = fk_user_email;
     }
 
     public String getSPEmail() {
-        return fk_SP_email;
+        return SPEmail;
     }
 
     public void setSPEmail(String fk_SP_email) {
-        this.fk_SP_email = fk_SP_email;
+        this.SPEmail = fk_SP_email;
     }
 
 }

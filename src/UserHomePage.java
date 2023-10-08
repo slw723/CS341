@@ -8,6 +8,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 // Light Black: 31, 36, 33
 // Dark Teal: 33, 104, 105
@@ -20,7 +22,9 @@ public class UserHomePage {
         JMenuBar mb;
         JMenuItem menu, home, makeAppt, history;
         JPanel p;
-        JLabel hello;
+        JLabel hello, upcoming, noappts;
+        JTable appointments;
+        User user;
         static Database db = new Database();
 
     public static void main(String[] args){
@@ -37,6 +41,8 @@ public class UserHomePage {
     }
 
     public UserHomePage(Database db, User user){
+        this.db = db;
+        this.user = user;
         // default font
         Font defaultFont = UIManager.getFont("Label.font");
 
@@ -47,13 +53,18 @@ public class UserHomePage {
         /* Set up the menu bar */
         mb = new JMenuBar();
         menu = new JMenu("Menu");
+        menu.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        menu.setForeground(new Color(31, 36, 33));
 
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
-
+        
         home = new JMenuItem("Home");
+        home.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
         makeAppt = new JMenuItem("Make Appointment");
+        makeAppt.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
         history = new JMenuItem("History");
+        history.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
 
         menu.add(home);
         menu.add(makeAppt);
@@ -78,7 +89,6 @@ public class UserHomePage {
 
         f.setJMenuBar(mb);
 
-
         // add hello Name
         p = new JPanel();
         f.getContentPane();
@@ -87,8 +97,26 @@ public class UserHomePage {
         hello.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
         hello.setForeground(new Color(31, 36, 33));
         Dimension helloSize = hello.getPreferredSize();
-        hello.setBounds(10, 0, helloSize.width, helloSize.height);
+        hello.setBounds(10, 10, helloSize.width, helloSize.height);
         p.add(hello);
+
+        // add upcoming appts title
+        upcoming = new JLabel("Upcoming Appointments");
+        upcoming.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        upcoming.setForeground(new Color(33, 104, 105));
+        Dimension upSize = upcoming.getPreferredSize();
+        upcoming.setBounds(10, 50, upSize.width, upSize.height);
+        p.add(upcoming);
+
+        int ret = populateUpcoming();
+        if(ret == -1){
+            noappts = new JLabel("No Upcoming Appointments");
+            noappts.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 5));
+            noappts.setForeground(new Color(33, 104, 105));
+            Dimension noSize = noappts.getPreferredSize();
+            noappts.setBounds(20, 60, noSize.width, noSize.height);
+            p.add(noappts);
+        }
 
         //panel sepecifications
         p.setLayout(null);
@@ -124,33 +152,33 @@ public class UserHomePage {
     }
 
     /* Populate full table view -> good for admin view*/
-    // private void populateBuysTable() {
-    //     try{
-    //         String sql = "SELECT * FROM Buys";
-    //         ResultSet rs = db.runQuery(sql);
-    //         DefaultTableModel tblModel = (DefaultTableModel)Buys.getModel();
-    //         tblModel.setRowCount(0);
-    //         while(rs.next()){
-    //             //data will be added until finished
-    //             String paymentType = rs.getString("PaymentType");
-    //             String receiptNumber = String.valueOf(rs.getInt("ReceiptNumber"));
-    //             String totalCost = String.valueOf(rs.getInt("TotalCost"));
-    //             String quantity = String.valueOf(rs.getInt("Quantity"));
-    //             String size = String.valueOf(rs.getInt("Size"));
-    //             String color = rs.getString("Color");
-    //             String customerId = String.valueOf(rs.getInt("CustomerId"));
-    //             String modelId = rs.getString("ModelId");
+    private int populateUpcoming() {
+        try{
+            String sql = "SELECT * FROM Appointment WHERE UserEmail = \"" + user.getEmail() + 
+                        "\" AND Date >= date(NOW()) AND Time = time(NOW());";
+            ResultSet rs = db.executeSQL(sql);
 
-    //             String tbData[] = {paymentType, receiptNumber, totalCost, quantity,
-    //                 size, color, customerId, modelId};
+            if(rs == null){
+                return -1;
+            }
+            DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
+            tblModel.setRowCount(0);
+            while(rs.next()){
+                //data will be added until finished
+                String date = String.valueOf(rs.getDate("Date"));
+                String time = String.valueOf(rs.getTime("Time"));
+                String type = String.valueOf(rs.getInt("Type"));
+                String spEmail = rs.getString("SPEmail");
 
-    //             //addstring array into jtable
-    //             tblModel.addRow(tbData);
-    //         }
-    //     }
-    //     catch(Exception e){
-    //         System.out.println(e.getMessage());
-    //     }
-        
-    // }   
+                String tbData[] = {date, time, type, spEmail};
+
+                //addstring array into jtable
+                tblModel.addRow(tbData);
+            }
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        return 0;
+    }   
 }

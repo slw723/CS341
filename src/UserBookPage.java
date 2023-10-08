@@ -40,9 +40,16 @@ public class UserBookPage implements ActionListener {
 
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
+        menu.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        menu.setForeground(new Color(31, 36, 33));
 
+        mb.add(menu);
+        mb.setBackground(new Color(73, 160, 120));
+        
         home = new JMenuItem("Home");
+        home.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
         history = new JMenuItem("History");
+        history.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
 
         menu.add(home);
         menu.add(history);

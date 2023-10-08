@@ -1,4 +1,4 @@
-
+/* NOT NECESSARY LONG TERM */
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -44,17 +44,16 @@ public class Driver {
             ServiceProvider sp = new ServiceProvider("Abby", "Anderson", 
                                         "abbyanderson@gmail.com", pwd, 
                                         6081113333L, qualif, 2015, "Beauty");
+            // db.insertSP(sp);
 
-//            db.insertSP(sp);
-//            System.out.println("Inserted " + sp.getEmail());
+            User user = new User("First", "Last", 
+                                "user@user.com", pwd, 8889993333L);
+            // db.insertUser(user);
 
-//            byte[] password = HexFormat.of().parseHex("e04fd020ea3a6910a2d808002b30309d");
-//            User user = new User("Sidney", "Williams", "williams9724@uwlax.edu", password, 1234567890);
-//            db.insertUser(user);
 
-            Appointment appt = new Appointment("1234", new Date(100), new Time(100), "Beauty", 1, "williams9724@uwlax.edu", "abbyanderson@gmail.com");
-            db.insertAppt(appt);
-            System.out.println("Inserted " + appt.getApptId());
+            /* Try insert into appt */
+            Appointment appt = new Appointment("1234", new Date(20231223), new Time(1200), "Beauty", 1, "user@user.com", "abbyanderson@gmail.com");
+            // db.insertAppt(appt);
         }
         catch(NoSuchAlgorithmException e){
             e.printStackTrace();

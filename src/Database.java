@@ -20,6 +20,11 @@ public class Database {
         return stmt.executeQuery();
     }
 
+    public ResultSet executeSQL(String query) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement(query);
+        return stmt.executeQuery();
+    }
+
     public void dbExecuteUpdate(String query) throws SQLException {
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.executeUpdate();
