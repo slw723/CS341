@@ -1,4 +1,3 @@
-package src;
 
 import java.sql.*;
 
@@ -63,19 +62,19 @@ public class Appointment {
         this.booked = booked;
     }
 
-    public String getFk_user_email() {
+    public String getUserEmail() {
         return fk_user_email;
     }
 
-    public void setFk_user_email(String fk_user_email) {
+    public void setUserEmail(String fk_user_email) {
         this.fk_user_email = fk_user_email;
     }
 
-    public String getFk_SP_email() {
+    public String getSPEmail() {
         return fk_SP_email;
     }
 
-    public void setFk_SP_email(String fk_SP_email) {
+    public void setSPEmail(String fk_SP_email) {
         this.fk_SP_email = fk_SP_email;
     }
 

@@ -1,4 +1,3 @@
-package src;
 
 public class User extends Appointment {
     private String firstName;
@@ -13,6 +12,10 @@ public class User extends Appointment {
         email = emailAddress;
         password = pw;
         phoneNumber = phone;
+    }
+
+    public User(){
+        
     }
 
     public String getFirstName() {

@@ -1,4 +1,3 @@
-package src;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -11,31 +10,29 @@ public class UserBookPage implements ActionListener {
     JFrame f;
     JMenuBar mb;
     JMenuItem menu, home, makeAppt, history;
-    JLabel title;
+    JLabel title, type, start, end, apptAvailable;
     JPanel bookPanel;
-    JLabel type;
     String[] apptTypes;
     JComboBox<String> typesCB;
-    JLabel apptAvailable;
-    JLabel start;
     JButton startButton;
-    JLabel end;
     JButton endButton;
     JButton go;
     String apptSelected;
+    UserHomePage hp;
     Database db;
 
     public static void main(String[] args){
         
     }
     
-    public UserBookPage(Database db){
-        this.db = db;
+    public UserBookPage(Database db, UserHomePage hp){
+         this.hp = hp;
         // default font
         Font defaultFont = UIManager.getFont("Label.font");
 
         /* Make frame */
         f = new JFrame("Appointment Booker");
+        f.setBackground(new Color(220, 225, 222));
 
         /* Set up the menu bar */
         mb = new JMenuBar();
@@ -60,36 +57,42 @@ public class UserBookPage implements ActionListener {
         f.getContentPane();
         title = new JLabel("Make Appointment");
         title.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 25));
+        title.setForeground(new Color(31, 36, 33));
         Dimension titleSize = title.getPreferredSize();
-        title.setBounds(0, 0, titleSize.width, titleSize.height);
+        title.setBounds(10, 0, titleSize.width, titleSize.height);
         bookPanel.add(title);
 
          // add type of appointment text
         type = new JLabel("Type of Appointment: ");
         type.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        type.setForeground(new Color(31, 36, 33));
         Dimension typeSize = type.getPreferredSize();
-        type.setBounds(0, 50, typeSize.width, typeSize.height);
+        type.setBounds(10, 50, typeSize.width, typeSize.height);
         bookPanel.add(type);
 
         // add dropdown for type of appointment
         apptTypes = new String[]{"Medical", "Beauty", "Fitness"};
         typesCB = new JComboBox<>(apptTypes);
-        typesCB.setBounds(0, 75, 90, 20);
+        typesCB.setBounds(10, 75, 90, 20);
         typesCB.setSelectedIndex(2);
-        typesCB.addActionListener(this);
+        typesCB.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt){
+                apptTypeActionPerformed(evt);
+            }
+        });
         bookPanel.add(typesCB);
 
         // add text for picking appointment timeframe
         apptAvailable = new JLabel("Available appointments between: ");
         apptAvailable.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
         Dimension availSize = apptAvailable.getPreferredSize();
-        apptAvailable.setBounds(0, 125, availSize.width, availSize.height);
+        apptAvailable.setBounds(10, 125, availSize.width, availSize.height);
         bookPanel.add(apptAvailable);
 
         // add start text and start button
         start = new JLabel("Start: ");
         Dimension startSize = start.getPreferredSize();
-        start.setBounds(0, 175, startSize.width, startSize.height);
+        start.setBounds(10, 175, startSize.width, startSize.height);
         bookPanel.add(start);
 
         startButton = new JButton("Start Button");
@@ -100,7 +103,7 @@ public class UserBookPage implements ActionListener {
         // add end text and end button
         end = new JLabel("End: ");
         Dimension endSize = end.getPreferredSize();
-        end.setBounds(0, 225, endSize.width, endSize.height);
+        end.setBounds(10, 225, endSize.width, endSize.height);
         bookPanel.add(end);
 
         endButton = new JButton("End Button");
@@ -111,8 +114,12 @@ public class UserBookPage implements ActionListener {
         // add go button
         go = new JButton("Go");
         Dimension goSize = go.getPreferredSize();
-        go.setBounds(0, 275, goSize.width, goSize.height);
-        go.addActionListener(this);
+        go.setBounds(10, 275, goSize.width, goSize.height);
+        go.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt){
+                goActionPerformed(evt);
+            }
+        });
         bookPanel.add(go);
 
         // bookPanel specifications
@@ -128,48 +135,28 @@ public class UserBookPage implements ActionListener {
         f.setVisible(true);
     }
 
+    public void apptTypeActionPerformed(ActionEvent e){
+        apptSelected = typesCB.getSelectedItem().toString();
+        // System.out.println(apptSelected);
+        // Show the available time slots that are clickable
+    }
+
+    public void goActionPerformed(ActionEvent e){
+        apptSelected = typesCB.getSelectedItem().toString();
+        System.out.println(apptSelected);
+        db.getApptType(apptSelected);
+    }
+
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == home){
             f.setVisible(false);
-            UserHomePage hp = new UserHomePage(db);
+            hp.setHomeVisible();
         }
         else if(e.getSource() == makeAppt){
            
         }
         else if (e.getSource() == history) {
 
-        }
-        else if (e.getSource() == typesCB) {
-            apptSelected = typesCB.getSelectedItem().toString();
-            System.out.println(apptSelected);
-        }
-        else if (e.getSource() == go) {
-            apptSelected = typesCB.getSelectedItem().toString();
-            System.out.println(apptSelected);
-            try {
-                displayAppointment(apptSelected);
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-    }
-
-    public void displayAppointment(String selected) throws SQLException {
-        ResultSet medicalRS;
-        ResultSet beautyRS;
-        ResultSet fitnessRS;
-
-        if (selected.equals("Medical")) {
-            medicalRS = db.runQuery("SELECT * FROM Appointment WHERE type = Medical");
-            //need to check that it hasn't already been booked
-        }
-        else if (selected.equals("Beauty")) {
-            beautyRS = db.runQuery("SELECT * FROM Appointment WHERE type = Beauty");
-            //need to check that it hasn't already been booked
-        }
-        else if (selected.equals("Fitness")) {
-            fitnessRS = db.runQuery("SELECT * FROM Appointment WHERE type = Fitness");
-            //need to check that it hasn't already been booked
         }
     }
 }

@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "LogInPage",
+            "request": "launch",
+            "mainClass": "LogInPage",
+            "projectName": "CS341_720d8412"
+        },
+        {
+            "type": "java",
             "name": "UserHomePage",
             "request": "launch",
             "mainClass": "UserHomePage",

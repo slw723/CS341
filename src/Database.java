@@ -1,11 +1,10 @@
-package src;
 
 import java.sql.*;
 
 public class Database {
 
     private Connection connection;
-    private String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=3871";
+    private String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=5628";
 
 
     public void connect() throws SQLException {
@@ -117,7 +116,7 @@ public class Database {
     }
 
     public void insertAppt(Appointment appt){
-        String sql = "INSERT INTO Appointment(ApptId, Date, Time, Type, Booked, FK_User_email, FK_SP_email) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Appointment(ApptId, Date, Time, Type, Booked, UserEmail, SPEmail) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try{
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, appt.getApptId());
@@ -125,8 +124,8 @@ public class Database {
             stmt.setTime(3, appt.getTime());
             stmt.setString(4, appt.getType());
             stmt.setInt(5, appt.getBooked());
-            stmt.setString(6, appt.getFk_user_email());
-            stmt.setString(7, appt.getFk_SP_email());
+            stmt.setString(6, appt.getUserEmail());
+            stmt.setString(7, appt.getSPEmail());
 
             if(stmt.execute())
                 System.out.println("Inserted " + appt.getApptId() + " into Appointment");
@@ -143,8 +142,8 @@ public class Database {
                     + "Time = \"" + appt.getTime() + "\","
                     + "Type = \"" + appt.getType() + "\","
                     + "Booked = \"" + appt.getBooked() + "\""
-                    + "FK_User_email = \"" + appt.getFk_user_email() + "\""
-                    + "FK_SP_email = \"" + appt.getFk_SP_email() + "\""
+                    + "FK_User_email = \"" + appt.getUserEmail() + "\""
+                    + "FK_SP_email = \"" + appt.getSPEmail() + "\""
                     + "WHERE ApptId = \"" + appt.getApptId() + "\"";
         try {
             dbExecuteUpdate(sql);
@@ -161,5 +160,21 @@ public class Database {
         catch(SQLException e){
             e.printStackTrace();
         }
+    }
+    
+    public ResultSet getApptType(String type){
+        ResultSet result = null;
+        String sql = "SELECT * "+
+                    "FROM Appointment "+
+                    "WHERE Type = \"" + type + "\"" +
+                    "AND Booked = 0;";
+        try{
+           result = this.runQuery(sql);
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }  
+
+        return result;
     }
 }
