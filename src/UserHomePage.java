@@ -17,14 +17,23 @@ public class UserHomePage implements ActionListener {
         JFrame f, f2;
         JMenuBar mb;
         JMenuItem menu, home, makeAppt, history;
+        static Database db = new Database();
 
     public static void main(String[] args){
-
-        UserHomePage homePage = new UserHomePage();
+        try{
+            db.connect();
+            System.out.println("Successful connection!");
+        }
+        catch(SQLException e){
+            System.out.println("Something went wrong.");
+            e.printStackTrace();
+        }
+        UserHomePage homePage = new UserHomePage(db);
         
     }
 
-    public UserHomePage(){
+    public UserHomePage(Database db){
+        this.db =db;
         /* Make frame */
         f = new JFrame("Appointment Booker");
 
@@ -50,6 +59,7 @@ public class UserHomePage implements ActionListener {
         f.setJMenuBar(mb);
 
         /* Make visible */
+        f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         f.setSize(800,800);
         f.setVisible(true);
     }
@@ -61,7 +71,7 @@ public class UserHomePage implements ActionListener {
         }
         else if(e.getSource() == makeAppt){
             f.setVisible(false);
-            UserBookPage bp = new UserBookPage();
+            UserBookPage bp = new UserBookPage(db);
 
         }
         else if (e.getSource() == history) {

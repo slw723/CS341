@@ -1,6 +1,11 @@
+package src;
+
+import java.sql.Date;
 import java.sql.SQLException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
+import java.sql.Time;
+import java.util.HexFormat;
 
 public class Driver {
     Database db = new Database();
@@ -40,8 +45,16 @@ public class Driver {
                                         "abbyanderson@gmail.com", pwd, 
                                         6081113333L, qualif, 2015, "Beauty");
 
-            db.insertSP(sp);
-            System.out.println("Inserted " + sp.getEmail());
+//            db.insertSP(sp);
+//            System.out.println("Inserted " + sp.getEmail());
+
+//            byte[] password = HexFormat.of().parseHex("e04fd020ea3a6910a2d808002b30309d");
+//            User user = new User("Sidney", "Williams", "williams9724@uwlax.edu", password, 1234567890);
+//            db.insertUser(user);
+
+            Appointment appt = new Appointment("1234", new Date(100), new Time(100), "Beauty", 1, "williams9724@uwlax.edu", "abbyanderson@gmail.com");
+            db.insertAppt(appt);
+            System.out.println("Inserted " + appt.getApptId());
         }
         catch(NoSuchAlgorithmException e){
             e.printStackTrace();

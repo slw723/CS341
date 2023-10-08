@@ -3,6 +3,8 @@ package src;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.*;
 
 public class UserBookPage implements ActionListener {
@@ -20,13 +22,18 @@ public class UserBookPage implements ActionListener {
     JLabel end;
     JButton endButton;
     JButton go;
+    String apptSelected;
+    Database db;
 
     public static void main(String[] args){
         
     }
     
-    public UserBookPage(){
+    public UserBookPage(Database db){
+        this.db = db;
+        // default font
         Font defaultFont = UIManager.getFont("Label.font");
+
         /* Make frame */
         f = new JFrame("Appointment Booker");
 
@@ -48,7 +55,7 @@ public class UserBookPage implements ActionListener {
 
         f.setJMenuBar(mb);
 
-        // Add title
+        // add title
         bookPanel = new JPanel();
         f.getContentPane();
         title = new JLabel("Make Appointment");
@@ -105,6 +112,7 @@ public class UserBookPage implements ActionListener {
         go = new JButton("Go");
         Dimension goSize = go.getPreferredSize();
         go.setBounds(0, 275, goSize.width, goSize.height);
+        go.addActionListener(this);
         bookPanel.add(go);
 
         // bookPanel specifications
@@ -123,13 +131,45 @@ public class UserBookPage implements ActionListener {
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == home){
             f.setVisible(false);
-            UserHomePage hp = new UserHomePage();
+            UserHomePage hp = new UserHomePage(db);
         }
         else if(e.getSource() == makeAppt){
            
         }
         else if (e.getSource() == history) {
 
+        }
+        else if (e.getSource() == typesCB) {
+            apptSelected = typesCB.getSelectedItem().toString();
+            System.out.println(apptSelected);
+        }
+        else if (e.getSource() == go) {
+            apptSelected = typesCB.getSelectedItem().toString();
+            System.out.println(apptSelected);
+            try {
+                displayAppointment(apptSelected);
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+
+    public void displayAppointment(String selected) throws SQLException {
+        ResultSet medicalRS;
+        ResultSet beautyRS;
+        ResultSet fitnessRS;
+
+        if (selected.equals("Medical")) {
+            medicalRS = db.runQuery("SELECT * FROM Appointment WHERE type = Medical");
+            //need to check that it hasn't already been booked
+        }
+        else if (selected.equals("Beauty")) {
+            beautyRS = db.runQuery("SELECT * FROM Appointment WHERE type = Beauty");
+            //need to check that it hasn't already been booked
+        }
+        else if (selected.equals("Fitness")) {
+            fitnessRS = db.runQuery("SELECT * FROM Appointment WHERE type = Fitness");
+            //need to check that it hasn't already been booked
         }
     }
 }
