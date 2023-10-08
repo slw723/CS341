@@ -23,6 +23,7 @@ public class UserHomePage {
         JMenuItem menu, home, makeAppt, history;
         JPanel p;
         JLabel hello, upcoming, noappts;
+        DefaultTableModel model;
         JTable appointments;
         User user;
         static Database db = new Database();
@@ -96,7 +97,7 @@ public class UserHomePage {
         p.add(upcoming);
 
         // show the upcoming appointments if they exists
-        appointments = new JTable();
+        
         int ret = populateUpcoming();
         if(ret == -1){
             noappts = new JLabel("No Upcoming Appointments");
@@ -149,16 +150,20 @@ public class UserHomePage {
             if(rs.next() == false){
                 return -1;
             }
+    
+            model = new DefaultTableModel(new String[]{"Description","Date","Time","Type","Service Provider Email"}, 0);
+            appointments = new JTable(model);
             DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
             tblModel.setRowCount(0);
             while(rs.next()){
                 //data will be added until finished
+                String descr = rs.getString("Description");
                 String date = String.valueOf(rs.getDate("Date"));
                 String time = String.valueOf(rs.getTime("Time"));
                 String type = String.valueOf(rs.getInt("Type"));
                 String spEmail = rs.getString("SPEmail");
 
-                String tbData[] = {date, time, type, spEmail};
+                String tbData[] = {descr, date, time, type, spEmail};
 
                 //addstring array into jtable
                 tblModel.addRow(tbData);

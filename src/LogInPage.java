@@ -14,13 +14,14 @@ public class LogInPage {
         try{
             db.connect();
             System.out.println("Successful connection!");
+            UserHomePage home = new UserHomePage(db, user);
         }
         catch(SQLException e){
             System.out.println("Something went wrong.");
             e.printStackTrace();
         }
 
-        UserHomePage home = new UserHomePage(db, user);
+        
         
     }
 

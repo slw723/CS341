@@ -1,6 +1,8 @@
 
 import java.sql.*;
 
+import javax.swing.JPopupMenu.Separator;
+
 public class Database {
 
     private Connection connection;
@@ -121,16 +123,17 @@ public class Database {
     }
 
     public void insertAppt(Appointment appt){
-        String sql = "INSERT INTO Appointment(ApptId, Date, Time, Type, Booked, UserEmail, SPEmail) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Appointment(ApptId, Description, Date, Time, Type, Booked, UserEmail, SPEmail) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try{
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, appt.getApptId());
-            stmt.setDate(2, appt.getDate());
-            stmt.setTime(3, appt.getTime());
-            stmt.setString(4, appt.getType());
-            stmt.setInt(5, appt.getBooked());
-            stmt.setString(6, appt.getUserEmail());
-            stmt.setString(7, appt.getSPEmail());
+            stmt.setString(2, appt.getDescription());
+            stmt.setDate(3, appt.getDate());
+            stmt.setTime(4, appt.getTime());
+            stmt.setString(5, appt.getType());
+            stmt.setInt(6, appt.getBooked());
+            stmt.setString(7, appt.getUserEmail());
+            stmt.setString(8, appt.getSPEmail());
 
             if(stmt.execute())
                 System.out.println("Inserted " + appt.getApptId() + " into Appointment");
@@ -144,6 +147,7 @@ public class Database {
     public void updateAppt(Appointment appt){
         String sql = "UPDATE Brand SET "
                     + "Date = \"" + appt.getDate() + "\","
+                    + "Description \"" + appt.getDescription() + "\","
                     + "Time = \"" + appt.getTime() + "\","
                     + "Type = \"" + appt.getType() + "\","
                     + "Booked = \"" + appt.getBooked() + "\""

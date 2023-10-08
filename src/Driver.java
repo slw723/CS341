@@ -52,8 +52,8 @@ public class Driver {
 
 
             /* Try insert into appt */
-            Appointment appt = new Appointment("1234", new Date(20231223), new Time(1200), "Beauty", 1, "user@user.com", "abbyanderson@gmail.com");
-            // db.insertAppt(appt);
+            Appointment appt = new Appointment("1234", "Haircut", new Date(20231223), new Time(1200), "Beauty", 1, "user@user.com", "abbyanderson@gmail.com");
+            db.insertAppt(appt);
         }
         catch(NoSuchAlgorithmException e){
             e.printStackTrace();

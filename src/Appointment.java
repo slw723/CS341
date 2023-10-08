@@ -3,6 +3,7 @@ import java.sql.*;
 
 public class Appointment {
     private String apptId;
+    private String description;
     private Date date;
     private Time time;
     private String type;
@@ -13,8 +14,9 @@ public class Appointment {
     public Appointment(){ //empty constructor
 
     }
-    public Appointment(String id, Date date, Time time, String type, int booked, String UserEmail, String SPEmail){
+    public Appointment(String id, String des, Date date, Time time, String type, int booked, String UserEmail, String SPEmail){
         apptId = id;
+        description = des;
         this.date = date;
         this.time = time;
         this.type = type;
@@ -28,6 +30,14 @@ public class Appointment {
 
     public void setApptId(String apptId) {
         this.apptId = apptId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String des) {
+        description = des;
     }
 
     public Date getDate() {
