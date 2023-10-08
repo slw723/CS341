@@ -174,14 +174,18 @@ public class UserBookPage implements ActionListener {
         return null;
     }
 
+    //TODO Appointments not populating
     public void goActionPerformed(ActionEvent evt){
         apptSelected = typesCB.getSelectedItem().toString();
+        System.out.println(apptSelected);
         appointments = new JTable();
         String [] apptHeaders = {"Description", "Date", "Time", "Service Provider"};
         appointments.setModel(new DefaultTableModel(apptHeaders, 0));
         try{
             // Show the available time slots 
             ResultSet rs = db.getApptType(apptSelected);
+
+            System.out.println(rs.getFetchSize());
             DefaultTableModel tblmodel = (DefaultTableModel)appointments.getModel();
             while(rs.next()){
                 //data will be added until finished

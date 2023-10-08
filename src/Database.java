@@ -145,7 +145,7 @@ public class Database {
     }
 
     public void updateAppt(Appointment appt){
-        String sql = "UPDATE Brand SET "
+        String sql = "UPDATE Appointment SET "
                     + "Date = \"" + appt.getDate() + "\","
                     + "Description \"" + appt.getDescription() + "\","
                     + "Time = \"" + appt.getTime() + "\","
@@ -174,11 +174,12 @@ public class Database {
     public ResultSet getApptType(String type){
         ResultSet result = null;
         String sql = "SELECT * "+
-                    "FROM Appointment "+
-                    "WHERE Type = \"" + type + "\"" +
-                    "AND Booked = 0;";
+                    "FROM Appointment ;";//+
+                    // "WHERE Type = \"Beauty\" " +
+                    // "AND Booked = 0;";
         try{
            result = this.runQuery(sql);
+           System.out.println(result.getFetchSize());
         }
         catch(SQLException e){
             e.printStackTrace();
