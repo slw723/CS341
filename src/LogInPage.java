@@ -1,20 +1,27 @@
+package src;
+
 import java.sql.SQLException;
 
 
 public class LogInPage {
     private static User user;
+    private static ServiceProvider sp;
     private static Database db;
 
     public static void main(String[] args){
         
         user = new User();
-        user.setFirstName("Name");
+        user.setFirstName("Name"); //switch once we have log in page
+
+        sp = new ServiceProvider();
+        sp.setFirstName("Name"); //switch once we have log in page
 
         db = new Database();
         try{
             db.connect();
             System.out.println("Successful connection!");
-            UserHomePage home = new UserHomePage(db, user);
+            //UserHomePage home = new UserHomePage(db, user);
+            ServiceProviderHomePage spHome = new ServiceProviderHomePage(db, sp);
         }
         catch(SQLException e){
             System.out.println("Something went wrong.");

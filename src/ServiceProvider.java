@@ -1,3 +1,4 @@
+package src;
 
 public class ServiceProvider {
     
@@ -19,6 +20,10 @@ public class ServiceProvider {
         qualification = qualif;
         yearGraduated = year;
         this.type = type;
+    }
+
+    public ServiceProvider() {
+
     }
 
     public String getFirstName() {

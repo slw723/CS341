@@ -1,3 +1,5 @@
+package src;
+
 public class Admin {
 
     private String userId;

@@ -12,31 +12,25 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-// Light Black: 31, 36, 33
-// Dark Teal: 33, 104, 105
-// Mint Green: 73, 160, 120
-// Light Green: 156, 197, 161
-// Off white: 220, 225, 222
+public class ServiceProviderHomePage {
+    JFrame f, f2;
+    JMenuBar mb;
+    JMenuItem menu, home, makeAppt, history;
+    JPanel p;
+    JLabel hello, upcoming, noappts;
+    DefaultTableModel model;
+    JTable appointments;
+    ServiceProvider sp;
+    static Database db = new Database();
 
-public class UserHomePage {
-        JFrame f, f2;
-        JMenuBar mb;
-        JMenuItem menu, home, makeAppt, history;
-        JPanel p;
-        JLabel hello, upcoming, noappts;
-        DefaultTableModel model;
-        JTable appointments;
-        User user;
-        static Database db = new Database();
-
-    public UserHomePage(Database db, User user){
+    public ServiceProviderHomePage(Database db, ServiceProvider sp){
         this.db = db;
-        this.user = user;
+        this.sp = sp;
         // default font
         Font defaultFont = UIManager.getFont("Label.font");
 
         /* Make frame */
-        f = new JFrame("Appointment Booker for User");
+        f = new JFrame("Appointment Booker for Service Provider");
         f.setBackground(new Color(220, 225, 222));
 
         /* Set up the menu bar */
@@ -47,7 +41,7 @@ public class UserHomePage {
 
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
-        
+
         home = new JMenuItem("Home");
         home.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
         makeAppt = new JMenuItem("Make Appointment");
@@ -69,7 +63,7 @@ public class UserHomePage {
                 makeApptActionPerformed(evt);
             }
         });
-            
+
         history.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
                 historyActionPerformed(evt);
@@ -81,7 +75,7 @@ public class UserHomePage {
         // add hello Name
         p = new JPanel();
         f.getContentPane();
-        String str = "Hello, " + user.getFirstName() + "!";
+        String str = "Hello, " + sp.getFirstName() + "!";
         hello = new JLabel(str);
         hello.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
         hello.setForeground(new Color(31, 36, 33));
@@ -98,7 +92,7 @@ public class UserHomePage {
         p.add(upcoming);
 
         // show the upcoming appointments if they exists
-        
+
         int ret = populateUpcoming();
         if(ret == -1){
             noappts = new JLabel("No Upcoming Appointments");
@@ -108,7 +102,7 @@ public class UserHomePage {
             p.add(noappts);
         }
 
-        //panel sepecifications
+        //panel specifications
         p.setLayout(null);
         p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -125,55 +119,52 @@ public class UserHomePage {
         f.setVisible(true);
     }
 
-    public User getUser(){
-        return user;
+    public ServiceProvider getServiceProvide(){
+        return sp;
     }
 
-     public void goHomeActionPerformed(ActionEvent e){
-      
+    public void goHomeActionPerformed(ActionEvent e){
+
     }
 
     public void makeApptActionPerformed(ActionEvent e){
-      
+
         f.setVisible(false);
-        UserBookPage bp = new UserBookPage(db, this);        
+        ServiceProviderBookPage bp = new ServiceProviderBookPage(db, this);
     }
 
     public void historyActionPerformed(ActionEvent e){
-      
+
         f.setVisible(false);
-            
+
     }
 
     /* Populate full table view -> good for admin view*/
     private int populateUpcoming() {
         try{
-            String sql = "SELECT * FROM Appointment WHERE UserEmail = \"" + user.getEmail() + 
-                        "\" AND Date >= date(NOW()) AND Time = time(NOW());";
+            String sql = "SELECT * FROM Appointment WHERE SPEmail = \"" + sp.getEmail() +
+                    "\" AND Date >= date(NOW()) AND Time = time(NOW());";
             ResultSet rs = db.executeSQL(sql);
-    
-            //model = new DefaultTableModel(new String[]{"Description","Date","Time","Type","Service Provider Email"}, 0);
+
+            if(!rs.next()){
+                return -1;
+            }
+
             appointments = new JTable(model);
 
-            String [] apptHeaders = {"Date", "Time", "Description","Service Provider", "Qualification"};
+            String [] apptHeaders = {"Date", "Time", "Description", "Booked"};
             appointments.setModel(new DefaultTableModel(apptHeaders, 0));
 
             DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
             tblModel.setRowCount(0);
-
-            if(rs.next() == false){
-                return -1;
-            }
-
             while(rs.next()){
                 //data will be added until finished
                 String descr = rs.getString("Description");
                 String date = String.valueOf(rs.getDate("Date"));
                 String time = String.valueOf(rs.getTime("Time"));
-                String type = String.valueOf(rs.getInt("Type"));
-                String spEmail = rs.getString("SPEmail");
+                //String book = String.valueOf(rs.getInt("Booked")); //maybe have a booked column with yes or no
 
-                String tbData[] = {descr, date, time, type, spEmail};
+                String tbData[] = {date, time, descr};
 
                 //addstring array into jtable
                 tblModel.addRow(tbData);
@@ -182,14 +173,6 @@ public class UserHomePage {
         catch(Exception e){
             System.out.println(e.getMessage());
         }
-        JScrollPane scroll = new JScrollPane(appointments);
-        // set sizes
-        scroll.setBounds(10, 150, 950, 350);
-        appointments.getColumnModel().getColumn(0).setMaxWidth(100);
-        appointments.getColumnModel().getColumn(1).setMaxWidth(100);
-        appointments.getColumnModel().getColumn(2).setMaxWidth(200);
-        f.add(scroll);
-
         return 0;
-    }   
+    }
 }
