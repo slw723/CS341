@@ -116,12 +116,16 @@ public class UserHomePage {
 
         /* Make visible */
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        f.setSize(800,800);
+        f.setSize(1000,800);
         f.setVisible(true);
     }
 
     public void setHomeVisible(){
         f.setVisible(true);
+    }
+
+    public User getUser(){
+        return user;
     }
 
      public void goHomeActionPerformed(ActionEvent e){

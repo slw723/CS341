@@ -2,8 +2,9 @@
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.text.SimpleDateFormat;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -15,7 +16,7 @@ public class UserBookPage implements ActionListener {
     JPanel bookPanel;
     String[] apptTypes;
     JComboBox<String> typesCB;
-    JButton startButton;
+    JButton bookButton;
     JButton endButton;
     JButton go;
     DefaultTableModel model;
@@ -87,12 +88,8 @@ public class UserBookPage implements ActionListener {
         typesCB = new JComboBox<>(apptTypes);
         typesCB.setBounds(10, 75, 90, 20);
         typesCB.setSelectedIndex(0);
-        // typesCB.addActionListener(new ActionListener() {
-        //     public void actionPerformed(ActionEvent evt){
-        //         apptTypeActionPerformed(evt);
-        //     }
-        // });
         bookPanel.add(typesCB);
+
         // add go button
         go = new JButton("Go");
         Dimension goSize = go.getPreferredSize();
@@ -113,7 +110,6 @@ public class UserBookPage implements ActionListener {
         apptAvailable.setBounds(10, 125, availSize.width, availSize.height);
         bookPanel.add(apptAvailable);
 
-        
         /*
         // add start text and start button
         start = new JLabel("Start: ");
@@ -151,20 +147,46 @@ public class UserBookPage implements ActionListener {
 
         // Make visible
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        f.setSize(800, 800);
+        f.setSize(1000, 800);
         f.setVisible(true);
     }
 
-    public void apptTypeActionPerformed(ActionEvent evt){
-        
+    /*HELPERS */
+
+    private void makeBookButton(){
+        bookButton = new JButton("Book Selection Now");
+        Dimension startBSize = bookButton.getPreferredSize();
+        bookButton.setBounds(10, 520, startBSize.width, startBSize.height);
+        bookButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt){
+                bookActionPerformed(evt);
+            }
+        });
+        bookPanel.add(bookButton);
+        f.add(bookPanel);
     }
 
     private String getSPName(String email){
+            try{
+                String sql = "Select FirstName, LastName FROM ServiceProvider WHERE Email = \"" + email + "\"";
+                ResultSet rs = db.executeSQL(sql);
+                if(rs.next()){
+                    return rs.getString("FirstName") + " " + rs.getString("Lastname");
+                }
+            }
+            catch(SQLException e){
+                System.out.println(e.getMessage());
+
+            }
+            return null;
+        }
+
+    private String getSPQualif(String email){
         try{
-            String sql = "Select FirstName, LastName FROM ServiceProvider WHERE Email = \"" + email + "\"";
+            String sql = "Select Qualification FROM ServiceProvider WHERE Email = \"" + email + "\"";
             ResultSet rs = db.executeSQL(sql);
             if(rs.next()){
-                return rs.getString("FirstName") + rs.getString("Lastname");
+                return rs.getString("Qualification");
             }
         }
         catch(SQLException e){
@@ -174,41 +196,102 @@ public class UserBookPage implements ActionListener {
         return null;
     }
 
-    //TODO Appointments not populating
+    private String getSPEmail(String name){
+        try{
+            String[] names = name.split(" ", 2);
+            String sql = "Select Email FROM ServiceProvider" +
+                         " WHERE FirstName = \"" +  names[0]+ "\"" +
+                         " AND LastName = \"" + names[1] + "\";";
+            ResultSet rs = db.executeSQL(sql);
+            if(rs.next()){
+                return rs.getString("Email");
+            }
+        }
+        catch(SQLException e){
+            System.out.println(e.getMessage());
+
+        }
+        return null;
+    }
+
+    private int getApptId(String date, String time, String email){
+         try{
+            String sql = "Select ApptId FROM Appointment" +
+                         " WHERE SPEmail = \"" +  email + "\" " +
+                         " AND Time = \"" + time + "\"" +
+                         " AND Date = \"" + date + "\";";
+            ResultSet rs = db.executeSQL(sql);
+            if(rs.next()){
+                return rs.getInt("ApptId");
+            }
+        }
+        catch(SQLException e){
+            System.out.println(e.getMessage());
+
+        }
+        return -1;
+    }
+
+    /*
+     * ACTION LISTENERS
+     */
+ 
     public void goActionPerformed(ActionEvent evt){
         apptSelected = typesCB.getSelectedItem().toString();
-        System.out.println(apptSelected);
         appointments = new JTable();
-        String [] apptHeaders = {"Description", "Date", "Time", "Service Provider"};
+        String [] apptHeaders = {"", "Date", "Time", "Description","Service Provider", "Qualification"};
         appointments.setModel(new DefaultTableModel(apptHeaders, 0));
         try{
             // Show the available time slots 
             ResultSet rs = db.getApptType(apptSelected);
-
-            System.out.println(rs.getFetchSize());
             DefaultTableModel tblmodel = (DefaultTableModel)appointments.getModel();
             while(rs.next()){
                 //data will be added until finished
                 String descr = rs.getString("Description");
                 String date = String.valueOf(rs.getDate("Date"));
                 String time = String.valueOf(rs.getTime("Time"));
-                String type = String.valueOf(rs.getInt("Type"));
                 String spEmail = rs.getString("SPEmail");
                 String spName = getSPName(spEmail);
+                String spQualif = getSPQualif(spEmail);
 
-                Object tbData[] = {descr, date, time, type, spName};
+                Object tbData[] = {date, time, descr, spName, spQualif};
 
-                //addstring array into jtable
-                System.out.println("adding row");
+                // add data into jtable
                 tblmodel.addRow(tbData);
-            }
+                }
         }
         catch(Exception e){
             System.out.println(e.getMessage());
         }
         scroll = new JScrollPane(appointments);
-        scroll.setBounds(10, 150, 750, 450);
+        // set sizes
+        scroll.setBounds(10, 150, 950, 350);
+        appointments.getColumnModel().getColumn(0).setMaxWidth(100);
+        appointments.getColumnModel().getColumn(1).setMaxWidth(100);
+        appointments.getColumnModel().getColumn(2).setMaxWidth(200);
         f.add(scroll);
+
+        makeBookButton();
+    }
+
+    private void bookActionPerformed(ActionEvent evt){
+        int rowIndex = appointments.getSelectedRow();
+        String date = String.valueOf(appointments.getValueAt(rowIndex, 0));
+        String time = String.valueOf(appointments.getValueAt(rowIndex, 1));
+        String spName = (String)appointments.getValueAt(rowIndex, 3);
+
+        //get primary key of Service Provider
+        String spEmail = getSPEmail(spName);
+
+        //get primary key of appointment selected
+        int apptId = getApptId(date, time, spEmail);
+
+        //update appointment in db
+        db.bookAppt(spEmail, apptId);
+
+        //return home
+        f.setVisible(false);
+        hp.setHomeVisible();
     }
 
     public void actionPerformed(ActionEvent e){

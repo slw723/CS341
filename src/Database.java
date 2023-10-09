@@ -150,10 +150,25 @@ public class Database {
                     + "Description \"" + appt.getDescription() + "\","
                     + "Time = \"" + appt.getTime() + "\","
                     + "Type = \"" + appt.getType() + "\","
-                    + "Booked = \"" + appt.getBooked() + "\""
-                    + "FK_User_email = \"" + appt.getUserEmail() + "\""
-                    + "FK_SP_email = \"" + appt.getSPEmail() + "\""
+                    + "Booked = " + appt.getBooked() + ""
+                    + "UserEmail = \"" + appt.getUserEmail() + "\""
+                    + "SPEmail = \"" + appt.getSPEmail() + "\""
                     + "WHERE ApptId = \"" + appt.getApptId() + "\"";
+        try {
+            dbExecuteUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void bookAppt(String email, int apptId){
+        String sql = "UPDATE Appointment SET  "
+                    + "SPEmail = \"" + email + "\", "
+                    + "Booked = 1 " 
+                    + "WHERE ApptId = \"" + apptId + "\";";
+
+        System.out.println(email);
+        System.out.println(apptId);
         try {
             dbExecuteUpdate(sql);
         } catch (SQLException e) {
@@ -173,13 +188,15 @@ public class Database {
     
     public ResultSet getApptType(String type){
         ResultSet result = null;
+        if(type.equals("")){
+            return null;
+        }
         String sql = "SELECT * "+
-                    "FROM Appointment ;";//+
-                    // "WHERE Type = \"Beauty\" " +
-                    // "AND Booked = 0;";
+                    "FROM Appointment " +
+                    "WHERE Type = \"" + type  + "\" " +
+                    "AND Booked = 0;";
         try{
-           result = this.runQuery(sql);
-           System.out.println(result.getFetchSize());
+           result = runQuery(sql);
         }
         catch(SQLException e){
             e.printStackTrace();
