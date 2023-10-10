@@ -21,6 +21,10 @@ public class ServiceProvider {
         this.type = type;
     }
 
+    public ServiceProvider(){
+        
+    }
+
     public String getFirstName() {
         return firstName;
     }

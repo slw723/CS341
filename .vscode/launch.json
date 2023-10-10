@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "SPBookPage",
+            "request": "launch",
+            "mainClass": "SPBookPage",
+            "projectName": "CS341_720d8412"
+        },
+        {
+            "type": "java",
             "name": "LogInPage",
             "request": "launch",
             "mainClass": "LogInPage",

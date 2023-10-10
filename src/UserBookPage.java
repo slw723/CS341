@@ -110,30 +110,6 @@ public class UserBookPage implements ActionListener {
         apptAvailable.setBounds(10, 125, availSize.width, availSize.height);
         bookPanel.add(apptAvailable);
 
-        /*
-        // add start text and start button
-        start = new JLabel("Start: ");
-        Dimension startSize = start.getPreferredSize();
-        start.setBounds(10, 175, startSize.width, startSize.height);
-        bookPanel.add(start);
-
-        startButton = new JButton("Start Button");
-        Dimension startBSize = startButton.getPreferredSize();
-        startButton.setBounds(50, 175, startBSize.width, startBSize.height);
-        bookPanel.add(startButton);
-
-        // add end text and end button
-        end = new JLabel("End: ");
-        Dimension endSize = end.getPreferredSize();
-        end.setBounds(10, 225, endSize.width, endSize.height);
-        bookPanel.add(end);
-
-        endButton = new JButton("End Button");
-        Dimension endBSize = endButton.getPreferredSize();
-        endButton.setBounds(50, 225, endBSize.width, endBSize.height);
-        bookPanel.add(endButton);
-        */
-
         // bookPanel specifications
         bookPanel.setLayout(null);
         bookPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
