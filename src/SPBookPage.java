@@ -72,7 +72,7 @@ public class SPBookPage implements ActionListener {
         title.setFont(new Font("Sarif", Font.PLAIN, 25));
         title.setForeground(new Color(31, 36, 33));
         Dimension titleSize = title.getPreferredSize();
-        title.setBounds(10, 0, titleSize.width, titleSize.height);
+        title.setBounds(10, 0, titleSize.width+10, titleSize.height);
         bookPanel.add(title);
 
         
@@ -82,7 +82,7 @@ public class SPBookPage implements ActionListener {
         descr.setFont(new Font("Sarif", Font.PLAIN, 15));
         descr.setForeground(new Color(33, 104, 105));
         Dimension descrSize = descr.getPreferredSize();
-        descr.setBounds(10, 50, descrSize.width, descrSize.height);
+        descr.setBounds(10, 50, descrSize.width+10, descrSize.height+50);
         bookPanel.add(descr);
 
         described = new JTextField();
@@ -96,7 +96,7 @@ public class SPBookPage implements ActionListener {
         date.setFont(new Font("Sarif", Font.PLAIN, 15));
         date.setForeground(new Color(33, 104, 105));
         Dimension dateSize = date.getPreferredSize();
-        date.setBounds(10, 90, dateSize.width, dateSize.height);
+        date.setBounds(10, 90, dateSize.width+10, dateSize.height+90);
         bookPanel.add(date);
 
         dated = new JTextField();
@@ -124,7 +124,7 @@ public class SPBookPage implements ActionListener {
         time.setFont(new Font("Sarif", Font.PLAIN, 15));
         time.setForeground(new Color(33, 104, 105));
         Dimension timeSize = time.getPreferredSize();
-        time.setBounds(10, 130, timeSize.width, timeSize.height);
+        time.setBounds(10, 130, timeSize.width+10, timeSize.height+30);
         bookPanel.add(time);
 
         //add time drop down

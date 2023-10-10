@@ -432,6 +432,9 @@ public class LogInPage extends JFrame  {
                 ResultSet results = db.findUser(username, password); //executing the query method from Database class
                 if(results.next()){ //user was found
                     user = new User(username, password);
+                    user.setFirstName(results.getString("FirstName"));
+                    user.setLastName(results.getString("LastName"));
+                    user.setPhoneNumber(results.getLong("PhoneNum"));
                     JOptionPane.showMessageDialog(null, "User Login Successful.");
                     UserHomePage userHP = new UserHomePage(db, user);
                     loginWin.dispose();
@@ -440,6 +443,12 @@ public class LogInPage extends JFrame  {
                     ResultSet results2 = db.findServiceProvider(username, password);
                     if(results2.next()){ //service provider was found
                         sp = new ServiceProvider(username, password);
+                        sp.setFirstName(results2.getString("FirstName"));
+                        sp.setLastName(results2.getString("LastName"));
+                        sp.setType(results2.getString("Type"));
+                        sp.setPhoneNumber(results2.getLong("PhoneNum"));
+                        sp.setQualification(results2.getString("Qualification"));
+                        sp.setYearGraduated(results2.getInt("YearGraduated"));
                         JOptionPane.showMessageDialog(null, "Service Provider Login Successful.");
                         SPHomePage spHP = new SPHomePage(db, sp); //Service Provider page??
                         loginWin.dispose();

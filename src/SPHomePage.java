@@ -78,7 +78,7 @@ public class SPHomePage {
         hello.setFont(new Font("Sarif", Font.PLAIN, 15));
         hello.setForeground(new Color(31, 36, 33));
         Dimension helloSize = hello.getPreferredSize();
-        hello.setBounds(10, 10, helloSize.width, helloSize.height);
+        hello.setBounds(10, 10, helloSize.width+10, helloSize.height+10);
         p.add(hello);
 
         // add upcoming appts title
@@ -86,7 +86,7 @@ public class SPHomePage {
         upcoming.setFont(new Font("Sarif", Font.PLAIN, 15));
         upcoming.setForeground(new Color(33, 104, 105));
         Dimension upSize = upcoming.getPreferredSize();
-        upcoming.setBounds(10, 50, upSize.width, upSize.height);
+        upcoming.setBounds(10, 50, upSize.width+10, upSize.height+50);
         p.add(upcoming);
 
         // show the upcoming appointments if they exists
@@ -96,7 +96,7 @@ public class SPHomePage {
             noappts = new JLabel("No Upcoming Appointments");
             noappts.setFont(new Font("Sarif", Font.PLAIN, 10));
             Dimension noSize = noappts.getPreferredSize();
-            noappts.setBounds(20, 80, noSize.width, noSize.height);
+            noappts.setBounds(20, 80, noSize.width+20, noSize.height+80);
             p.add(noappts);
         }
 

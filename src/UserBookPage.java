@@ -71,7 +71,7 @@ public class UserBookPage implements ActionListener {
         title.setFont(new Font("Sarif", Font.PLAIN, 25));
         title.setForeground(new Color(31, 36, 33));
         Dimension titleSize = title.getPreferredSize();
-        title.setBounds(10, 0, titleSize.width, titleSize.height);
+        title.setBounds(10, 0, titleSize.width+10, titleSize.height);
         bookPanel.add(title);
 
          // add type of appointment text
@@ -79,7 +79,7 @@ public class UserBookPage implements ActionListener {
         type.setFont(new Font("Sarif", Font.PLAIN, 15));
         type.setForeground(new Color(31, 36, 33));
         Dimension typeSize = type.getPreferredSize();
-        type.setBounds(10, 50, typeSize.width, typeSize.height);
+        type.setBounds(10, 50, typeSize.width+10, typeSize.height+50);
         bookPanel.add(type);
 
         // add dropdown for type of appointment
@@ -92,7 +92,7 @@ public class UserBookPage implements ActionListener {
         // add go button
         go = new JButton("Go");
         Dimension goSize = go.getPreferredSize();
-        go.setBounds(110, 75, goSize.width, goSize.height);
+        go.setBounds(110, 75, goSize.width+110, goSize.height+75);
         go.setBackground(new Color(156, 197, 161));
         go.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
@@ -107,7 +107,7 @@ public class UserBookPage implements ActionListener {
         apptAvailable.setFont(new Font("Sarif", Font.PLAIN, 15));
         apptAvailable.setForeground(new Color(33, 104, 105));
         Dimension availSize = apptAvailable.getPreferredSize();
-        apptAvailable.setBounds(10, 125, availSize.width, availSize.height);
+        apptAvailable.setBounds(10, 125, availSize.width+10, availSize.height+125);
         bookPanel.add(apptAvailable);
 
         // bookPanel specifications
