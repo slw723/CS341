@@ -6,7 +6,6 @@ import java.sql.SQLException;
 public class LogInPage {
     private static User user;
     private static ServiceProvider sp;
-    private static ServiceProvider sp;
     private static Database db;
 
     public static void main(String[] args){
