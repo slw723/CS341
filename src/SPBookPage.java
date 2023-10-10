@@ -29,7 +29,6 @@ public class SPBookPage implements ActionListener {
     JButton bookButton;
     JScrollBar scroll;
     JButton go;
-    
     SPHomePage hp;
     Database db;
     
@@ -80,7 +79,6 @@ public class SPBookPage implements ActionListener {
 
         
         // make form
-
         // add text field for appt description
         descr = new JLabel("Description: ");
         descr.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
@@ -278,7 +276,7 @@ public class SPBookPage implements ActionListener {
             String des = described.getText();
             Date dateStr = Date.valueOf(dated.getText());
             Time timeStr = Time.valueOf(convertTime(timeCB.getSelectedItem().toString()));
-            ServiceProvider sp = hp.getSp();
+            ServiceProvider sp = hp.getSP();
             Appointment appt = new Appointment(des, dateStr, timeStr, sp.getType(), 0, null, sp.getEmail());
             
             //check if SP has appt at that time already

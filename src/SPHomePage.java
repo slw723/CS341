@@ -1,3 +1,4 @@
+// package src;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,22 +12,16 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-// Light Black: 31, 36, 33
-// Dark Teal: 33, 104, 105
-// Mint Green: 73, 160, 120
-// Light Green: 156, 197, 161
-// Off white: 220, 225, 222
-
 public class SPHomePage {
-        JFrame f, f2;
-        JMenuBar mb;
-        JMenuItem menu, home, makeAppt, history;
-        JPanel p;
-        JLabel hello, upcoming, noappts;
-        DefaultTableModel model;
-        JTable appointments;
-        ServiceProvider sp;
-        static Database db = new Database();
+    JFrame f, f2;
+    JMenuBar mb;
+    JMenuItem menu, home, makeAppt, history;
+    JPanel p;
+    JLabel hello, upcoming, noappts;
+    DefaultTableModel model;
+    JTable appointments;
+    ServiceProvider sp;
+    static Database db = new Database();
 
     public SPHomePage(Database db, ServiceProvider sp){
         this.db = db;
@@ -35,7 +30,7 @@ public class SPHomePage {
         Font defaultFont = UIManager.getFont("Label.font");
 
         /* Make frame */
-        f = new JFrame("Appointment Booker");
+        f = new JFrame("Appointment Booker for Service Provider");
         f.setBackground(new Color(220, 225, 222));
 
         /* Set up the menu bar */
@@ -46,7 +41,7 @@ public class SPHomePage {
 
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
-        
+
         home = new JMenuItem("Home");
         home.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
         makeAppt = new JMenuItem("Make Appointment");
@@ -68,7 +63,7 @@ public class SPHomePage {
                 makeApptActionPerformed(evt);
             }
         });
-            
+
         history.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
                 historyActionPerformed(evt);
@@ -97,7 +92,7 @@ public class SPHomePage {
         p.add(upcoming);
 
         // show the upcoming appointments if they exists
-        
+
         int ret = populateUpcoming();
         if(ret == -1){
             noappts = new JLabel("No Upcoming Appointments");
@@ -107,7 +102,7 @@ public class SPHomePage {
             p.add(noappts);
         }
 
-        //panel sepecifications
+        //panel specifications
         p.setLayout(null);
         p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -124,39 +119,42 @@ public class SPHomePage {
         f.setVisible(true);
     }
 
-    public ServiceProvider getSp(){
+    public ServiceProvider getSP(){
         return sp;
     }
 
-     public void goHomeActionPerformed(ActionEvent e){
-      
+    public void goHomeActionPerformed(ActionEvent e){
+
     }
 
     public void makeApptActionPerformed(ActionEvent e){
-      
+
         f.setVisible(false);
-        SPBookPage bp = new SPBookPage(db, this);        
+        SPBookPage bp = new SPBookPage(db, this);
     }
 
     public void historyActionPerformed(ActionEvent e){
-      
+
         f.setVisible(false);
-            
+
     }
 
     /* Populate full table view -> good for admin view*/
     private int populateUpcoming() {
         try{
-            String sql = "SELECT * FROM Appointment WHERE UserEmail = \"" + sp.getEmail() + 
-                        "\" AND Date >= date(NOW()) AND Time = time(NOW());";
+            String sql = "SELECT * FROM Appointment WHERE SPEmail = \"" + sp.getEmail() +
+                    "\" AND Date >= date(NOW()) AND Time = time(NOW());";
             ResultSet rs = db.executeSQL(sql);
 
-            if(rs.next() == false){
+            if(!rs.next()){
                 return -1;
             }
-    
-            model = new DefaultTableModel(new String[]{"Description","Date","Time","Type","Service Provider Email"}, 0);
+
             appointments = new JTable(model);
+
+            String [] apptHeaders = {"Date", "Time", "Description", "Booked"};
+            appointments.setModel(new DefaultTableModel(apptHeaders, 0));
+
             DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
             tblModel.setRowCount(0);
             while(rs.next()){
@@ -164,10 +162,9 @@ public class SPHomePage {
                 String descr = rs.getString("Description");
                 String date = String.valueOf(rs.getDate("Date"));
                 String time = String.valueOf(rs.getTime("Time"));
-                String type = String.valueOf(rs.getInt("Type"));
-                String spEmail = rs.getString("SPEmail");
+                //String book = String.valueOf(rs.getInt("Booked")); //maybe have a booked column with yes or no
 
-                String tbData[] = {descr, date, time, type, spEmail};
+                String tbData[] = {date, time, descr};
 
                 //addstring array into jtable
                 tblModel.addRow(tbData);
@@ -177,5 +174,5 @@ public class SPHomePage {
             System.out.println(e.getMessage());
         }
         return 0;
-    }   
+    }
 }

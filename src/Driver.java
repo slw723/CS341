@@ -1,9 +1,9 @@
-package src;/* NOT NECESSARY LONG TERM */
+// package src;/* NOT NECESSARY LONG TERM */
 
-import src.Appointment;
-import src.Database;
-import src.ServiceProvider;
-import src.User;
+// import src.Appointment;
+// import src.Database;
+// import src.ServiceProvider;
+// import src.User;
 
 import java.sql.Date;
 import java.sql.SQLException;
