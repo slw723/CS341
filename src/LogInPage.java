@@ -295,7 +295,7 @@ public class LogInPage extends JFrame  {
         lLabel.setBounds(20, 45, 80, 20);
         lLabel.setForeground(Color.WHITE);
         lText = new JTextField(15);
-        lText.setBounds(105, 55, 100, 20);
+        lText.setBounds(105, 45, 100, 20);
 
         unLabel = new JLabel("Username: ");
         unLabel.setBounds(20, 70, 80, 20);
@@ -402,6 +402,7 @@ public class LogInPage extends JFrame  {
         for(Component c : regPanel.getComponents()){
             regPanel.remove(c);
         }
+        regPanel.validate();
     }
 
 

@@ -141,13 +141,13 @@ public class SPHomePage {
     /* Populate full table view -> good for admin view*/
     private int populateUpcoming() {
         appointments = new JTable();
-        String [] apptHeaders = {"Date", "Time", "Description", "Booked By"};
+        String [] apptHeaders = {"Date", "Time", "Description", "Booked", "Booked By"};
         appointments.setModel(new DefaultTableModel(apptHeaders, 0));
         appointments.getTableHeader().setBackground(new Color(33, 104, 105));
         appointments.getTableHeader().setForeground(Color.WHITE);
         try{
             String sql = "SELECT * FROM Appointment WHERE SPEmail = \"" + sp.getEmail() +
-                    "\" AND Date >= date(NOW()) AND Time = time(NOW()) AND Booked = '1';";
+                    "\" AND Date >= date(NOW()) AND Time = time(NOW());";
             ResultSet rs = db.executeSQL(sql);
         
             if(!rs.next()){
@@ -161,12 +161,25 @@ public class SPHomePage {
                 String date = String.valueOf(rs.getDate("Date"));
                 String time = String.valueOf(rs.getTime("Time"));
                 String user = rs.getString("UserEmail");
-                //String book = String.valueOf(rs.getInt("Booked")); //maybe have a booked column with yes or no
+                int book = rs.getInt("Booked");
+                String yesno, userName;
+                if(book == 1){
+                    yesno = "Yes";
+                }
+                else{
+                    yesno = "No";
+                }
 
                 ResultSet r = db.getUserName(user);
-                String userName = r.getString("FirstName") + " " + r.getString("LastName");
+                if(r.next()){
+                    userName = r.getString("FirstName") + " " + r.getString("LastName");
+                }
+                else{
+                    userName = "No Client";
+                }
 
-                String tbData[] = {date, time, descr, userName};
+
+                String tbData[] = {date, time, descr, yesno, userName};
 
                 //addstring array into jtable
                 tblModel.addRow(tbData);

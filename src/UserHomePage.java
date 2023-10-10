@@ -159,6 +159,7 @@ public class UserHomePage {
     public void historyActionPerformed(ActionEvent e){
       
         f.setVisible(false);
+        populateUpcoming();
             
     }
 

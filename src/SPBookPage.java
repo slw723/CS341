@@ -144,7 +144,7 @@ public class SPBookPage implements ActionListener {
         // add go button
         go = new JButton("Submit");
         Dimension goSize = go.getPreferredSize();
-        go.setBounds(10, 200, goSize.width, goSize.height);
+        go.setBounds(10, 200, goSize.width+10, goSize.height);
         go.setBackground(new Color(156, 197, 161));
         go.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
