@@ -241,11 +241,10 @@ public class Database {
 
     public ResultSet findServiceProvider(String username, byte[] password) {
         String query = "SELECT * FROM serviceprovider WHERE Email = ?";
-System.out.println(username);
         try{
             PreparedStatement stmt = connection.prepareStatement(query);
             stmt.setString(1, username);
-            stmt.setBytes(2, password);
+            // stmt.setBytes(2, password);
             if(stmt.execute()){
                 return stmt.executeQuery();
             }

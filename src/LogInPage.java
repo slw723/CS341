@@ -431,7 +431,6 @@ public class LogInPage extends JFrame  {
                 byte[] password = hash(passwordText.getPassword());
                 ResultSet results = db.findUser(username, password); //executing the query method from Database class
                 if(results.next()){ //user was found
-    System.out.println(results.getBytes("Password"));
                     user = new User(username, password);
                     JOptionPane.showMessageDialog(null, "User Login Successful.");
                     UserHomePage userHP = new UserHomePage(db, user);
@@ -439,7 +438,6 @@ public class LogInPage extends JFrame  {
                 }
                 else { //user was not found, check service provider table
                     ResultSet results2 = db.findServiceProvider(username, password);
-    System.out.println(results2.getFetchSize());
                     if(results2.next()){ //service provider was found
                         sp = new ServiceProvider(username, password);
                         JOptionPane.showMessageDialog(null, "Service Provider Login Successful.");
