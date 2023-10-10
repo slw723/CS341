@@ -37,7 +37,7 @@ import java.util.ArrayList;
 public class LogInPage extends JFrame  {
     private static User user;
     private static ServiceProvider sp;
-    private static Database db;
+    public static Database db;
 
     // ArrayList<User> users = new ArrayList<>();
     // ArrayList<ServiceProvider> sp = new ArrayList<>();
@@ -280,7 +280,7 @@ public class LogInPage extends JFrame  {
         regPanel = new JPanel();
         regPanel.setBackground(new Color(33, 104, 105)); //dark teal
         regPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-        regPanel.setBounds(200, 140, 305, 300);
+        regPanel.setBounds(200, 140, 295, 300);
 
         hideOtherReg();
 
@@ -429,10 +429,8 @@ public class LogInPage extends JFrame  {
          try {
                 String username = userText.getText();
                 byte[] password = hash(passwordText.getPassword());
-    System.out.println(password);
                 ResultSet results = db.findUser(username, password); //executing the query method from Database class
-    System.out.println(results.getFetchSize());
-                if(results.getFetchSize() > 0){ //user was found
+                if(results.next()){ //user was found
     System.out.println(results.getBytes("Password"));
                     user = new User(username, password);
                     JOptionPane.showMessageDialog(null, "User Login Successful.");
@@ -442,8 +440,7 @@ public class LogInPage extends JFrame  {
                 else { //user was not found, check service provider table
                     ResultSet results2 = db.findServiceProvider(username, password);
     System.out.println(results2.getFetchSize());
-                    if(results2.getFetchSize() > 0){ //service provider was found
-    System.out.println(results.getBytes("Password"));
+                    if(results2.next()){ //service provider was found
                         sp = new ServiceProvider(username, password);
                         JOptionPane.showMessageDialog(null, "Service Provider Login Successful.");
                         SPHomePage spHP = new SPHomePage(db, sp); //Service Provider page??
@@ -451,7 +448,7 @@ public class LogInPage extends JFrame  {
                     }
                     else { //service provider not found, check admin table
                         // ResultSet results3 = db.findAdmin(username, password); //checks on UserID in the Admin table
-                        // if(results3.getFetchSize() > 0){
+                        // if(results3.next()){
                             // JOptionPane.showMessageDialog(null, "Admin Login Successful.");
                             // UserHomePage ad = new UserHomePage(db, user); //Admin page??
                             // loginWin.dispose();

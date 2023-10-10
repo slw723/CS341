@@ -35,8 +35,6 @@ public class SPBookPage implements ActionListener {
     public SPBookPage(Database db, SPHomePage hp){
         this.hp = hp;
         this.db = db;
-        // default font
-        Font defaultFont = UIManager.getFont("Sarif");
 
         /* Make frame */
         f = new JFrame("Appointment Booker");
@@ -48,16 +46,16 @@ public class SPBookPage implements ActionListener {
 
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
-        menu.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        menu.setFont(new Font("Sarif", Font.PLAIN, 15));
         menu.setForeground(new Color(31, 36, 33));
 
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
         
         home = new JMenuItem("Home");
-        home.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        home.setFont(new Font("Sarif", Font.PLAIN, 15));
         history = new JMenuItem("History");
-        history.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        history.setFont(new Font("Sarif", Font.PLAIN, 15));
 
         menu.add(home);
         menu.add(history);
@@ -71,7 +69,7 @@ public class SPBookPage implements ActionListener {
         bookPanel = new JPanel();
         f.getContentPane();
         title = new JLabel("Make Appointment");
-        title.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 25));
+        title.setFont(new Font("Sarif", Font.PLAIN, 25));
         title.setForeground(new Color(31, 36, 33));
         Dimension titleSize = title.getPreferredSize();
         title.setBounds(10, 0, titleSize.width, titleSize.height);
@@ -81,28 +79,28 @@ public class SPBookPage implements ActionListener {
         // make form
         // add text field for appt description
         descr = new JLabel("Description: ");
-        descr.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        descr.setFont(new Font("Sarif", Font.PLAIN, 15));
         descr.setForeground(new Color(33, 104, 105));
         Dimension descrSize = descr.getPreferredSize();
         descr.setBounds(10, 50, descrSize.width, descrSize.height);
         bookPanel.add(descr);
 
         described = new JTextField();
-        described.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        described.setFont(new Font("Sarif", Font.PLAIN, 15));
         described.setSize(300, 20);
         described.setLocation(descrSize.width + 10, 55);
         bookPanel.add(described);
 
         // add text field for date
         date = new JLabel("Date: ");
-        date.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        date.setFont(new Font("Sarif", Font.PLAIN, 15));
         date.setForeground(new Color(33, 104, 105));
         Dimension dateSize = date.getPreferredSize();
         date.setBounds(10, 90, dateSize.width, dateSize.height);
         bookPanel.add(date);
 
         dated = new JTextField();
-        dated.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 10));
+        dated.setFont(new Font("Sarif", Font.PLAIN, 10));
         dated.setSize(100, 20);
         dated.setLocation(descrSize.width + 10, 95);
         dated.addFocusListener(new FocusAdapter() {
@@ -123,7 +121,7 @@ public class SPBookPage implements ActionListener {
 
         // add date field
         time = new JLabel("Time: ");
-        time.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        time.setFont(new Font("Sarif", Font.PLAIN, 15));
         time.setForeground(new Color(33, 104, 105));
         Dimension timeSize = time.getPreferredSize();
         time.setBounds(10, 130, timeSize.width, timeSize.height);

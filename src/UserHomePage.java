@@ -33,8 +33,6 @@ public class UserHomePage {
     public UserHomePage(Database db, User user){
         this.db = db;
         this.user = user;
-        // default font
-        Font defaultFont = UIManager.getFont("Sarif");
 
         /* Make frame */
         f = new JFrame("Appointment Booker for User");
@@ -43,18 +41,18 @@ public class UserHomePage {
         /* Set up the menu bar */
         mb = new JMenuBar();
         menu = new JMenu("Menu");
-        menu.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        menu.setFont(new Font("Sarif", Font.PLAIN, 15));
         menu.setForeground(new Color(31, 36, 33));
 
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
         
         home = new JMenuItem("Home");
-        home.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        home.setFont(new Font("Sarif", Font.PLAIN, 15));
         makeAppt = new JMenuItem("Make Appointment");
-        makeAppt.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        makeAppt.setFont(new Font("Sarif", Font.PLAIN, 15));
         history = new JMenuItem("History");
-        history.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        history.setFont(new Font("Sarif", Font.PLAIN, 15));
 
         menu.add(home);
         menu.add(makeAppt);
@@ -84,7 +82,7 @@ public class UserHomePage {
         f.getContentPane();
         String str = "Hello, " + user.getFirstName() + "!";
         hello = new JLabel(str);
-        hello.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        hello.setFont(new Font("Sarif", Font.PLAIN, 15));
         hello.setForeground(new Color(31, 36, 33));
         Dimension helloSize = hello.getPreferredSize();
         hello.setBounds(10, 10, helloSize.width, helloSize.height);
@@ -92,7 +90,7 @@ public class UserHomePage {
 
         // add upcoming appts title
         upcoming = new JLabel("Upcoming Appointments");
-        upcoming.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        upcoming.setFont(new Font("Sarif", Font.PLAIN, 15));
         upcoming.setForeground(new Color(33, 104, 105));
         Dimension upSize = upcoming.getPreferredSize();
         upcoming.setBounds(10, 50, upSize.width, upSize.height);
@@ -102,7 +100,7 @@ public class UserHomePage {
         int ret = populateUpcoming();
         if(ret == -1){
             noappts = new JLabel("No Upcoming Appointments");
-            noappts.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 10));
+            noappts.setFont(new Font("Sarif", Font.PLAIN, 10));
             Dimension noSize = noappts.getPreferredSize();
             noappts.setBounds(20, 80, noSize.width, noSize.height);
             p.add(noappts);

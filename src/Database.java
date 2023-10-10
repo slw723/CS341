@@ -2,7 +2,6 @@
 
 import java.sql.*;
 
-import javax.swing.JPopupMenu.Separator;
 
 public class Database {
 
@@ -226,22 +225,35 @@ public class Database {
 
     /*The below methods are for the purpose of log in validation. DEMO #1 asks for just names, not emails, keep the column name the same or
      * change to username for now?*/
-    public ResultSet findUser(String username, byte[] password) throws SQLException {
-        String query = "SELECT * FROM User WHERE Email = ? and Password = ?";
+    public ResultSet findUser(String username, byte[] password) {
+        String query = "SELECT * FROM User WHERE Email = ?";
+        try{
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setString(1, username);
-        stmt.setBytes(2, password);
-        ResultSet results = stmt.executeQuery();
-        return results;
+        // stmt.setBytes(2, password);
+        return stmt.executeQuery();
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public ResultSet findServiceProvider(String username, byte[] password) throws SQLException {
-        String query = "SELECT * FROM ServiceProvider WHERE Email = ? and Password = ?";
-        PreparedStatement stmt = connection.prepareStatement(query);
-        stmt.setString(1, username);
-        stmt.setBytes(2, password);
-        ResultSet results = stmt.executeQuery();
-        return results;
+    public ResultSet findServiceProvider(String username, byte[] password) {
+        String query = "SELECT * FROM serviceprovider WHERE Email = ?";
+System.out.println(username);
+        try{
+            PreparedStatement stmt = connection.prepareStatement(query);
+            stmt.setString(1, username);
+            stmt.setBytes(2, password);
+            if(stmt.execute()){
+                return stmt.executeQuery();
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     // public ResultSet findAdmin(String userID, byte[] password) throws SQLException {

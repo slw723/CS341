@@ -34,8 +34,6 @@ public class UserBookPage implements ActionListener {
     public UserBookPage(Database db, UserHomePage hp){
         this.hp = hp;
         this.db = db;
-        // default font
-        Font defaultFont = UIManager.getFont("Sarif");
 
         /* Make frame */
         f = new JFrame("Appointment Booker for User");
@@ -47,16 +45,16 @@ public class UserBookPage implements ActionListener {
 
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
-        menu.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        menu.setFont(new Font("Sarif", Font.PLAIN, 15));
         menu.setForeground(new Color(31, 36, 33));
 
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
         
         home = new JMenuItem("Home");
-        home.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        home.setFont(new Font("Sarif", Font.PLAIN, 15));
         history = new JMenuItem("History");
-        history.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        history.setFont(new Font("Sarif", Font.PLAIN, 15));
 
         menu.add(home);
         menu.add(history);
@@ -70,7 +68,7 @@ public class UserBookPage implements ActionListener {
         bookPanel = new JPanel();
         f.getContentPane();
         title = new JLabel("Make Appointment");
-        title.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 25));
+        title.setFont(new Font("Sarif", Font.PLAIN, 25));
         title.setForeground(new Color(31, 36, 33));
         Dimension titleSize = title.getPreferredSize();
         title.setBounds(10, 0, titleSize.width, titleSize.height);
@@ -78,7 +76,7 @@ public class UserBookPage implements ActionListener {
 
          // add type of appointment text
         type = new JLabel("Type of Appointment: ");
-        type.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        type.setFont(new Font("Sarif", Font.PLAIN, 15));
         type.setForeground(new Color(31, 36, 33));
         Dimension typeSize = type.getPreferredSize();
         type.setBounds(10, 50, typeSize.width, typeSize.height);
@@ -106,7 +104,7 @@ public class UserBookPage implements ActionListener {
 
         // add text for picking appointment timeframe
         apptAvailable = new JLabel("Available appointments: ");
-        apptAvailable.setFont(new Font(defaultFont.getFontName(), Font.PLAIN, 15));
+        apptAvailable.setFont(new Font("Sarif", Font.PLAIN, 15));
         apptAvailable.setForeground(new Color(33, 104, 105));
         Dimension availSize = apptAvailable.getPreferredSize();
         apptAvailable.setBounds(10, 125, availSize.width, availSize.height);
