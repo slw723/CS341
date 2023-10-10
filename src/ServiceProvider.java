@@ -26,6 +26,11 @@ public class ServiceProvider {
 
     }
 
+    public ServiceProvider(String emailAddress, byte[] pw){
+        email = emailAddress;
+        password = pw;
+    }
+
     public String getFirstName() {
         return firstName;
     }

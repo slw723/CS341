@@ -36,7 +36,7 @@ public class SPBookPage implements ActionListener {
         this.hp = hp;
         this.db = db;
         // default font
-        Font defaultFont = UIManager.getFont("Label.font");
+        Font defaultFont = UIManager.getFont("Sarif");
 
         /* Make frame */
         f = new JFrame("Appointment Booker");
@@ -147,6 +147,7 @@ public class SPBookPage implements ActionListener {
         go = new JButton("Submit");
         Dimension goSize = go.getPreferredSize();
         go.setBounds(10, 200, goSize.width, goSize.height);
+        go.setBackground(new Color(156, 197, 161));
         go.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
                 submitActionPerformed(evt);

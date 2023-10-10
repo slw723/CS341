@@ -26,6 +26,7 @@ public class UserHomePage {
         JLabel hello, upcoming, noappts;
         DefaultTableModel model;
         JTable appointments;
+        JScrollPane scroll;
         User user;
         static Database db = new Database();
 
@@ -33,7 +34,7 @@ public class UserHomePage {
         this.db = db;
         this.user = user;
         // default font
-        Font defaultFont = UIManager.getFont("Label.font");
+        Font defaultFont = UIManager.getFont("Sarif");
 
         /* Make frame */
         f = new JFrame("Appointment Booker for User");
@@ -98,7 +99,6 @@ public class UserHomePage {
         p.add(upcoming);
 
         // show the upcoming appointments if they exists
-        
         int ret = populateUpcoming();
         if(ret == -1){
             noappts = new JLabel("No Upcoming Appointments");
@@ -106,6 +106,9 @@ public class UserHomePage {
             Dimension noSize = noappts.getPreferredSize();
             noappts.setBounds(20, 80, noSize.width, noSize.height);
             p.add(noappts);
+        }
+        else{
+            f.add(scroll);
         }
 
         //panel sepecifications
@@ -121,6 +124,8 @@ public class UserHomePage {
         f.setVisible(true);
     }
 
+    /* HELPERS */
+
     public void setHomeVisible(){
         f.setVisible(true);
     }
@@ -128,6 +133,23 @@ public class UserHomePage {
     public User getUser(){
         return user;
     }
+
+    private String getSPName(String email){
+        try{
+            String sql = "Select FirstName, LastName FROM ServiceProvider WHERE Email = \"" + email + "\"";
+            ResultSet rs = db.executeSQL(sql);
+            if(rs.next()){
+                return rs.getString("FirstName") + " " + rs.getString("Lastname");
+            }
+        }
+        catch(SQLException e){
+            System.out.println(e.getMessage());
+
+        }
+        return null;
+    }
+
+    /* ACTION PERFORMED */
 
      public void goHomeActionPerformed(ActionEvent e){
       
@@ -155,7 +177,7 @@ public class UserHomePage {
             //model = new DefaultTableModel(new String[]{"Description","Date","Time","Type","Service Provider Email"}, 0);
             appointments = new JTable(model);
 
-            String [] apptHeaders = {"Date", "Time", "Description","Service Provider", "Qualification"};
+            String [] apptHeaders = {"Date", "Time", "Description","Service Provider"};
             appointments.setModel(new DefaultTableModel(apptHeaders, 0));
 
             DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
@@ -170,10 +192,10 @@ public class UserHomePage {
                 String descr = rs.getString("Description");
                 String date = String.valueOf(rs.getDate("Date"));
                 String time = String.valueOf(rs.getTime("Time"));
-                String type = String.valueOf(rs.getInt("Type"));
                 String spEmail = rs.getString("SPEmail");
+                String spName = getSPName(spEmail);
 
-                String tbData[] = {descr, date, time, type, spEmail};
+                Object tbData[] = {date, time, descr, spName};
 
                 //addstring array into jtable
                 tblModel.addRow(tbData);
@@ -182,14 +204,12 @@ public class UserHomePage {
         catch(Exception e){
             System.out.println(e.getMessage());
         }
-        JScrollPane scroll = new JScrollPane(appointments);
+        scroll = new JScrollPane(appointments);
         // set sizes
         scroll.setBounds(10, 150, 950, 350);
         appointments.getColumnModel().getColumn(0).setMaxWidth(100);
         appointments.getColumnModel().getColumn(1).setMaxWidth(100);
         appointments.getColumnModel().getColumn(2).setMaxWidth(200);
-        f.add(scroll);
-
         return 0;
     }   
 }

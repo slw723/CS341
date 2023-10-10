@@ -19,6 +19,11 @@ public class User extends Appointment {
         
     }
 
+    public User(String emailAdress, byte[] pw){
+        email = emailAdress;
+        password = pw;
+    }
+
     public String getFirstName() {
         return firstName;
     }

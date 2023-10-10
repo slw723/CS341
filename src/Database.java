@@ -7,7 +7,7 @@ import javax.swing.JPopupMenu.Separator;
 public class Database {
 
     private Connection connection;
-    private String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=3871";
+    private String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=5628";
 
 
     public void connect() throws SQLException {
@@ -226,32 +226,32 @@ public class Database {
 
     /*The below methods are for the purpose of log in validation. DEMO #1 asks for just names, not emails, keep the column name the same or
      * change to username for now?*/
-    public ResultSet findUser(String username, String password) throws SQLException {
-        String query = "SELECT * FROM User WHERE Email=? and Password=?";
+    public ResultSet findUser(String username, byte[] password) throws SQLException {
+        String query = "SELECT * FROM User WHERE Email = ? and Password = ?";
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setString(1, username);
-        stmt.setString(2, password);
+        stmt.setBytes(2, password);
         ResultSet results = stmt.executeQuery();
         return results;
     }
 
-    public ResultSet findServiceProvider(String username, String password) throws SQLException {
-        String query = "SELECT * FROM ServiceProvider WHERE Email=? and Password=?";
+    public ResultSet findServiceProvider(String username, byte[] password) throws SQLException {
+        String query = "SELECT * FROM ServiceProvider WHERE Email = ? and Password = ?";
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setString(1, username);
-        stmt.setString(2, password);
+        stmt.setBytes(2, password);
         ResultSet results = stmt.executeQuery();
         return results;
     }
 
-    public ResultSet findAdmin(String userID, String password) throws SQLException {
-        String query = "SELECT * FROM ServiceProvider WHERE UserId=? and Password=?";
-        PreparedStatement stmt = connection.prepareStatement(query);
-        stmt.setString(1, userID);
-        stmt.setString(2, password);
-        ResultSet results = stmt.executeQuery();
-        return results;
-    }
+    // public ResultSet findAdmin(String userID, byte[] password) throws SQLException {
+    //     String query = "SELECT * FROM ServiceProvider WHERE UserId=? and Password=?";
+    //     PreparedStatement stmt = connection.prepareStatement(query);
+    //     stmt.setString(1, userID);
+    //     stmt.setBytes(2, password);
+    //     ResultSet results = stmt.executeQuery();
+    //     return results;
+    // }
 
 
 }

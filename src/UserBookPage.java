@@ -35,7 +35,7 @@ public class UserBookPage implements ActionListener {
         this.hp = hp;
         this.db = db;
         // default font
-        Font defaultFont = UIManager.getFont("Label.font");
+        Font defaultFont = UIManager.getFont("Sarif");
 
         /* Make frame */
         f = new JFrame("Appointment Booker for User");
@@ -95,6 +95,7 @@ public class UserBookPage implements ActionListener {
         go = new JButton("Go");
         Dimension goSize = go.getPreferredSize();
         go.setBounds(110, 75, goSize.width, goSize.height);
+        go.setBackground(new Color(156, 197, 161));
         go.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
                 goActionPerformed(evt);
@@ -144,19 +145,19 @@ public class UserBookPage implements ActionListener {
     }
 
     private String getSPName(String email){
-            try{
-                String sql = "Select FirstName, LastName FROM ServiceProvider WHERE Email = \"" + email + "\"";
-                ResultSet rs = db.executeSQL(sql);
-                if(rs.next()){
-                    return rs.getString("FirstName") + " " + rs.getString("Lastname");
-                }
+        try{
+            String sql = "Select FirstName, LastName FROM ServiceProvider WHERE Email = \"" + email + "\"";
+            ResultSet rs = db.executeSQL(sql);
+            if(rs.next()){
+                return rs.getString("FirstName") + " " + rs.getString("Lastname");
             }
-            catch(SQLException e){
-                System.out.println(e.getMessage());
-
-            }
-            return null;
         }
+        catch(SQLException e){
+            System.out.println(e.getMessage());
+
+        }
+        return null;
+    }
 
     private String getSPQualif(String email){
         try{
@@ -216,7 +217,7 @@ public class UserBookPage implements ActionListener {
     public void goActionPerformed(ActionEvent evt){
         apptSelected = typesCB.getSelectedItem().toString();
         appointments = new JTable();
-        String [] apptHeaders = {"", "Date", "Time", "Description","Service Provider", "Qualification"};
+        String [] apptHeaders = {"Date", "Time", "Description","Service Provider", "Qualification"};
         appointments.setModel(new DefaultTableModel(apptHeaders, 0));
         try{
             // Show the available time slots 

@@ -27,7 +27,7 @@ public class SPHomePage {
         this.db = db;
         this.sp = sp;
         // default font
-        Font defaultFont = UIManager.getFont("Label.font");
+        Font defaultFont = UIManager.getFont("Sarif");
 
         /* Make frame */
         f = new JFrame("Appointment Booker for Service Provider");
