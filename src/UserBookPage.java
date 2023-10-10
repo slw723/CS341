@@ -1,3 +1,4 @@
+package src;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -37,7 +38,7 @@ public class UserBookPage implements ActionListener {
         Font defaultFont = UIManager.getFont("Label.font");
 
         /* Make frame */
-        f = new JFrame("Appointment Booker");
+        f = new JFrame("Appointment Booker for User");
         f.setBackground(new Color(220, 225, 222));
 
         /* Set up the menu bar */

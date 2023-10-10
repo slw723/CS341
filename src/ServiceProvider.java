@@ -1,3 +1,4 @@
+package src;
 
 public class ServiceProvider {
     
@@ -21,8 +22,8 @@ public class ServiceProvider {
         this.type = type;
     }
 
-    public ServiceProvider(){
-        
+    public ServiceProvider() {
+
     }
 
     public String getFirstName() {

@@ -1,8 +1,11 @@
+package src;
+
 import java.sql.SQLException;
 
 
 public class LogInPage {
     private static User user;
+    private static ServiceProvider sp;
     private static ServiceProvider sp;
     private static Database db;
 
@@ -20,8 +23,8 @@ public class LogInPage {
         try{
             db.connect();
             System.out.println("Successful connection!");
-            // UserHomePage home = new UserHomePage(db, user);
-            SPHomePage home = new SPHomePage(db, sp);
+            //UserHomePage home = new UserHomePage(db, user);
+            ServiceProviderHomePage spHome = new ServiceProviderHomePage(db, sp);
         }
         catch(SQLException e){
             System.out.println("Something went wrong.");
