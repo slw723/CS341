@@ -105,9 +105,6 @@ public class UserHomePage {
             noappts.setBounds(20, 80, noSize.width+20, noSize.height+80);
             p.add(noappts);
         }
-        else{
-            f.add(scroll);
-        }
 
         //panel sepecifications
         p.setLayout(null);
@@ -167,24 +164,21 @@ public class UserHomePage {
 
     /* Populate full table view -> good for admin view*/
     private int populateUpcoming() {
+        appointments = new JTable();
         try{
             String sql = "SELECT * FROM Appointment WHERE UserEmail = \"" + user.getEmail() + 
-                        "\" AND Date >= date(NOW()) AND Time = time(NOW());";
+                        "\" AND Date >= date(NOW()) AND Time = time(NOW()) AND Booked = '1';";
             ResultSet rs = db.executeSQL(sql);
     
-            //model = new DefaultTableModel(new String[]{"Description","Date","Time","Type","Service Provider Email"}, 0);
-            appointments = new JTable(model);
-
             String [] apptHeaders = {"Date", "Time", "Description","Service Provider"};
             appointments.setModel(new DefaultTableModel(apptHeaders, 0));
-
+            appointments.getTableHeader().setBackground(new Color(33, 104, 105));
+            appointments.getTableHeader().setForeground(Color.WHITE);
             DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
-            tblModel.setRowCount(0);
 
             if(rs.next() == false){
                 return -1;
             }
-
             while(rs.next()){
                 //data will be added until finished
                 String descr = rs.getString("Description");
@@ -208,6 +202,8 @@ public class UserHomePage {
         appointments.getColumnModel().getColumn(0).setMaxWidth(100);
         appointments.getColumnModel().getColumn(1).setMaxWidth(100);
         appointments.getColumnModel().getColumn(2).setMaxWidth(200);
+        f.add(scroll);
+        f.validate();
         return 0;
     }   
 }

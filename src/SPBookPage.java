@@ -82,13 +82,13 @@ public class SPBookPage implements ActionListener {
         descr.setFont(new Font("Sarif", Font.PLAIN, 15));
         descr.setForeground(new Color(33, 104, 105));
         Dimension descrSize = descr.getPreferredSize();
-        descr.setBounds(10, 50, descrSize.width+10, descrSize.height+50);
+        descr.setBounds(10, 50, descrSize.width+10, descrSize.height);
         bookPanel.add(descr);
 
         described = new JTextField();
         described.setFont(new Font("Sarif", Font.PLAIN, 15));
         described.setSize(300, 20);
-        described.setLocation(descrSize.width + 10, 55);
+        described.setLocation(descrSize.width + 20, 55);
         bookPanel.add(described);
 
         // add text field for date
@@ -96,7 +96,7 @@ public class SPBookPage implements ActionListener {
         date.setFont(new Font("Sarif", Font.PLAIN, 15));
         date.setForeground(new Color(33, 104, 105));
         Dimension dateSize = date.getPreferredSize();
-        date.setBounds(10, 90, dateSize.width+10, dateSize.height+90);
+        date.setBounds(10, 90, dateSize.width+10, dateSize.height);
         bookPanel.add(date);
 
         dated = new JTextField();

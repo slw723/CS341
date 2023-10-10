@@ -63,6 +63,20 @@ public class Database {
         }
     }
 
+    public ResultSet getUserName(String email){
+        String sql = "SELECT FirstName, LastName FROM User WHERE Email = ?";
+        try{
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, email);
+
+            return stmt.executeQuery();
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void insertSP(ServiceProvider sp){
         String sql = "INSERT INTO ServiceProvider(FirstName, LastName, Email, Password, PhoneNum, Qualification, YearGraduated, Type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try{

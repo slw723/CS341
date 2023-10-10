@@ -19,6 +19,7 @@ public class SPHomePage {
     JPanel p;
     JLabel hello, upcoming, noappts;
     DefaultTableModel model;
+    JScrollPane scroll;
     JTable appointments;
     ServiceProvider sp;
     static Database db = new Database();
@@ -78,7 +79,7 @@ public class SPHomePage {
         hello.setFont(new Font("Sarif", Font.PLAIN, 15));
         hello.setForeground(new Color(31, 36, 33));
         Dimension helloSize = hello.getPreferredSize();
-        hello.setBounds(10, 10, helloSize.width+10, helloSize.height+10);
+        hello.setBounds(10, 10, helloSize.width+10, helloSize.height);
         p.add(hello);
 
         // add upcoming appts title
@@ -86,7 +87,7 @@ public class SPHomePage {
         upcoming.setFont(new Font("Sarif", Font.PLAIN, 15));
         upcoming.setForeground(new Color(33, 104, 105));
         Dimension upSize = upcoming.getPreferredSize();
-        upcoming.setBounds(10, 50, upSize.width+10, upSize.height+50);
+        upcoming.setBounds(10, 50, upSize.width+10, upSize.height);
         p.add(upcoming);
 
         // show the upcoming appointments if they exists
@@ -96,7 +97,7 @@ public class SPHomePage {
             noappts = new JLabel("No Upcoming Appointments");
             noappts.setFont(new Font("Sarif", Font.PLAIN, 10));
             Dimension noSize = noappts.getPreferredSize();
-            noappts.setBounds(20, 80, noSize.width+20, noSize.height+80);
+            noappts.setBounds(20, 80, noSize.width+20, noSize.height);
             p.add(noappts);
         }
 
@@ -139,30 +140,33 @@ public class SPHomePage {
 
     /* Populate full table view -> good for admin view*/
     private int populateUpcoming() {
+        appointments = new JTable();
+        String [] apptHeaders = {"Date", "Time", "Description", "Booked By"};
+        appointments.setModel(new DefaultTableModel(apptHeaders, 0));
+        appointments.getTableHeader().setBackground(new Color(33, 104, 105));
+        appointments.getTableHeader().setForeground(Color.WHITE);
         try{
             String sql = "SELECT * FROM Appointment WHERE SPEmail = \"" + sp.getEmail() +
-                    "\" AND Date >= date(NOW()) AND Time = time(NOW());";
+                    "\" AND Date >= date(NOW()) AND Time = time(NOW()) AND Booked = '1';";
             ResultSet rs = db.executeSQL(sql);
-
+        
             if(!rs.next()){
                 return -1;
             }
-
-            appointments = new JTable(model);
-
-            String [] apptHeaders = {"Date", "Time", "Description", "Booked"};
-            appointments.setModel(new DefaultTableModel(apptHeaders, 0));
-
+            
             DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
-            tblModel.setRowCount(0);
             while(rs.next()){
                 //data will be added until finished
                 String descr = rs.getString("Description");
                 String date = String.valueOf(rs.getDate("Date"));
                 String time = String.valueOf(rs.getTime("Time"));
+                String user = rs.getString("UserEmail");
                 //String book = String.valueOf(rs.getInt("Booked")); //maybe have a booked column with yes or no
 
-                String tbData[] = {date, time, descr};
+                ResultSet r = db.getUserName(user);
+                String userName = r.getString("FirstName") + " " + r.getString("LastName");
+
+                String tbData[] = {date, time, descr, userName};
 
                 //addstring array into jtable
                 tblModel.addRow(tbData);
@@ -171,6 +175,13 @@ public class SPHomePage {
         catch(Exception e){
             System.out.println(e.getMessage());
         }
+        scroll = new JScrollPane(appointments);
+        scroll.setBounds(10, 150, 950, 350);
+        appointments.getColumnModel().getColumn(0).setMaxWidth(400);
+        appointments.getColumnModel().getColumn(1).setMaxWidth(100);
+        appointments.getColumnModel().getColumn(2).setMaxWidth(100);
+        f.add(scroll);
+        f.validate();
         return 0;
     }
 }

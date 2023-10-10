@@ -79,7 +79,7 @@ public class UserBookPage implements ActionListener {
         type.setFont(new Font("Sarif", Font.PLAIN, 15));
         type.setForeground(new Color(31, 36, 33));
         Dimension typeSize = type.getPreferredSize();
-        type.setBounds(10, 50, typeSize.width+10, typeSize.height+50);
+        type.setBounds(10, 50, typeSize.width+10, typeSize.height);
         bookPanel.add(type);
 
         // add dropdown for type of appointment
@@ -92,7 +92,7 @@ public class UserBookPage implements ActionListener {
         // add go button
         go = new JButton("Go");
         Dimension goSize = go.getPreferredSize();
-        go.setBounds(110, 75, goSize.width+110, goSize.height+75);
+        go.setBounds(110, 75, goSize.width+110, goSize.height);
         go.setBackground(new Color(156, 197, 161));
         go.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
@@ -107,7 +107,7 @@ public class UserBookPage implements ActionListener {
         apptAvailable.setFont(new Font("Sarif", Font.PLAIN, 15));
         apptAvailable.setForeground(new Color(33, 104, 105));
         Dimension availSize = apptAvailable.getPreferredSize();
-        apptAvailable.setBounds(10, 125, availSize.width+10, availSize.height+125);
+        apptAvailable.setBounds(10, 125, availSize.width+10, availSize.height);
         bookPanel.add(apptAvailable);
 
         // bookPanel specifications
@@ -132,7 +132,7 @@ public class UserBookPage implements ActionListener {
     private void makeBookButton(){
         bookButton = new JButton("Book Selection Now");
         Dimension startBSize = bookButton.getPreferredSize();
-        bookButton.setBounds(10, 520, startBSize.width, startBSize.height);
+        bookButton.setBounds(10, 520, startBSize.width+10, startBSize.height);
         bookButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
                 bookActionPerformed(evt);
@@ -217,6 +217,8 @@ public class UserBookPage implements ActionListener {
         appointments = new JTable();
         String [] apptHeaders = {"Date", "Time", "Description","Service Provider", "Qualification"};
         appointments.setModel(new DefaultTableModel(apptHeaders, 0));
+        appointments.getTableHeader().setBackground(new Color(33, 104, 105));
+        appointments.getTableHeader().setForeground(Color.WHITE);
         try{
             // Show the available time slots 
             ResultSet rs = db.getApptType(apptSelected);

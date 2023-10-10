@@ -217,7 +217,7 @@ public class LogInPage extends JFrame  {
         regPanel = new JPanel();
         regPanel.setBackground(new Color(33, 104, 105)); //dark teal
         regPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-        regPanel.setBounds(200, 140, 305, 275);
+        regPanel.setBounds(200, 140, 295, 300);
 
         hideOtherReg();
 
