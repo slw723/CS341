@@ -219,7 +219,7 @@ public class UserBookPage implements ActionListener {
     public void goActionPerformed(ActionEvent evt){
         apptSelected = typesCB.getSelectedItem().toString();
         appointments = new JTable();
-        String [] apptHeaders = {"", "Date", "Time", "Description","Service Provider", "Qualification"};
+        String [] apptHeaders = {"Date", "Time", "Description","Service Provider", "Qualification"};
         appointments.setModel(new DefaultTableModel(apptHeaders, 0));
         appointments.getTableHeader().setBackground(new Color(33, 104, 105));
         appointments.getTableHeader().setForeground(Color.WHITE);
@@ -255,14 +255,14 @@ public class UserBookPage implements ActionListener {
 
         makeBookButton();
 
-        f.validate(); //This validate is causing the problem
+        // f.validate(); //This validate is causing the problem
     }
 
     private void bookActionPerformed(ActionEvent evt){
         int rowIndex = appointments.getSelectedRow();
         String date = String.valueOf(appointments.getValueAt(rowIndex, 0));
         String time = String.valueOf(appointments.getValueAt(rowIndex, 1));
-        String spName = (String)appointments.getValueAt(rowIndex, 3);
+        String spName = String.valueOf(appointments.getValueAt(rowIndex, 3));
 
         //get primary key of Service Provider
         String spEmail = getSPEmail(spName);
@@ -273,7 +273,9 @@ public class UserBookPage implements ActionListener {
 
         //update appointment in db
         db.bookAppt(user.getEmail(), apptId);
-        //db.bookAppt(spEmail, apptId);
+
+        //confirmation message
+
 
         //return home
         f.setVisible(false);

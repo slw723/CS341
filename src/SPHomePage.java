@@ -103,22 +103,20 @@ public class SPHomePage {
         upcoming.setFont(new Font("Sarif", Font.PLAIN, 15));
         upcoming.setForeground(new Color(33, 104, 105));
         Dimension upSize = upcoming.getPreferredSize();
-        upcoming.setBounds(10, 50, upSize.width+10, upSize.height);
+        upcoming.setBounds(10, 40, upSize.width+10, upSize.height);
         p.add(upcoming);
 
         // show the upcoming appointments if they exists
 
-        int ret = populateUpcoming();
-        if(ret == -1){
-            noappts = new JLabel("No Upcoming Appointments");
-            noappts.setFont(new Font("Sarif", Font.PLAIN, 10));
-            Dimension noSize = noappts.getPreferredSize();
-            noappts.setBounds(20, 80, noSize.width+20, noSize.height);
-            p.add(noappts);
-        }
-        else{
-            displayUpcoming();
-        }
+        // int ret = 
+        appointments = new JTable();
+        populateUpcoming();
+        // if(ret == -1){
+            
+        // }
+        // else{
+        //     displayUpcoming();
+        // }
 
         //panel specifications
         p.setLayout(null);
@@ -135,12 +133,7 @@ public class SPHomePage {
 
     public void setHomeVisible(){
         f.setVisible(true);
-        for(Component c : f.getComponents()){
-            if(c == noappts){
-                f.remove(noappts);
-            }
-        }
-        populateUpcoming();
+        updateUpcoming();
     }
 
     public ServiceProvider getSP(){
@@ -148,7 +141,7 @@ public class SPHomePage {
     }
 
     public void goHomeActionPerformed(ActionEvent e){
-
+        
     }
 
     public void makeApptActionPerformed(ActionEvent e){
@@ -169,8 +162,8 @@ public class SPHomePage {
     }
 
     /* Populate full table view -> good for admin view*/
-    private int populateUpcoming() {
-        appointments = new JTable();
+    private void populateUpcoming() {
+        
         String [] apptHeaders = {"Date", "Time", "Description", "Booked", "Booked By"};
         appointments.setModel(new DefaultTableModel(apptHeaders, 0));
         appointments.getTableHeader().setBackground(new Color(33, 104, 105));
@@ -180,97 +173,117 @@ public class SPHomePage {
                     "\" AND Date >= date(NOW());";
             ResultSet rs = db.executeSQL(sql);
         
+            // no appts to be shown
             if(!rs.next()){
-                return -1;
+                noappts = new JLabel("No Upcoming Appointments");
+                noappts.setFont(new Font("Sarif", Font.PLAIN, 10));
+                Dimension noSize = noappts.getPreferredSize();
+                noappts.setBounds(20, 80, noSize.width+20, noSize.height);
+                p.add(noappts);
+                p.validate();
             }
-            
-        //     DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
-        //     while(rs.next()){
-        //         //data will be added until finished
-        //         String descr = rs.getString("Description");
-        //         String date = String.valueOf(rs.getDate("Date"));
-        //         String time = String.valueOf(rs.getTime("Time"));
-        //         String user = rs.getString("UserEmail");
-        //         int book = rs.getInt("Booked");
-        //         String yesno, userName;
-        //         if(book == 1){
-        //             yesno = "Yes";
-        //         }
-        //         else{
-        //             yesno = "No";
-        //         }
-
-        //         ResultSet r = db.getUserName(user);
-        //         if(r.next()){
-        //             userName = r.getString("FirstName") + " " + r.getString("LastName");
-        //         }
-        //         else{
-        //             userName = "No Client";
-        //         }
-
-
-        //         String tbData[] = {date, time, descr, yesno, userName};
-
-        //         //addstring array into jtable
-        //         tblModel.addRow(tbData);
-        //     }
-        }
-        catch(Exception e){
-            System.out.println(e.getMessage());
-        }
-        // scroll = new JScrollPane(appointments);
-        // scroll.setBounds(10, 150, 950, 350);
-        // appointments.getColumnModel().getColumn(0).setMaxWidth(400);
-        // appointments.getColumnModel().getColumn(1).setMaxWidth(100);
-        // appointments.getColumnModel().getColumn(2).setMaxWidth(100);
-        // f.add(scroll);
-        // f.validate();
-        return 0;
-    }
-
-
-    private void displayUpcoming(){
-        JPanel p2 = new JPanel();
-        p2.setBounds(10, 80, 400, 500);
-        
-
-        try{
-            String sql = "SELECT * FROM Appointment WHERE SPEmail = \"" + sp.getEmail() +
-                    "\" AND Date >= date(Now());";
-            ResultSet rs = db.executeSQL(sql);
+            DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
             while(rs.next()){
+                //data will be added until finished
                 String descr = rs.getString("Description");
                 String date = String.valueOf(rs.getDate("Date"));
                 String time = String.valueOf(rs.getTime("Time"));
                 String user = rs.getString("UserEmail");
                 int book = rs.getInt("Booked");
+                String yesno, userName;
+                if(book == 1){
+                    yesno = "Yes";
+                }
+                else{
+                    yesno = "No";
+                }
+
                 ResultSet r = db.getUserName(user);
-                String userName, str;
                 if(r.next()){
                     userName = r.getString("FirstName") + " " + r.getString("LastName");
                 }
                 else{
                     userName = "No Client";
                 }
-                
-                
-                if(book == 1){
-                    str = descr + " on " + date + " at " + time + " booked with " + userName;
-                }
-                else{
-                    str = descr + " on " + date + " at " + time + " not booked";
-                }  
-                JLabel appt = new JLabel(str);
-                appt.setBounds(0, 0, 400, 20);
-                appt.setFont(new Font("Sarif", Font.BOLD, 12));
-                p2.add(appt);
-                p2.validate();
+                String tbData[] = {date, time, descr, yesno, userName};
+
+                //addstring array into jtable
+                tblModel.addRow(tbData);
             }
         }
-        catch(SQLException e){
-            e.printStackTrace();
+        catch(Exception e){
+            System.out.println(e.getMessage());
         }
-        f.add(p2);
+        scroll = new JScrollPane(appointments);
+        scroll.setBounds(10, 80, 940, 350);
+        scroll.validate();
+        appointments.validate();
+        appointments.getColumnModel().getColumn(0).setMaxWidth(400);
+        appointments.getColumnModel().getColumn(1).setMaxWidth(100);
+        appointments.getColumnModel().getColumn(2).setPreferredWidth(250);
+        appointments.getColumnModel().getColumn(3).setMaxWidth(100);
+        f.add(scroll);
+        f.validate();
+    }
+
+    private void updateUpcoming(){
+
+        try{
+            String sql = "SELECT * FROM Appointment WHERE SPEmail = \"" + sp.getEmail() +
+                    "\" AND Date >= date(NOW());";
+            ResultSet rs = db.executeSQL(sql);
+        
+            // no appts to be shown
+            if(!rs.next()){
+                noappts = new JLabel("No Upcoming Appointments");
+                noappts.setFont(new Font("Sarif", Font.PLAIN, 10));
+                Dimension noSize = noappts.getPreferredSize();
+                noappts.setBounds(20, 80, noSize.width+20, noSize.height);
+                p.add(noappts);
+                p.validate();
+            }
+            DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
+            int row = 0;
+            while(rs.next()){
+                //data will be added until finished
+                String descr = rs.getString("Description");
+                String date = String.valueOf(rs.getDate("Date"));
+                String time = String.valueOf(rs.getTime("Time"));
+                String user = rs.getString("UserEmail");
+                int book = rs.getInt("Booked");
+                //if model already contains the value... don't add it
+                if(tblModel.getValueAt(row, 0).equals(date) && 
+                   tblModel.getValueAt(row, 1).equals(time)){
+                    continue;
+                }
+                
+                String yesno, userName;
+                if(book == 1){
+                    yesno = "Yes";
+                }
+                else{
+                    yesno = "No";
+                }
+
+                ResultSet r = db.getUserName(user);
+                if(r.next()){
+                    userName = r.getString("FirstName") + " " + r.getString("LastName");
+                }
+                else{
+                    userName = "No Client";
+                }
+
+                String tbData[] = {date, time, descr, yesno, userName};
+
+                //add string array into jtable
+                tblModel.addRow(tbData);
+                row++;
+            }
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        scroll.validate();
         f.validate();
     }
 }

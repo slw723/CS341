@@ -150,7 +150,7 @@ public class SPBookPage implements ActionListener {
         // add go button
         go = new JButton("Submit");
         Dimension goSize = go.getPreferredSize();
-        go.setBounds(10, 200, goSize.width+10, goSize.height);
+        go.setBounds(10, 160, goSize.width+10, goSize.height);
         go.setBackground(new Color(156, 197, 161));
         go.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
@@ -287,7 +287,8 @@ public class SPBookPage implements ActionListener {
             if(db.apptConflict(sp, appt) < 0){
                 timeCB.setSelectedIndex(0);
                 dated.setText("");
-                JOptionPane.showMessageDialog(f, "You have an appointment conflict",
+                timeCB.setSelectedIndex(0);
+                JOptionPane.showMessageDialog(f, "You have an appointment conflict. Pick a different time",
                 "Appointment Conflict", JOptionPane.ERROR_MESSAGE);
             }
             else{
