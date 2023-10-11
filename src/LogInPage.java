@@ -1,7 +1,4 @@
-//package src;
-
-import src.Database;
-import src.User;
+package src;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -76,7 +73,7 @@ public class LogInPage extends JFrame  {
         Font shFont = new Font ("Sarif", Font.BOLD, 15);
 
         loginWin = new JFrame(); //creates the log in frame
-        loginWin.setSize(720, 405);
+        loginWin.setSize(1000, 1000);
         loginWin.setLayout(null);
         //loginWin.setResizable(false); //prevents frame from being resized
         loginWin.setTitle("Appointment Booker Login");
@@ -168,7 +165,7 @@ public class LogInPage extends JFrame  {
         Font shFont = new Font ("Sarif", Font.BOLD, 12);
 
         regWin = new JFrame(); //creates the log in frame
-        regWin.setSize(720, 500);
+        regWin.setSize(1000, 1000);
         regWin.setLayout(null);
         regWin.setResizable(false); //prevents frame from being resized
         regWin.setTitle("Account Registration");

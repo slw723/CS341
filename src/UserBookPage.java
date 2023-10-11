@@ -1,6 +1,13 @@
 package src;
 
-import src.Database;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.sql.*;
+import java.text.SimpleDateFormat;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -10,6 +17,7 @@ import java.text.SimpleDateFormat;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
 
 public class UserBookPage implements ActionListener {
     JFrame f;
@@ -30,9 +38,9 @@ public class UserBookPage implements ActionListener {
     Database db;
 
     public static void main(String[] args){
-        
+
     }
-    
+
     public UserBookPage(Database db, UserHomePage hp){
         this.hp = hp;
         this.db = db;
@@ -52,7 +60,7 @@ public class UserBookPage implements ActionListener {
 
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
-        
+
         home = new JMenuItem("Home");
         home.setFont(new Font("Sarif", Font.PLAIN, 15));
         history = new JMenuItem("History");
@@ -142,7 +150,7 @@ public class UserBookPage implements ActionListener {
         });
         bookPanel.add(bookButton);
         f.add(bookPanel);
-        f.validate();
+        f.validate(); //didn't have
     }
 
     private String getSPName(String email){
@@ -214,16 +222,16 @@ public class UserBookPage implements ActionListener {
     /*
      * ACTION LISTENERS
      */
- 
+
     public void goActionPerformed(ActionEvent evt){
         apptSelected = typesCB.getSelectedItem().toString();
         appointments = new JTable();
-        String [] apptHeaders = {"Date", "Time", "Description","Service Provider", "Qualification"};
+        String [] apptHeaders = {"", "Date", "Time", "Description","Service Provider", "Qualification"};
         appointments.setModel(new DefaultTableModel(apptHeaders, 0));
         appointments.getTableHeader().setBackground(new Color(33, 104, 105));
         appointments.getTableHeader().setForeground(Color.WHITE);
         try{
-            // Show the available time slots 
+            // Show the available time slots
             ResultSet rs = db.getApptType(apptSelected);
             DefaultTableModel tblmodel = (DefaultTableModel)appointments.getModel();
             while(rs.next()){
@@ -251,8 +259,10 @@ public class UserBookPage implements ActionListener {
         appointments.getColumnModel().getColumn(1).setMaxWidth(100);
         appointments.getColumnModel().getColumn(2).setMaxWidth(200);
         f.add(scroll);
-        f.validate();
+
         makeBookButton();
+
+        f.validate(); //This validate is causing the problem
     }
 
     private void bookActionPerformed(ActionEvent evt){
@@ -270,6 +280,7 @@ public class UserBookPage implements ActionListener {
 
         //update appointment in db
         db.bookAppt(user.getEmail(), apptId);
+        //db.bookAppt(spEmail, apptId);
 
         //return home
         f.setVisible(false);
@@ -282,10 +293,11 @@ public class UserBookPage implements ActionListener {
             hp.setHomeVisible();
         }
         else if(e.getSource() == makeAppt){
-           
+
         }
         else if (e.getSource() == history) {
 
         }
     }
 }
+
