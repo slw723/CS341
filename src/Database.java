@@ -1,4 +1,4 @@
-// package src;
+package src;
 
 import java.sql.*;
 
@@ -6,7 +6,7 @@ import java.sql.*;
 public class Database {
 
     private Connection connection;
-    private String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=5628";
+    private String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=3871";
 
 
     public void connect() throws SQLException {
@@ -63,6 +63,16 @@ public class Database {
         }
     }
 
+    public void deleteuser (String email) {
+        String sql = "DELETE FROM User WHERE Email = \"" + email + "\"";
+        try {
+            dbExecuteUpdate(sql);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public ResultSet getUserName(String email){
         String sql = "SELECT FirstName, LastName FROM User WHERE Email = ?";
         try{
@@ -105,6 +115,16 @@ public class Database {
             dbExecuteUpdate(sql);
         }
         catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteServiceProvider(String email) {
+        String sql = "DELETE FROM ServiceProvider WHERE Email = \"" + email + "\"";
+        try {
+            dbExecuteUpdate(sql);
+        }
+        catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -183,6 +203,16 @@ public class Database {
             dbExecuteUpdate(sql);
         }
         catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteAppointment (int apptId) {
+        String sql = "DELETE FROM Appointment WHERE ApptId = \"" + apptId + "\"";
+        try {
+            dbExecuteUpdate(sql);
+        }
+        catch (SQLException e) {
             e.printStackTrace();
         }
     }

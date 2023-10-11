@@ -1,4 +1,8 @@
-// package src;
+//package src;
+
+import src.Database;
+import src.SPBookPage;
+import src.ServiceProvider;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +20,7 @@ public class SPHomePage {
     JFrame f, f2;
     JMenuBar mb;
     JMenuItem menu, home, makeAppt, history;
+    JButton logout;
     JPanel p;
     JLabel hello, upcoming, noappts;
     DefaultTableModel model;
@@ -38,8 +43,12 @@ public class SPHomePage {
         menu.setFont(new Font("Sarif", Font.PLAIN, 15));
         menu.setForeground(new Color(31, 36, 33));
 
+        logout = new JButton("Log Out");
+
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
+        mb.add(Box.createHorizontalGlue());
+        mb.add(logout);
 
         home = new JMenuItem("Home");
         home.setFont(new Font("Sarif", Font.PLAIN, 15));
@@ -66,6 +75,12 @@ public class SPHomePage {
         history.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
                 historyActionPerformed(evt);
+            }
+        });
+
+        logout.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                logoutActionPerformed(evt);
             }
         });
 
@@ -142,6 +157,11 @@ public class SPHomePage {
 
         f.setVisible(false);
 
+    }
+
+    public void logoutActionPerformed(ActionEvent e) {
+        f.setVisible(false);
+        LogInPage lp = new LogInPage(db);
     }
 
     /* Populate full table view -> good for admin view*/

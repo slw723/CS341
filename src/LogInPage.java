@@ -1,9 +1,7 @@
+//package src;
 
-// import src.Appointment;
-// import src.Database;
-// import src.ServiceProvider;
-// import src.User;
-
+import src.Database;
+import src.User;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -80,7 +78,7 @@ public class LogInPage extends JFrame  {
         loginWin = new JFrame(); //creates the log in frame
         loginWin.setSize(720, 405);
         loginWin.setLayout(null);
-        loginWin.setResizable(false); //prevents frame from being resized
+        //loginWin.setResizable(false); //prevents frame from being resized
         loginWin.setTitle("Appointment Booker Login");
         loginWin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //ends program when loginWin is closed
         loginWin.setBackground(new Color(220, 225, 222));
@@ -217,7 +215,7 @@ public class LogInPage extends JFrame  {
         regPanel = new JPanel();
         regPanel.setBackground(new Color(33, 104, 105)); //dark teal
         regPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-        regPanel.setBounds(200, 140, 295, 300);
+        regPanel.setBounds(200, 140, 275, 300);
 
         hideOtherReg();
 
@@ -280,7 +278,7 @@ public class LogInPage extends JFrame  {
         regPanel = new JPanel();
         regPanel.setBackground(new Color(33, 104, 105)); //dark teal
         regPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-        regPanel.setBounds(200, 140, 295, 300);
+        regPanel.setBounds(200, 140, 275, 300);
 
         hideOtherReg();
 
@@ -436,7 +434,7 @@ public class LogInPage extends JFrame  {
                     user.setFirstName(results.getString("FirstName"));
                     user.setLastName(results.getString("LastName"));
                     user.setPhoneNumber(results.getLong("PhoneNum"));
-                    JOptionPane.showMessageDialog(null, "User Login Successful.");
+                    //JOptionPane.showMessageDialog(null, "User Login Successful.");
                     UserHomePage userHP = new UserHomePage(db, user);
                     loginWin.dispose();
                 }
@@ -450,7 +448,7 @@ public class LogInPage extends JFrame  {
                         sp.setPhoneNumber(results2.getLong("PhoneNum"));
                         sp.setQualification(results2.getString("Qualification"));
                         sp.setYearGraduated(results2.getInt("YearGraduated"));
-                        JOptionPane.showMessageDialog(null, "Service Provider Login Successful.");
+                        //JOptionPane.showMessageDialog(null, "Service Provider Login Successful.");
                         SPHomePage spHP = new SPHomePage(db, sp); //Service Provider page??
                         loginWin.dispose();
                     }

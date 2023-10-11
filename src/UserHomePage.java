@@ -1,4 +1,8 @@
-// package src;
+//package src;
+
+import src.Database;
+import src.User;
+import src.UserBookPage;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,6 +26,7 @@ public class UserHomePage {
         JFrame f, f2;
         JMenuBar mb;
         JMenuItem menu, home, makeAppt, history;
+        JButton logout;
         JPanel p;
         JLabel hello, upcoming, noappts;
         DefaultTableModel model;
@@ -44,8 +49,12 @@ public class UserHomePage {
         menu.setFont(new Font("Sarif", Font.PLAIN, 15));
         menu.setForeground(new Color(31, 36, 33));
 
+        logout = new JButton("Log Out");
+
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
+        mb.add(Box.createHorizontalGlue());
+        mb.add(logout);
         
         home = new JMenuItem("Home");
         home.setFont(new Font("Sarif", Font.PLAIN, 15));
@@ -72,6 +81,12 @@ public class UserHomePage {
         history.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
                 historyActionPerformed(evt);
+            }
+        });
+
+        logout.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                logoutActionPerformed(evt);
             }
         });
 
@@ -153,7 +168,7 @@ public class UserHomePage {
     public void makeApptActionPerformed(ActionEvent e){
       
         f.setVisible(false);
-        UserBookPage bp = new UserBookPage(db, this);        
+        UserBookPage bp = new UserBookPage(db, this);
     }
 
     public void historyActionPerformed(ActionEvent e){
@@ -166,6 +181,11 @@ public class UserHomePage {
         }
         populateUpcoming();
             
+    }
+
+    public void logoutActionPerformed(ActionEvent e) {
+         f.setVisible(false);
+         LogInPage lp = new LogInPage(db);
     }
 
     /* Populate full table view -> good for admin view*/
