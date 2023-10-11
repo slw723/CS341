@@ -1,4 +1,4 @@
-// package src;
+package src;
 
 public class User extends Appointment {
     private String firstName;
