@@ -1,4 +1,7 @@
 1. data validation when registering
 2. remove the driver file as the login page is the starting page
-3. setup history
+3. set up modify and remove/cancel
 4. setup admin views and activate in the login page
+5. setup history
+6. data validation when making appointments
+7. password query at login
