@@ -85,7 +85,7 @@ public class UserHomePage {
         hello.setFont(new Font("Sarif", Font.PLAIN, 15));
         hello.setForeground(new Color(31, 36, 33));
         Dimension helloSize = hello.getPreferredSize();
-        hello.setBounds(10, 10, helloSize.width+10, helloSize.height+10);
+        hello.setBounds(10, 10, helloSize.width+10, helloSize.height);
         p.add(hello);
 
         // add upcoming appts title
@@ -93,7 +93,7 @@ public class UserHomePage {
         upcoming.setFont(new Font("Sarif", Font.PLAIN, 15));
         upcoming.setForeground(new Color(33, 104, 105));
         Dimension upSize = upcoming.getPreferredSize();
-        upcoming.setBounds(10, 50, upSize.width+10, upSize.height+50);
+        upcoming.setBounds(10, 50, upSize.width+10, upSize.height);
         p.add(upcoming);
 
         // show the upcoming appointments if they exists
@@ -102,8 +102,11 @@ public class UserHomePage {
             noappts = new JLabel("No Upcoming Appointments");
             noappts.setFont(new Font("Sarif", Font.PLAIN, 10));
             Dimension noSize = noappts.getPreferredSize();
-            noappts.setBounds(20, 80, noSize.width+20, noSize.height+80);
+            noappts.setBounds(20, 80, noSize.width+20, noSize.height);
             p.add(noappts);
+        }
+        else{
+            displayUpcoming();
         }
 
         //panel sepecifications
@@ -173,7 +176,7 @@ public class UserHomePage {
         appointments = new JTable();
         try{
             String sql = "SELECT * FROM Appointment WHERE UserEmail = \"" + user.getEmail() + 
-                        "\" AND Date >= date(NOW()) AND Time = time(NOW()) AND Booked = '1';";
+                        "\" AND Date >= date(NOW());";
             ResultSet rs = db.executeSQL(sql);
     
             String [] apptHeaders = {"Date", "Time", "Description","Service Provider"};
@@ -185,6 +188,42 @@ public class UserHomePage {
             if(rs.next() == false){
                 return -1;
             }
+            // while(rs.next()){
+            //     //data will be added until finished
+            //     String descr = rs.getString("Description");
+            //     String date = String.valueOf(rs.getDate("Date"));
+            //     String time = String.valueOf(rs.getTime("Time"));
+            //     String spEmail = rs.getString("SPEmail");
+            //     String spName = getSPName(spEmail);
+
+            //     Object tbData[] = {date, time, descr, spName};
+
+            //     //addstring array into jtable
+            //     tblModel.addRow(tbData);
+            // }
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        // scroll = new JScrollPane(appointments);
+        // // set sizes
+        // scroll.setBounds(10, 150, 950, 350);
+        // appointments.getColumnModel().getColumn(0).setMaxWidth(100);
+        // appointments.getColumnModel().getColumn(1).setMaxWidth(100);
+        // appointments.getColumnModel().getColumn(2).setMaxWidth(200);
+        // f.add(scroll);
+        // f.validate();
+        return 0;
+    }   
+
+    private void displayUpcoming(){
+        JPanel p2 = new JPanel();
+        p2.setBounds(10, 80, 400, 500);
+        try{
+            String sql = "SELECT * FROM Appointment WHERE UserEmail = \"" + user.getEmail() + 
+                        "\" AND Date >= date(NOW());";
+            ResultSet rs = db.executeSQL(sql);
+
             while(rs.next()){
                 //data will be added until finished
                 String descr = rs.getString("Description");
@@ -192,24 +231,21 @@ public class UserHomePage {
                 String time = String.valueOf(rs.getTime("Time"));
                 String spEmail = rs.getString("SPEmail");
                 String spName = getSPName(spEmail);
+                
+                String str = descr + " on " + date + " at " + time + " booked with " + spName;
 
-                Object tbData[] = {date, time, descr, spName};
 
-                //addstring array into jtable
-                tblModel.addRow(tbData);
+                JLabel appt = new JLabel(str);
+                appt.setBounds(0, 0, 300, 20);
+                appt.setFont(new Font("Sarif", Font.BOLD, 12));
+                p2.add(appt);
+                p2.validate();
             }
         }
         catch(Exception e){
             System.out.println(e.getMessage());
         }
-        scroll = new JScrollPane(appointments);
-        // set sizes
-        scroll.setBounds(10, 150, 950, 350);
-        appointments.getColumnModel().getColumn(0).setMaxWidth(100);
-        appointments.getColumnModel().getColumn(1).setMaxWidth(100);
-        appointments.getColumnModel().getColumn(2).setMaxWidth(200);
-        f.add(scroll);
+        f.add(p2);
         f.validate();
-        return 0;
-    }   
+    }
 }

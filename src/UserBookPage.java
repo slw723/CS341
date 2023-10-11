@@ -140,6 +140,7 @@ public class UserBookPage implements ActionListener {
         });
         bookPanel.add(bookButton);
         f.add(bookPanel);
+        f.validate();
     }
 
     private String getSPName(String email){
@@ -248,7 +249,7 @@ public class UserBookPage implements ActionListener {
         appointments.getColumnModel().getColumn(1).setMaxWidth(100);
         appointments.getColumnModel().getColumn(2).setMaxWidth(200);
         f.add(scroll);
-
+        f.validate();
         makeBookButton();
     }
 
@@ -263,9 +264,10 @@ public class UserBookPage implements ActionListener {
 
         //get primary key of appointment selected
         int apptId = getApptId(date, time, spEmail);
+        User user = hp.getUser();
 
         //update appointment in db
-        db.bookAppt(spEmail, apptId);
+        db.bookAppt(user.getEmail(), apptId);
 
         //return home
         f.setVisible(false);

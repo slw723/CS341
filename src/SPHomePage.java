@@ -100,6 +100,9 @@ public class SPHomePage {
             noappts.setBounds(20, 80, noSize.width+20, noSize.height);
             p.add(noappts);
         }
+        else{
+            displayUpcoming();
+        }
 
         //panel specifications
         p.setLayout(null);
@@ -153,54 +156,100 @@ public class SPHomePage {
         appointments.getTableHeader().setForeground(Color.WHITE);
         try{
             String sql = "SELECT * FROM Appointment WHERE SPEmail = \"" + sp.getEmail() +
-                    "\" AND Date >= date(NOW()) AND Time = time(NOW());";
+                    "\" AND Date >= date(NOW());";
             ResultSet rs = db.executeSQL(sql);
         
             if(!rs.next()){
                 return -1;
             }
             
-            DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
+        //     DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
+        //     while(rs.next()){
+        //         //data will be added until finished
+        //         String descr = rs.getString("Description");
+        //         String date = String.valueOf(rs.getDate("Date"));
+        //         String time = String.valueOf(rs.getTime("Time"));
+        //         String user = rs.getString("UserEmail");
+        //         int book = rs.getInt("Booked");
+        //         String yesno, userName;
+        //         if(book == 1){
+        //             yesno = "Yes";
+        //         }
+        //         else{
+        //             yesno = "No";
+        //         }
+
+        //         ResultSet r = db.getUserName(user);
+        //         if(r.next()){
+        //             userName = r.getString("FirstName") + " " + r.getString("LastName");
+        //         }
+        //         else{
+        //             userName = "No Client";
+        //         }
+
+
+        //         String tbData[] = {date, time, descr, yesno, userName};
+
+        //         //addstring array into jtable
+        //         tblModel.addRow(tbData);
+        //     }
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        // scroll = new JScrollPane(appointments);
+        // scroll.setBounds(10, 150, 950, 350);
+        // appointments.getColumnModel().getColumn(0).setMaxWidth(400);
+        // appointments.getColumnModel().getColumn(1).setMaxWidth(100);
+        // appointments.getColumnModel().getColumn(2).setMaxWidth(100);
+        // f.add(scroll);
+        // f.validate();
+        return 0;
+    }
+
+
+    private void displayUpcoming(){
+        JPanel p2 = new JPanel();
+        p2.setBounds(10, 80, 400, 500);
+        
+
+        try{
+            String sql = "SELECT * FROM Appointment WHERE SPEmail = \"" + sp.getEmail() +
+                    "\" AND Date >= date(Now());";
+            ResultSet rs = db.executeSQL(sql);
             while(rs.next()){
-                //data will be added until finished
                 String descr = rs.getString("Description");
                 String date = String.valueOf(rs.getDate("Date"));
                 String time = String.valueOf(rs.getTime("Time"));
                 String user = rs.getString("UserEmail");
                 int book = rs.getInt("Booked");
-                String yesno, userName;
-                if(book == 1){
-                    yesno = "Yes";
-                }
-                else{
-                    yesno = "No";
-                }
-
                 ResultSet r = db.getUserName(user);
+                String userName, str;
                 if(r.next()){
                     userName = r.getString("FirstName") + " " + r.getString("LastName");
                 }
                 else{
                     userName = "No Client";
                 }
-
-
-                String tbData[] = {date, time, descr, yesno, userName};
-
-                //addstring array into jtable
-                tblModel.addRow(tbData);
+                
+                
+                if(book == 1){
+                    str = descr + " on " + date + " at " + time + " booked with " + userName;
+                }
+                else{
+                    str = descr + " on " + date + " at " + time + " not booked";
+                }  
+                JLabel appt = new JLabel(str);
+                appt.setBounds(0, 0, 300, 20);
+                appt.setFont(new Font("Sarif", Font.BOLD, 12));
+                p2.add(appt);
+                p2.validate();
             }
         }
-        catch(Exception e){
-            System.out.println(e.getMessage());
+        catch(SQLException e){
+            e.printStackTrace();
         }
-        scroll = new JScrollPane(appointments);
-        scroll.setBounds(10, 150, 950, 350);
-        appointments.getColumnModel().getColumn(0).setMaxWidth(400);
-        appointments.getColumnModel().getColumn(1).setMaxWidth(100);
-        appointments.getColumnModel().getColumn(2).setMaxWidth(100);
-        f.add(scroll);
+        f.add(p2);
         f.validate();
-        return 0;
     }
 }

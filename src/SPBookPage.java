@@ -174,7 +174,6 @@ public class SPBookPage implements ActionListener {
 
         // check date is formatted correctly and valid day/months
         String[] splits = dated.getText().split("-", 3);
-        System.out.println(splits[0] + " " + splits[1] + " " + splits[2]);
         if(splits[0].length() == 4){
             if(splits[1].length() == 2){
                 int month = Integer.valueOf(splits[1]);

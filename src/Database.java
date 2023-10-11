@@ -204,15 +204,15 @@ public class Database {
     }
 
     public void bookAppt(String email, int apptId){
-        String sql = "UPDATE Appointment SET  "
-                    + "SPEmail = \"" + email + "\", "
+        String sql = "UPDATE Appointment SET "
+                    + "UserEmail = ?, "
                     + "Booked = 1 " 
-                    + "WHERE ApptId = \"" + apptId + "\";";
-
-        System.out.println(email);
-        System.out.println(apptId);
+                    + "WHERE ApptId = ?;";
         try {
-            dbExecuteUpdate(sql);
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, email);
+            stmt.setInt(2, apptId);
+            stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
