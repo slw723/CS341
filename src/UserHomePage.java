@@ -1,8 +1,4 @@
-//package src;
-
-import src.Database;
-import src.User;
-import src.UserBookPage;
+package src;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -257,7 +253,7 @@ public class UserHomePage {
 
 
                 JLabel appt = new JLabel(str);
-                appt.setBounds(0, 0, 300, 20);
+                appt.setBounds(0, 0, 400, 20);
                 appt.setFont(new Font("Sarif", Font.BOLD, 12));
                 p2.add(appt);
                 p2.validate();
