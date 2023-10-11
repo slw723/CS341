@@ -44,6 +44,7 @@ public class SPHomePage {
         menu.setForeground(new Color(31, 36, 33));
 
         logout = new JButton("Log Out");
+        logout.setBackground(new Color(73, 160, 120));
 
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
