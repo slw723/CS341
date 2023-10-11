@@ -44,6 +44,7 @@ public class SPHomePage {
         menu.setForeground(new Color(31, 36, 33));
 
         logout = new JButton("Log Out");
+        logout.setBackground(new Color(73, 160, 120));
 
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
@@ -260,7 +261,7 @@ public class SPHomePage {
                     str = descr + " on " + date + " at " + time + " not booked";
                 }  
                 JLabel appt = new JLabel(str);
-                appt.setBounds(0, 0, 300, 20);
+                appt.setBounds(0, 0, 400, 20);
                 appt.setFont(new Font("Sarif", Font.BOLD, 12));
                 p2.add(appt);
                 p2.validate();

@@ -108,7 +108,7 @@ public class SPBookPage implements ActionListener {
         dated = new JTextField();
         dated.setFont(new Font("Sarif", Font.PLAIN, 10));
         dated.setSize(100, 20);
-        dated.setLocation(descrSize.width + 10, 95);
+        dated.setLocation(descrSize.width + 20, 95);
         dated.addFocusListener(new FocusAdapter() {
             public void focusLost(FocusEvent e){
                 if(dated.getText().isEmpty()){
@@ -130,7 +130,7 @@ public class SPBookPage implements ActionListener {
         time.setFont(new Font("Sarif", Font.PLAIN, 15));
         time.setForeground(new Color(33, 104, 105));
         Dimension timeSize = time.getPreferredSize();
-        time.setBounds(10, 130, timeSize.width+10, timeSize.height+30);
+        time.setBounds(10, 130, timeSize.width+10, timeSize.height);
         bookPanel.add(time);
 
         //add time drop down
@@ -141,7 +141,7 @@ public class SPBookPage implements ActionListener {
                             "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM",
                             "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"};
         timeCB = new JComboBox<>(times);
-        timeCB.setBounds(descrSize.width + 10, 130, 90, 20);
+        timeCB.setBounds(descrSize.width + 20, 130, 90, 20);
         timeCB.setSelectedIndex(0);
         scroll = new JScrollBar();
         timeCB.add(scroll);
