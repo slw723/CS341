@@ -116,6 +116,12 @@ public class SPHomePage {
 
     public void setHomeVisible(){
         f.setVisible(true);
+        for(Component c : f.getComponents()){
+            if(c == noappts){
+                f.remove(noappts);
+            }
+        }
+        populateUpcoming();
     }
 
     public ServiceProvider getSP(){

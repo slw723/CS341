@@ -159,6 +159,11 @@ public class UserHomePage {
     public void historyActionPerformed(ActionEvent e){
       
         f.setVisible(false);
+        for(Component c : f.getComponents()){
+            if(c == noappts){
+                f.remove(noappts);
+            }
+        }
         populateUpcoming();
             
     }
