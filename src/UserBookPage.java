@@ -90,6 +90,7 @@ public class UserBookPage implements ActionListener {
         typesCB = new JComboBox<>(apptTypes);
         typesCB.setBounds(10, 75, 90, 20);
         typesCB.setSelectedIndex(0);
+        
         bookPanel.add(typesCB);
 
         // add go button
@@ -107,7 +108,7 @@ public class UserBookPage implements ActionListener {
 
         // add text for picking appointment timeframe
         apptAvailable = new JLabel("Available appointments: ");
-        apptAvailable.setFont(new Font("Sarif", Font.PLAIN, 15));
+        apptAvailable.setFont(new Font("Sarif", Font.BOLD, 15));
         apptAvailable.setForeground(new Color(33, 104, 105));
         Dimension availSize = apptAvailable.getPreferredSize();
         apptAvailable.setBounds(10, 125, availSize.width+10, availSize.height);
@@ -134,6 +135,9 @@ public class UserBookPage implements ActionListener {
 
     private void makeBookButton(){
         bookButton = new JButton("Book Selection Now");
+        bookButton.setFont(new Font("Sarif", Font.PLAIN, 15));
+        bookButton.setBackground(new Color(156, 197, 161));
+        bookButton.setForeground(Color.WHITE);
         Dimension startBSize = bookButton.getPreferredSize();
         bookButton.setBounds(10, 520, startBSize.width+10, startBSize.height);
         bookButton.addActionListener(new ActionListener() {
@@ -142,8 +146,8 @@ public class UserBookPage implements ActionListener {
             }
         });
         bookPanel.add(bookButton);
-        f.add(bookPanel);
-        f.validate(); //didn't have
+        bookPanel.validate();
+        // f.validate(); 
     }
 
     private String getSPName(String email){
@@ -248,14 +252,13 @@ public class UserBookPage implements ActionListener {
         scroll = new JScrollPane(appointments);
         // set sizes
         scroll.setBounds(10, 150, 950, 350);
+        scroll.validate();
         appointments.getColumnModel().getColumn(0).setMaxWidth(100);
         appointments.getColumnModel().getColumn(1).setMaxWidth(100);
         appointments.getColumnModel().getColumn(2).setMaxWidth(200);
-        f.add(scroll);
-
+        bookPanel.add(scroll);
+        bookPanel.validate();
         makeBookButton();
-
-        // f.validate(); //This validate is causing the problem
     }
 
     private void bookActionPerformed(ActionEvent evt){
