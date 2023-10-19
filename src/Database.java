@@ -223,7 +223,23 @@ public class Database {
                     + "AND Time = \"" + appt.getTime() + "\";";
         try{
             ResultSet results = runQuery(sql);
-            if(results.getFetchSize() > 0){
+            if(!results.next()){
+                return -1;
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int apptConflictUser(String email, String date, String time){
+        String sql = "SELECT * FROM Appointment WHERE UserEmail = \"" + email + "\" "
+                    + "AND Date = \"" + date + "\" "
+                    + "AND Time = \"" + time + "\";";
+        try{
+            ResultSet results = runQuery(sql);
+            if(!results.next()){
                 return -1;
             }
         }

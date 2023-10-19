@@ -30,10 +30,6 @@ public class UserBookPage implements ActionListener {
     UserHomePage hp;
     Database db;
 
-    public static void main(String[] args){
-
-    }
-
     public UserBookPage(Database db, UserHomePage hp){
         this.hp = hp;
         this.db = db;
@@ -274,15 +270,24 @@ public class UserBookPage implements ActionListener {
         int apptId = getApptId(date, time, spEmail);
         User user = hp.getUser();
 
-        //update appointment in db
-        db.bookAppt(user.getEmail(), apptId);
+        //check for conflicts
+        if (db.apptConflictUser(user.getEmail(), date, time) < 0){
+            JOptionPane.showMessageDialog(null, 
+                "Unable to book. You have an appointment conflict with this time.");
+        }
+        else{
+            //update appointment in db
+            db.bookAppt(user.getEmail(), apptId);
 
-        //confirmation message
+            //confirmation message
+            JOptionPane.showMessageDialog(null, 
+                "Appointment with " + spName + "on" + date + " at " + time + " successfully booked.");
 
-
-        //return home
-        f.setVisible(false);
-        hp.setHomeVisible();
+            //reset selections
+            appointments.clearSelection();
+            appointments.removeAll();
+            typesCB.setSelectedIndex(0);
+        }
     }
 
     public void actionPerformed(ActionEvent e){
@@ -291,7 +296,8 @@ public class UserBookPage implements ActionListener {
             hp.setHomeVisible();
         }
         else if(e.getSource() == makeAppt){
-
+            appointments.removeAll();
+            typesCB.setSelectedIndex(0);
         }
         else if (e.getSource() == history) {
 

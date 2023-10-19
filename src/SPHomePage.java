@@ -20,7 +20,7 @@ public class SPHomePage {
     JFrame f, f2;
     JMenuBar mb;
     JMenuItem menu, home, makeAppt, history;
-    JButton logout;
+    JButton logout, cancel, modify;
     JPanel p;
     JLabel hello, upcoming, noappts;
     DefaultTableModel model;
@@ -107,16 +107,30 @@ public class SPHomePage {
         p.add(upcoming);
 
         // show the upcoming appointments if they exists
-
-        // int ret = 
         appointments = new JTable();
         populateUpcoming();
-        // if(ret == -1){
-            
-        // }
-        // else{
-        //     displayUpcoming();
-        // }
+
+        cancel = new JButton("Cancel Selection Now");
+        Dimension cancelSize = cancel.getPreferredSize();
+        cancel.setBounds(600, 40, cancelSize.width+10, cancelSize.height);
+        cancel.setBackground(new Color(156, 197, 161));
+        cancel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt){
+                cancelActionPerformed(evt);
+            }
+        });
+        p.add(cancel);
+
+        modify = new JButton("Modify Selection Now");
+        Dimension modSize = modify.getPreferredSize();
+        modify.setBounds(620+cancelSize.width, 40, modSize.width+10, modSize.height);
+        modify.setBackground(new Color(156, 197, 161));
+        modify.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt){
+                modifyActionPerformed(evt);
+            }
+        });
+        p.add(modify);
 
         //panel specifications
         p.setLayout(null);
@@ -131,6 +145,7 @@ public class SPHomePage {
         f.setVisible(true);
     }
 
+    /* HELPERS */
     public void setHomeVisible(){
         f.setVisible(true);
         updateUpcoming();
@@ -138,27 +153,6 @@ public class SPHomePage {
 
     public ServiceProvider getSP(){
         return sp;
-    }
-
-    public void goHomeActionPerformed(ActionEvent e){
-        
-    }
-
-    public void makeApptActionPerformed(ActionEvent e){
-
-        f.setVisible(false);
-        SPBookPage bp = new SPBookPage(db, this);
-    }
-
-    public void historyActionPerformed(ActionEvent e){
-
-        f.setVisible(false);
-
-    }
-
-    public void logoutActionPerformed(ActionEvent e) {
-        f.setVisible(false);
-        LogInPage lp = new LogInPage(db);
     }
 
     /* Populate full table view -> good for admin view*/
@@ -286,4 +280,73 @@ public class SPHomePage {
         scroll.validate();
         f.validate();
     }
+
+    /* ACTION LISTENERS */
+    private void goHomeActionPerformed(ActionEvent e){
+        
+    }
+
+    private void makeApptActionPerformed(ActionEvent e){
+
+        f.setVisible(false);
+        SPBookPage bp = new SPBookPage(db, this);
+    }
+
+    private void historyActionPerformed(ActionEvent e){
+
+        f.setVisible(false);
+
+    }
+
+    private void logoutActionPerformed(ActionEvent e) {
+        f.setVisible(false);
+        LogInPage lp = new LogInPage(db);
+    }
+
+    private void cancelActionPerformed(ActionEvent e){
+        int rowIndex = appointments.getSelectedRow();
+        if(rowIndex == -1){
+            JOptionPane.showMessageDialog(null, 
+            "Please select an appointment.");
+            return;
+        }
+        
+    }
+
+    private void modifyActionPerformed(ActionEvent e){
+        JFrame f2;
+        JPanel p2;
+        JLabel date, time, sp, descr;
+        JTextField dateField, timeField, spField, descrField;
+        int rowIndex = appointments.getSelectedRow();
+        if(rowIndex == -1){
+            JOptionPane.showMessageDialog(null, 
+            "Please select an appointment.");
+            return;
+        }
+        f2 = new JFrame();
+        p2 = new JPanel(new GridLayout(5, 2, 10, 20));
+        f2.add(p2);
+
+        descr = new JLabel("Description: ");
+        descr.setSize(100, 20);
+        descrField = new JTextField();
+        // set default text uneditable
+        String d = String.valueOf(appointments.getValueAt(rowIndex, 0));
+        descrField.setText(d);
+        descrField.setEditable(false);       
+        descrField.setSize(100, 20);
+        
+
+        /* add components */
+        p2.add(descr);
+        p2.add(descrField);
+
+        /* Make visible */
+        f2.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        f2.setSize(500,500);
+        f2.setLocation(275, 150);
+        f2.setVisible(true);
+    }
+   
 }
