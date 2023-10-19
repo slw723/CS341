@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Year;
 import java.time.LocalDate;
 import java.text.SimpleDateFormat;
 
@@ -28,12 +29,14 @@ public class SPBookPage implements ActionListener {
     JMenuBar mb;
     JMenuItem menu, home, makeAppt, history;
     JLabel title, descr, date, time;
-    JTextField described, dated;
-    String[] times;
-    JComboBox<String> timeCB;
+    JTextField described;
+    String[] times, months;
+    Integer[] days, years;
+    JComboBox<String> timeCB, monthCB;
+    JComboBox<Integer> dayCB, yearCB;
     JPanel bookPanel;
     JButton bookButton;
-    JScrollBar scroll;
+    JScrollBar scroll, scroll2, scroll3, scroll4;
     JButton go;
     SPHomePage hp;
     Database db;
@@ -105,26 +108,66 @@ public class SPBookPage implements ActionListener {
         date.setBounds(10, 90, dateSize.width+10, dateSize.height);
         bookPanel.add(date);
 
-        dated = new JTextField();
-        dated.setFont(new Font("Sarif", Font.PLAIN, 10));
-        dated.setSize(100, 20);
-        dated.setLocation(descrSize.width + 20, 95);
-        dated.addFocusListener(new FocusAdapter() {
-            public void focusLost(FocusEvent e){
-                if(dated.getText().isEmpty()){
-                    dated.setText("yyyy-mm-dd");
-                    dated.setForeground(Color.lightGray);
-                }
-            }
-            public void focusGained(FocusEvent e){
-                if(dated.getText().equals("yyyy-mm-dd")){
-                    dated.setText("");
-                    dated.setForeground(Color.BLACK);
-                }
-            }
-        });
-        bookPanel.add(dated);
+        // dated = new JTextField();
+        // dated.setFont(new Font("Sarif", Font.PLAIN, 10));
+        // dated.setSize(100, 20);
+        // dated.setLocation(descrSize.width + 20, 95);
+        // dated.addFocusListener(new FocusAdapter() {
+        //     public void focusLost(FocusEvent e){
+        //         if(dated.getText().isEmpty()){
+        //             dated.setText("yyyy-mm-dd");
+        //             dated.setForeground(Color.lightGray);
+        //         }
+        //     }
+        //     public void focusGained(FocusEvent e){
+        //         if(dated.getText().equals("yyyy-mm-dd")){
+        //             dated.setText("");
+        //             dated.setForeground(Color.BLACK);
+        //         }
+        //     }
+        // });
+        // bookPanel.add(dated);
+        months = new String[]{"", "01 - Jan", "02 - Feb", "03 - Mar", "04 - Apr", 
+                            "05 - May", "06 - Jun", "07 - Jul", "08 - Aug",
+                            "09 - Sep", "10 - Oct", "11 - Nov", "12 - Dec"};    
+        monthCB = new JComboBox<>(months);
+        monthCB.setFont(new Font("Sarif", Font.PLAIN, 10));
+        monthCB.setBounds(descrSize.width + 20, 90, 
+                        80, 20);
+        monthCB.setSelectedIndex(0); 
+        scroll2 = new JScrollBar();
+        monthCB.add(scroll2);
+        bookPanel.add(monthCB);
 
+        days = new Integer[32];
+        days[0] = null;
+        for(Integer i = 1; i < 32; i++){
+            days[i] = i;
+        }
+        dayCB = new JComboBox<>(days);
+        Dimension daySize = dayCB.getPreferredSize();
+        dayCB.setBounds(descrSize.width + 110, 90, 
+                        daySize.width + 20, 20);
+        dayCB.setSelectedIndex(0);
+        scroll3 = new JScrollBar();
+        dayCB.add(scroll3);
+        bookPanel.add(dayCB);
+
+        years = new Integer[3];
+        years[0] = null;
+        years[1] = Integer.valueOf(String.valueOf(Year.now()));
+        if(LocalDate.now().getDayOfYear() != 1){
+            years[2] = Integer.valueOf(String.valueOf(Year.now())) + 1;
+        }
+        yearCB = new JComboBox<>(years);
+        Dimension yearSize = yearCB.getPreferredSize();
+        yearCB.setBounds(descrSize.width + daySize.width + 140, 90, 
+                        yearSize.width, 20);
+        yearCB.setSelectedIndex(0);
+        scroll4 = new JScrollBar();
+        yearCB.add(scroll4);
+        bookPanel.add(yearCB);
+        
         // add date field
         time = new JLabel("Time: ");
         time.setFont(new Font("Sarif", Font.PLAIN, 15));
@@ -158,7 +201,6 @@ public class SPBookPage implements ActionListener {
             }
         });
         bookPanel.add(go);
-
        
         // bookPanel specifications
         bookPanel.setLayout(null);
@@ -178,67 +220,42 @@ public class SPBookPage implements ActionListener {
      */
     private int dataValidation(){
 
-        // check date is formatted correctly and valid day/months
-        String[] splits = dated.getText().split("-", 3);
-        if(splits[0].length() == 4){
-            if(splits[1].length() == 2){
-                int month = Integer.valueOf(splits[1]);
-                if(month <= 0 || month > 12){
-                    dated.setText("");
-                    JOptionPane.showMessageDialog(f, "Enter a valid month", 
-                    "Invalid Input", JOptionPane.ERROR_MESSAGE);
-                    return -1;
-                }
-                else{
-                    if(splits[2].length() == 2){
-                        int day = Integer.valueOf(splits[2]);
-                        if(day <= 0 || day > 31){
-                            dated.setText("");
-                            JOptionPane.showMessageDialog(f, "Enter a valid day",
-                                 "Invalid Input", JOptionPane.ERROR_MESSAGE);
-
-                            return -1;
-                        }
-                    }
-                }
-            }
-        }
-        else{
-            dated.setText("");
-            JOptionPane.showMessageDialog(f, "Enter a valid year", 
-            "Invalid Input", JOptionPane.ERROR_MESSAGE);
-        }
-
-        String today = String.valueOf(java.time.LocalDate.now());
-        LocalDate today2024 = LocalDate.now().plusYears(1); //a year in advance
-        LocalTime now = java.time.LocalTime.now();
-        Date d = Date.valueOf(dated.getText());
-        LocalTime t = convertTime(timeCB.getSelectedItem().toString());
-
+        // check date is valid day/months
+        String[] splits = monthCB.getSelectedItem().toString().split(" - ", 2);
+        int month = Integer.valueOf(splits[0]);
+        int day = (int)dayCB.getSelectedItem();
+        int year = (int)yearCB.getSelectedItem();
         try{
-            // check date is in the future but within the years
+            String date = year + "-" + month + "-" + day;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            if(sdf.parse(dated.getText()).before(sdf.parse(today)) || 
-               sdf.parse(dated.getText()).after(sdf.parse(String.valueOf(today2024)))){
-                dated.setText("");
-                JOptionPane.showMessageDialog(f, "Enter a valid date",
-                                         "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            sdf.setLenient(false);
+            sdf.parse(date);        
 
-                return -1;
-            }
-            else if(sdf.parse(dated.getText()).equals(sdf.parse(today))){
-                // check time is in the future
+            String today = String.valueOf(java.time.LocalDate.now());
+            LocalDate today2024 = LocalDate.now().plusYears(1);
+            // check time is in the future
+            if(sdf.parse(date).equals(sdf.parse(today))){
+                LocalTime t = convertTime(timeCB.getSelectedItem().toString());
+                LocalTime now = java.time.LocalTime.now();
                 if(t.isBefore(now)){
                     timeCB.setSelectedIndex(0);
-                    JOptionPane.showMessageDialog(f, "Enter a valid time",
-                     "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, 
+                        "Enter a valid time");
                     return -1;
                 }
             }
-                       
+            //check if only a year in advance
+            else if(sdf.parse(date).before(sdf.parse(today)) || 
+                sdf.parse(date).after(sdf.parse(String.valueOf(today2024)))){
+                JOptionPane.showMessageDialog(null, 
+                "Please enter a valid date.");
+                return -1;
+            }                       
         }
         catch(ParseException p){
-            p.printStackTrace();
+            JOptionPane.showMessageDialog(null, 
+            "Please enter a valid date.");
+            return -1;
         }
 
         return 0;
@@ -273,21 +290,26 @@ public class SPBookPage implements ActionListener {
     public void submitActionPerformed(ActionEvent evt){
         
         int valid = dataValidation();
-        if(valid < -1){
+        if(valid < 0){
            return;
         }
         else{
             String des = described.getText();
-            Date dateStr = Date.valueOf(dated.getText());
+            String[] splits = monthCB.getSelectedItem().toString().split(" - ", 2);
+            int month = Integer.valueOf(splits[0]);
+            int day = (int)dayCB.getSelectedItem();
+            int year = (int)yearCB.getSelectedItem();
+            Date dateStr = Date.valueOf(year + "-" + month + "-" + day);
             Time timeStr = Time.valueOf(convertTime(timeCB.getSelectedItem().toString()));
             ServiceProvider sp = hp.getSP();
             Appointment appt = new Appointment(des, dateStr, timeStr, sp.getType(), 0, null, sp.getEmail());
             
             //check if SP has appt at that time already
-            if(db.apptConflict(sp, appt) < 0){
+            if(db.apptConflict(sp, appt) > 0){
                 timeCB.setSelectedIndex(0);
-                dated.setText("");
-                timeCB.setSelectedIndex(0);
+                monthCB.setSelectedIndex(0);
+                dayCB.setSelectedIndex(0);
+                yearCB.setSelectedIndex(0);
                 JOptionPane.showMessageDialog(f, "You have an appointment conflict. Pick a different time",
                 "Appointment Conflict", JOptionPane.ERROR_MESSAGE);
             }

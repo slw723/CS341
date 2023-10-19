@@ -248,6 +248,7 @@ public class SPHomePage {
                 //if model already contains the value... don't add it
                 if(tblModel.getValueAt(row, 0).equals(date) && 
                    tblModel.getValueAt(row, 1).equals(time)){
+                    row++;
                     continue;
                 }
                 
