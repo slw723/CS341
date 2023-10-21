@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 
 import java.awt.*;
 import java.sql.ResultSet;
@@ -278,8 +280,23 @@ public class SPHomePage {
         catch(Exception e){
             System.out.println(e.getMessage());
         }
+        greyOutCanceled();
         scroll.validate();
         f.validate();
+    }
+
+
+    private void greyOutCanceled(){
+
+        for(int i = 0; i < appointments.getRowCount(); i++){
+            int apptId = db.getApptId(String.valueOf(appointments.getValueAt(i, 0)),
+                    String.valueOf(appointments.getValueAt(i, 1)), sp.getEmail()); 
+            int canceled = db.getCanceled(apptId);
+            if(canceled == 1){
+                // TODO                 
+            }
+        }
+
     }
 
     /* ACTION LISTENERS */
@@ -290,7 +307,7 @@ public class SPHomePage {
     private void makeApptActionPerformed(ActionEvent e){
 
         f.setVisible(false);
-        SPBookPage bp = new SPBookPage(db, this);
+        new SPBookPage(db, this);
     }
 
     private void historyActionPerformed(ActionEvent e){
@@ -301,7 +318,7 @@ public class SPHomePage {
 
     private void logoutActionPerformed(ActionEvent e) {
         f.setVisible(false);
-        LogInPage lp = new LogInPage(db);
+        new LogInPage(db);
     }
 
     private void cancelActionPerformed(ActionEvent e){
@@ -310,6 +327,23 @@ public class SPHomePage {
             JOptionPane.showMessageDialog(null, 
             "Please select an appointment.");
             return;
+        }
+
+        int selection = JOptionPane.showConfirmDialog(null, 
+                "Are you sure you want to cancel your appointment on "
+                + appointments.getValueAt(rowIndex, 0) + " at "
+                + appointments.getValueAt(rowIndex, 1) + "?");
+        if(selection == 1 || selection == 2){ //no || cancel
+            return;
+        }
+        else{ //yes
+            int apptId = db.getApptId(String.valueOf(appointments.getValueAt(rowIndex, 0)),
+             String.valueOf(appointments.getValueAt(rowIndex, 1)), sp.getEmail());
+            
+            db.cancelAppointment(apptId);
+            JOptionPane.showMessageDialog(null, 
+            "Successfully canceled.");
+            updateUpcoming();
         }
         
     }

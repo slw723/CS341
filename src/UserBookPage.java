@@ -194,24 +194,6 @@ public class UserBookPage implements ActionListener {
         return null;
     }
 
-    private int getApptId(String date, String time, String email){
-         try{
-            String sql = "Select ApptId FROM Appointment" +
-                         " WHERE SPEmail = \"" +  email + "\" " +
-                         " AND Time = \"" + time + "\"" +
-                         " AND Date = \"" + date + "\";";
-            ResultSet rs = db.executeSQL(sql);
-            if(rs.next()){
-                return rs.getInt("ApptId");
-            }
-        }
-        catch(SQLException e){
-            System.out.println(e.getMessage());
-
-        }
-        return -1;
-    }
-
     /*
      * ACTION LISTENERS
      */
@@ -267,7 +249,7 @@ public class UserBookPage implements ActionListener {
         String spEmail = getSPEmail(spName);
 
         //get primary key of appointment selected
-        int apptId = getApptId(date, time, spEmail);
+        int apptId = db.getApptId(date, time, spEmail);
         User user = hp.getUser();
 
         //check for conflicts

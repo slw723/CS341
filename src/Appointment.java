@@ -9,6 +9,7 @@ public class Appointment {
     private Time time;
     private String type;
     private int booked;
+    private int canceled;
     String UserEmail;
     String SPEmail;
 
@@ -21,6 +22,7 @@ public class Appointment {
         this.time = time;
         this.type = type;
         this.booked = booked;
+        canceled = 0;
         this.UserEmail = UserEmail;
         this.SPEmail = SPEmail;
     }
@@ -70,6 +72,14 @@ public class Appointment {
 
     public void setBooked (int booked) {
         this.booked = booked;
+    }
+
+    public int getCanceled() {
+        return booked;
+    }
+
+    public void setCanceled (int cancel) {
+        canceled = cancel;
     }
 
     public String getUserEmail() {

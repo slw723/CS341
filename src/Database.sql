@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS Appointment (
   Time TIME NOT NULL,
   Type NVARCHAR(8) NOT NULL,
   Booked INT NOT NULL,
+  Canceled INT,
   UserEmail NVARCHAR(25),
   SPEmail NVARCHAR(25),
   CONSTRAINT FK_User_email FOREIGN KEY (UserEmail) REFERENCES User(Email),

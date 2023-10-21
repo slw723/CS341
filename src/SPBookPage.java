@@ -108,25 +108,6 @@ public class SPBookPage implements ActionListener {
         date.setBounds(10, 90, dateSize.width+10, dateSize.height);
         bookPanel.add(date);
 
-        // dated = new JTextField();
-        // dated.setFont(new Font("Sarif", Font.PLAIN, 10));
-        // dated.setSize(100, 20);
-        // dated.setLocation(descrSize.width + 20, 95);
-        // dated.addFocusListener(new FocusAdapter() {
-        //     public void focusLost(FocusEvent e){
-        //         if(dated.getText().isEmpty()){
-        //             dated.setText("yyyy-mm-dd");
-        //             dated.setForeground(Color.lightGray);
-        //         }
-        //     }
-        //     public void focusGained(FocusEvent e){
-        //         if(dated.getText().equals("yyyy-mm-dd")){
-        //             dated.setText("");
-        //             dated.setForeground(Color.BLACK);
-        //         }
-        //     }
-        // });
-        // bookPanel.add(dated);
         months = new String[]{"", "01 - Jan", "02 - Feb", "03 - Mar", "04 - Apr", 
                             "05 - May", "06 - Jun", "07 - Jul", "08 - Aug",
                             "09 - Sep", "10 - Oct", "11 - Nov", "12 - Dec"};    
@@ -304,21 +285,23 @@ public class SPBookPage implements ActionListener {
             ServiceProvider sp = hp.getSP();
             Appointment appt = new Appointment(des, dateStr, timeStr, sp.getType(), 0, null, sp.getEmail());
             
-            //check if SP has appt at that time already
-            if(db.apptConflict(sp, appt) > 0){
+            //check if SP has appt at that time already,
+            int ret = db.apptConflict(sp, appt);
+            if(ret < 0){
+                JOptionPane.showMessageDialog(f, "You have an appointment conflict. Pick a different time",
+                "Appointment Conflict", JOptionPane.ERROR_MESSAGE);
                 timeCB.setSelectedIndex(0);
                 monthCB.setSelectedIndex(0);
                 dayCB.setSelectedIndex(0);
                 yearCB.setSelectedIndex(0);
-                JOptionPane.showMessageDialog(f, "You have an appointment conflict. Pick a different time",
-                "Appointment Conflict", JOptionPane.ERROR_MESSAGE);
+                bookPanel.validate();
             }
             else{
                 db.insertAppt(appt);
+                f.setVisible(false);
+                hp.setHomeVisible();
             }
         }
-        f.setVisible(false);
-        hp.setHomeVisible();
     }
 
     public void actionPerformed(ActionEvent e){

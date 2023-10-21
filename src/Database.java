@@ -32,8 +32,6 @@ public class Database {
         stmt.executeUpdate();
     }
 
-    //put INSERTs, UPDATEs, DELETEs, and SELECTs here
-
     public void insertUser(User user){
         String sql = "INSERT INTO User(FirstName, LastName, Email, Password, PhoneNum) VALUES (?, ?, ?, ?, ?)";
         try{
@@ -186,8 +184,8 @@ public class Database {
                     + "Description \"" + appt.getDescription() + "\","
                     + "Time = \"" + appt.getTime() + "\","
                     + "Type = \"" + appt.getType() + "\","
-                    + "Booked = " + appt.getBooked() + ""
-                    + "UserEmail = \"" + appt.getUserEmail() + "\""
+                    + "Booked = " + appt.getBooked() + "\","
+                    + "UserEmail = \"" + appt.getUserEmail() + "\","
                     + "SPEmail = \"" + appt.getSPEmail() + "\""
                     + "WHERE ApptId = \"" + appt.getApptId() + "\"";
         try {
@@ -217,13 +215,35 @@ public class Database {
         }
     }
 
+    public void cancelAppointment (int apptId) {
+        String sql = "UPDATE Appointment SET Canceled = 1 WHERE ApptId = \"" + apptId + "\"";
+        try {
+            dbExecuteUpdate(sql);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getCanceled(int apptId){
+        String sql = "SELECT Canceled FROM Appointment WHERE ApptID = \'" + apptId + "\';";
+        try{
+            ResultSet rs = runQuery(sql);
+            return rs.getInt(1);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
     public int apptConflict(ServiceProvider sp, Appointment appt){
         String sql = "SELECT * FROM Appointment WHERE SPEmail = \"" + sp.getEmail() + "\" "
                     + "AND Date = \"" + appt.getDate() + "\" "
                     + "AND Time = \"" + appt.getTime() + "\";";
-        try{
+        try{        
             ResultSet results = runQuery(sql);
-            if(!results.next()){
+            if(results.next()){
                 return -1;
             }
         }
@@ -248,6 +268,24 @@ public class Database {
         }
         return 0;
     }
+
+    public int getApptId(String date, String time, String email){
+        try{
+           String sql = "Select ApptId FROM Appointment" +
+                        " WHERE SPEmail = \"" +  email + "\" " +
+                        " AND Time = \"" + time + "\"" +
+                        " AND Date = \"" + date + "\";";
+           ResultSet rs = runQuery(sql);
+           if(rs.next()){
+               return rs.getInt("ApptId");
+           }
+       }
+       catch(SQLException e){
+           System.out.println(e.getMessage());
+
+       }
+       return -1;
+   }
 
     public void bookAppt(String email, int apptId){
         String sql = "UPDATE Appointment SET "
