@@ -62,7 +62,7 @@ public class LogInPage extends JFrame  {
         try{
             db.connect();
             System.out.println("Successful connection!");
-            /**Admin login for testing purposes*/
+            /**Admin login for testing purposes**/
           //  Admin admin = new Admin();
           //  char[] pw = {1, 2, 3, 4};
          //   admin.setUserId("admin");
@@ -91,12 +91,12 @@ public class LogInPage extends JFrame  {
         loginWin.setBackground(new Color(220, 225, 222));
 
         wcPanel = new JPanel();
-        wcPanel.setBounds(285, 25, 150, 45);
+        wcPanel.setBounds(425, 200, 150, 45);
         welcome = new JLabel("Welcome!");
         welcome.setFont(wcFont);
 
         shPanel = new JPanel(); //subheading panel
-        shPanel.setBounds(210, 75, 300, 30);
+        shPanel.setBounds(350, 250, 300, 30);
         enterInfo = new JLabel("Please enter your log in information.");
         enterInfo.setFont(shFont);
         wcPanel.add(welcome);
@@ -109,7 +109,7 @@ public class LogInPage extends JFrame  {
         loginPanel.setLayout(null);
         loginPanel.setBackground(new Color(33, 104, 105)); //dark teal
         loginPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-        loginPanel.setBounds(200, 130, 300, 175);
+        loginPanel.setBounds(350, 305, 300, 175);
 
         /*Text fields, labels, and buttons*/
         userLabel = new JLabel("Username");
