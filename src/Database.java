@@ -353,14 +353,21 @@ public class Database {
         return null;
     }
 
-    // public ResultSet findAdmin(String userID, byte[] password) throws SQLException {
-    //     String query = "SELECT * FROM ServiceProvider WHERE UserId=? and Password=?";
-    //     PreparedStatement stmt = connection.prepareStatement(query);
-    //     stmt.setString(1, userID);
-    //     stmt.setBytes(2, password);
-    //     ResultSet results = stmt.executeQuery();
-    //     return results;
-    // }
+    public ResultSet findAdmin(String userID, byte[] password) throws SQLException {
+        String query = "SELECT * FROM Admin WHERE userID = ?";
+            try{
+                PreparedStatement stmt = connection.prepareStatement(query);
+                stmt.setString(1, userID);
+                // stmt.setBytes(2, password);
+                if(stmt.execute()){
+                    return stmt.executeQuery();
+                }
+            }
+            catch(SQLException e){
+                e.printStackTrace();
+            }
+            return null;
+     }
 
 
 }

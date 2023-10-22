@@ -35,6 +35,8 @@ import java.util.ArrayList;
 public class LogInPage extends JFrame  {
     private static User user;
     private static ServiceProvider sp;
+
+    private static Admin admin;
     public static Database db;
 
     // ArrayList<User> users = new ArrayList<>();
@@ -57,10 +59,15 @@ public class LogInPage extends JFrame  {
 
     /* CONSTRUCTOR */
     public LogInPage(Database db){
-
         try{
             db.connect();
             System.out.println("Successful connection!");
+            /**Admin login for testing purposes*/
+          //  Admin admin = new Admin();
+          //  char[] pw = {1, 2, 3, 4};
+         //   admin.setUserId("admin");
+         //   admin.setPassword(hash(pw));
+         //   db.insertAdmin(admin);
             loadLogin(db);
         }
         catch(Exception e){ //SQLException e
@@ -146,9 +153,6 @@ public class LogInPage extends JFrame  {
 
     }
 
-    /* HELPERS */
-
-    /******************************************************************************/
     /*REGISTRATION WINDOW BELOW*/
     JFrame regWin;
     JPanel arPanel, instPanel, regPanel, cbPanel;
@@ -449,20 +453,21 @@ public class LogInPage extends JFrame  {
                         sp.setQualification(results2.getString("Qualification"));
                         sp.setYearGraduated(results2.getInt("YearGraduated"));
                         //JOptionPane.showMessageDialog(null, "Service Provider Login Successful.");
-                        SPHomePage spHP = new SPHomePage(db, sp); //Service Provider page??
+                        SPHomePage spHP = new SPHomePage(db, sp); //creates Service Provider page instance
                         loginWin.dispose();
                     }
                     else { //service provider not found, check admin table
-                        // ResultSet results3 = db.findAdmin(username, password); //checks on UserID in the Admin table
-                        // if(results3.next()){
-                            // JOptionPane.showMessageDialog(null, "Admin Login Successful.");
-                            // UserHomePage ad = new UserHomePage(db, user); //Admin page??
-                            // loginWin.dispose();
-                        // }
-                        // else{
+                        ResultSet results3 = db.findAdmin(username, password); //checks on UserID in the Admin table
+                        if(results3.next()){
+                            admin = new Admin(username, password);
+                            JOptionPane.showMessageDialog(null, "Admin Login Successful.");
+                            AdminHomePage adHP = new AdminHomePage(db, admin);
+                            loginWin.dispose();
+                        }
+                        else{
                             JOptionPane.showMessageDialog(null, 
                                 "User not found. Use the 'Register' button to create a new account");
-                        // }
+                        }
                         
                     }
                 }
@@ -544,37 +549,5 @@ public class LogInPage extends JFrame  {
             spType = "Health";
         }
     }
-
-    /*Qualification label and textfield only becomes visible if Service Provider is selected - NOT WORKING */
-    /**
-     * else if (e.getSource() == cb && cb.getSelectedItem().toString().equals("Service Provider")) {
-     qualLabel = new JLabel("Qualifications: ");
-        qualLabel.setForeground(Color.WHITE);
-        qualLabel.setBounds(40, 70, 75, 20);
-        qualText = new JTextField(20);
-        qualText.setBounds(95, 70, 150, 20);
-
-        qualLabel.setVisible(true);
-        qualText.setVisible(true);
-        regPanel.add(qualLabel);
-        regPanel.add(qualText);
-        regWin.add(regPanel);
-
-        }
-        /*Qualification label and textfield only becomes hidden if user is selected*/
-    /**
-     else if (e.getSource() == cb && cb.getSelectedItem().toString().equals("User")) {
-
-        qualLabel = new JLabel("Qualifications: ");
-        qualLabel.setVisible(false);
-        qualText = new JTextField(20);
-        qualText.setVisible(false);
-
-        //if (cb.getSelectedItem().toString().equals("Service Provider")) {
-        //qualLabel.setVisible(true);
-        //qualText.set
-        //}
-        }
-        **/
 }
 

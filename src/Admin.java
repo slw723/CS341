@@ -14,7 +14,7 @@ public class Admin {
     public Admin() { //empty constructor
 
     }
-
+    public void setUserId(String id) {userId = id;}
     public String getID(){
         return userId;
     }
