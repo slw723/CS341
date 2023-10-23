@@ -63,11 +63,11 @@ public class LogInPage extends JFrame  {
             db.connect();
             System.out.println("Successful connection!");
             /**Admin login for testing purposes**/
-          //  Admin admin = new Admin();
-          //  char[] pw = {1, 2, 3, 4};
-         //   admin.setUserId("admin");
-         //   admin.setPassword(hash(pw));
-         //   db.insertAdmin(admin);
+        //    Admin admin = new Admin();
+        //    char[] pw = {1, 2, 3, 4};
+        //    admin.setUserId("admin");
+        //    admin.setPassword(hash(pw));
+        //    db.insertAdmin(admin);
             loadLogin(db);
         }
         catch(Exception e){ //SQLException e
@@ -528,6 +528,7 @@ public class LogInPage extends JFrame  {
 
     private void selectAcctActionPerformed(ItemEvent e){
         if(e.getStateChange() == 1){
+            
             selectedAcctType = (String)e.getItem();
             if(selectedAcctType.equals("User")){
                 showUserRegister();

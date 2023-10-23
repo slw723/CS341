@@ -1,7 +1,8 @@
-1. data validation when registering
 2. remove the driver file as the login page is the starting page
-3. set up modify and remove/cancel
-4. setup admin views and activate in the login page
+3. set up modify (SP and User)
 5. setup history
-6. data validation when making appointments
 7. password query at login
+8. fix view when toggling between SP and User registration
+9. Search Appts (User & Admin)
+10. Alerts (SP & User)
+11. User appt conflict validations

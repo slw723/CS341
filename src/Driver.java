@@ -31,23 +31,6 @@ public class Driver {
             e.printStackTrace();
         }
         
-        /*insert into SP table using connection */
-        //String qualif = "Graduated from The Salon Professonal Academy";
-        //ServiceProvider sp = new ServiceProvider("Abby", "Anderson",
-        //                            "abbyanderson@gmail.com", null,
-        //                            6081113333L, qualif, 2015, "Beauty");
-        // db.insertSP(sp);
-
-        //User user = new User("First", "Last",
-        //                    "user@user.com", null, 8889993333L);
-        // db.insertUser(user);
-
-        /* Try insert into appt */
-        //Appointment appt = new Appointment( "Haircut", new Date(20231223), new Time(1200), "Beauty", 0, null, "abbyanderson@gmail.com");
-        // db.insertAppt(appt);
-
-        db.deleteAppointment(1);
-        db.deleteServiceProvider("AbbyAndersen");
-        db.deleteuser("JaneDoe");
+       
     }
 }
