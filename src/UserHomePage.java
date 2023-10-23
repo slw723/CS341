@@ -1,8 +1,3 @@
-
-// import src.Database;
-// import src.User;
-// import src.UserBookPage;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
@@ -25,7 +20,7 @@ public class UserHomePage {
         JFrame f, f2;
         JMenuBar mb;
         JMenuItem menu, home, makeAppt, history;
-        JButton logout;
+        JButton logout,cancel, modify;
         JPanel p;
         JLabel hello, upcoming, noappts;
         DefaultTableModel model;
@@ -112,7 +107,30 @@ public class UserHomePage {
         p.add(upcoming);
 
         // show the upcoming appointments
+        appointments = new JTable();
         populateUpcoming();
+
+        cancel = new JButton("Cancel Selection Now");
+        Dimension cancelSize = cancel.getPreferredSize();
+        cancel.setBounds(600, 40, cancelSize.width+10, cancelSize.height);
+        cancel.setBackground(new Color(156, 197, 161));
+        cancel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                cancelActionPerformed(evt);
+            }
+        });
+        p.add(cancel);
+
+        modify = new JButton("Modify Selection Now");
+        Dimension modSize = modify.getPreferredSize();
+        modify.setBounds(cancelSize.width+620, 40, modSize.width+10, modSize.height);
+        modify.setBackground(new Color(156, 197, 161));
+        modify.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                modifyActionPerformed(evt);
+            }
+        });
+        p.add(modify);
 
         //panel sepecifications
         p.setLayout(null);
@@ -267,5 +285,72 @@ public class UserHomePage {
         }
         scroll.validate();
         f.validate();
+    }
+
+    private void greyOutCanceled() {
+        for (int i = 0; i <appointments.getRowCount(); i++) {
+            int apptId = db.getApptIdUser(String.valueOf(appointments.getValueAt(i, 0)),
+                    String.valueOf(appointments.getValueAt(i, 1)), user.getEmail());
+            int canceled = db.getCanceled(apptId);
+            if (canceled == 1) {
+                //need to do
+            }
+        }
+    }
+
+    private void cancelActionPerformed(ActionEvent e) {
+        int rowIndex = appointments.getSelectedRow();
+        if (rowIndex == -1) {
+            JOptionPane.showMessageDialog(null, "Please select an appointment.");
+            return;
+        }
+
+        int selection = JOptionPane.showConfirmDialog(null,
+                "Are you sure you want to cancel your appointment on "
+                + appointments.getValueAt(rowIndex, 0) + " at "
+                + appointments.getValueAt(rowIndex, 1) + "?");
+        if (selection == 1 || selection == 2) {
+            return;
+        }
+        else {
+            int apptId = db.getApptIdUser(String.valueOf(appointments.getValueAt(rowIndex, 0)),
+                    String.valueOf(appointments.getValueAt(rowIndex, 1)), user.getEmail());
+
+            db.cancelAppointment(apptId);
+            JOptionPane.showMessageDialog(null, "Successfully canceled.");
+            updateUpcoming();
+        }
+    }
+
+    private void modifyActionPerformed(ActionEvent e) {
+        JFrame f2;
+        JPanel p2;
+        JLabel date, time, user, descr;
+        JTextField dateField, timeField, userField, descrField;
+        int rowIndex = appointments.getSelectedRow();
+        if (rowIndex == -1) {
+            JOptionPane.showMessageDialog(null, "Please select an appointment.");
+            return;
+        }
+        f2 = new JFrame();
+        p2 = new JPanel(new GridLayout(5, 2, 10, 20));
+        f2.add(p2);
+
+        descr = new JLabel("Description: ");
+        descr.setSize(100, 20);
+        descrField = new JTextField();
+
+        String d = String.valueOf(appointments.getValueAt(rowIndex, 0));
+        descrField.setText(d);
+        descrField.setEditable(false);
+        descrField.setSize(100, 20);
+
+        p2.add(descr);
+        p2.add(descrField);
+
+        f2.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        f2.setSize(500, 500);
+        f2.setLocation(275, 150);
+        f2.setVisible(true);
     }
 }

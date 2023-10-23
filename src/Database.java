@@ -1,12 +1,10 @@
-// package src;
-
 import java.sql.*;
 
 
 public class Database {
 
     private Connection connection;
-    private String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=5628";
+    private String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=3871";
 
 
     public void connect() throws SQLException {
@@ -285,6 +283,23 @@ public class Database {
 
        }
        return -1;
+   }
+
+   public int getApptIdUser(String date, String time, String email) {
+        try {
+            String sql = "SELECT ApptId FROM Appointment" +
+                         " WHERE UserEmail = \"" + email + "\"" +
+                         " AND Time = \"" + time + "\"" +
+                         " AND Date = \"" + date + "\";";
+            ResultSet rs = runQuery(sql);
+            if (rs.next()) {
+                return rs.getInt("ApptId");
+            }
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return -1;
    }
 
     public void bookAppt(String email, int apptId){
