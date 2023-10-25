@@ -31,7 +31,7 @@ public class Database {
     }
 
     public void insertUser(User user){
-        String sql = "INSERT INTO User(FirstName, LastName, Email, Password, PhoneNum) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO User(FirstName, LastName, Email, Password, PhoneNum, Active) VALUES (?, ?, ?, ?, ?, ?)";
         try{
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, user.getFirstName());
@@ -39,6 +39,7 @@ public class Database {
             stmt.setString(3, user.getEmail());
             stmt.setBytes(4, user.getPassword());
             stmt.setLong(5, user.getPhoneNumber());
+            stmt.setInt(6, user.getActive());
 
             if(stmt.execute())
                 System.out.println("Inserted " + user.getEmail() + " into User");
@@ -84,7 +85,7 @@ public class Database {
     }
 
     public void insertSP(ServiceProvider sp){
-        String sql = "INSERT INTO ServiceProvider(FirstName, LastName, Email, Password, PhoneNum, Qualification, YearGraduated, Type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO ServiceProvider(FirstName, LastName, Email, Password, PhoneNum, Qualification, YearGraduated, Type, Active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try{
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, sp.getFirstName());
@@ -95,6 +96,7 @@ public class Database {
             stmt.setString(6, sp.getQualifcation());
             stmt.setInt(7, sp.getYearGraduated());
             stmt.setString(8, sp.getType());
+            stmt.setInt(9, sp.getActive());
 
             if(stmt.execute())
                 System.out.println("Inserted " + sp.getEmail() + " into ServiceProvider");

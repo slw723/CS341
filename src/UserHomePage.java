@@ -3,6 +3,7 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import java.awt.*;
 import java.sql.ResultSet;
@@ -16,7 +17,7 @@ import java.time.LocalTime;
 // Light Green: 156, 197, 161
 // Off white: 220, 225, 222
 
-public class UserHomePage {
+public class UserHomePage extends DefaultTableCellRenderer {
         JFrame f, f2;
         JMenuBar mb;
         JMenuItem menu, home, makeAppt, history;
@@ -293,7 +294,8 @@ public class UserHomePage {
                     String.valueOf(appointments.getValueAt(i, 1)), user.getEmail());
             int canceled = db.getCanceled(apptId);
             if (canceled == 1) {
-                //need to do
+                //work on...
+                setBackground(Color.GRAY);
             }
         }
     }
@@ -352,5 +354,17 @@ public class UserHomePage {
         f2.setSize(500, 500);
         f2.setLocation(275, 150);
         f2.setVisible(true);
+    }
+
+    public Component getTableCellRendererComponent(JTable table, Object value,
+                                                   boolean isSelected, boolean hasFocus, int row, int column) {
+        super.getTableCellRendererComponent(table, value,
+                isSelected, hasFocus, row, column);
+        if (column == 1) {
+            setBackground(Color.RED);
+        } else {
+            setBackground(Color.WHITE);
+        }
+        return this;
     }
 }
