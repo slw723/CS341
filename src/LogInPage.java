@@ -433,6 +433,7 @@ public class LogInPage extends JFrame  {
                     user.setFirstName(results.getString("FirstName"));
                     user.setLastName(results.getString("LastName"));
                     user.setPhoneNumber(results.getLong("PhoneNum"));
+                    //user.setActive(1);
                     //JOptionPane.showMessageDialog(null, "User Login Successful.");
                     UserHomePage userHP = new UserHomePage(db, user);
                     loginWin.dispose();
@@ -447,6 +448,7 @@ public class LogInPage extends JFrame  {
                         sp.setPhoneNumber(results2.getLong("PhoneNum"));
                         sp.setQualification(results2.getString("Qualification"));
                         sp.setYearGraduated(results2.getInt("YearGraduated"));
+                        //sp.setActive(1); //1 is active
                         //JOptionPane.showMessageDialog(null, "Service Provider Login Successful.");
                         SPHomePage spHP = new SPHomePage(db, sp); //creates Service Provider page instance
                         loginWin.dispose();
@@ -489,6 +491,7 @@ public class LogInPage extends JFrame  {
             newUser.setFirstName(fText.getText());
             newUser.setLastName(lText.getText());
             newUser.setPhoneNumber(Long.parseLong(phText.getText()));
+            newUser.setActive(1); //1 is active
 
             //need to do data validation
 
@@ -508,6 +511,7 @@ public class LogInPage extends JFrame  {
             sp.setYearGraduated(Integer.valueOf(yearGradText.getText()));
             sp.setType(spType);
             sp.setPhoneNumber(Long.parseLong(phText.getText()));
+            sp.setActive(1);
 
             //need to do data validation
 

@@ -2,6 +2,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.table.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+
 import java.awt.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,7 +16,7 @@ import java.util.ArrayList;
 // Light Green: 156, 197, 161
 // Off white: 220, 225, 222
 
-public class UserHomePage {
+public class UserHomePage extends DefaultTableCellRenderer {
         JFrame f, f2, alertFrame;
         JMenuBar mb;
         JMenuItem menu, home, makeAppt, history;

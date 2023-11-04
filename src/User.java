@@ -4,13 +4,15 @@ public class User extends Appointment {
     private String email;
     private byte[] password;
     private long phoneNumber;
+    private int active;
 
-    public User (String first, String last, String emailAddress, byte[] pw, long phone) {
+    public User (String first, String last, String emailAddress, byte[] pw, long phone, int active) {
         firstName = first;
         lastName = last;
         email = emailAddress;
         password = pw;
         phoneNumber = phone;
+        this.active = active;
     }
 
     public User(){
@@ -60,5 +62,13 @@ public class User extends Appointment {
 
     public void setPhoneNumber(long phone) {
         phoneNumber = phone;
+    }
+
+    public int getActive() {
+        return active;
+    }
+
+    public void setActive(int active) {
+        this.active = active;
     }
 }

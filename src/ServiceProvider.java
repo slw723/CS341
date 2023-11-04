@@ -8,8 +8,9 @@ public class ServiceProvider {
     private String qualification;
     private int yearGraduated;
     private String type;
+    private int active;
 
-    public ServiceProvider (String first, String last, String emailAddress, byte[] pw, long phone, String qualif, int year, String type) {
+    public ServiceProvider (String first, String last, String emailAddress, byte[] pw, long phone, String qualif, int year, String type, int active) {
         firstName = first;
         lastName = last;
         email = emailAddress;
@@ -18,6 +19,7 @@ public class ServiceProvider {
         qualification = qualif;
         yearGraduated = year;
         this.type = type;
+        this.active = active;
     }
 
     public ServiceProvider() {
@@ -91,5 +93,13 @@ public class ServiceProvider {
 
     public String getType(){
         return type;
+    }
+
+    public void setActive(int active) {
+        this.active = active;
+    }
+
+    public int getActive() {
+        return active;
     }
 }
