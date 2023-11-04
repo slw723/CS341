@@ -1,14 +1,11 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.*;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-
+import javax.swing.table.*;
 import java.awt.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.ArrayList;
 
 // Light Black: 31, 36, 33
 // Dark Teal: 33, 104, 105
@@ -17,14 +14,14 @@ import java.time.LocalTime;
 // Off white: 220, 225, 222
 
 public class UserHomePage {
-        JFrame f, f2;
+        JFrame f, f2, alertFrame;
         JMenuBar mb;
         JMenuItem menu, home, makeAppt, history;
-        JButton logout,cancel, modify;
+        JButton logout,cancel, modify, alerts;
         JPanel p;
         JLabel hello, upcoming, noappts;
         DefaultTableModel model;
-        JTable appointments;
+        JTable appointments, newTable, oldTable;
         JScrollPane scroll;
         User user;
         static Database db = new Database();
@@ -46,9 +43,18 @@ public class UserHomePage {
         logout = new JButton("Log Out");
         logout.setBackground(new Color(73, 160, 120));
 
+        alerts = new JButton("Alerts");
+        if(db.haveAlerts(user)){
+            alerts.setBackground(Color.RED);
+        }
+        else{
+            alerts.setBackground(new Color(73, 160, 120));
+        }
+
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
         mb.add(Box.createHorizontalGlue());
+        mb.add(alerts);
         mb.add(logout);
         
         home = new JMenuItem("Home");
@@ -82,6 +88,12 @@ public class UserHomePage {
         logout.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 logoutActionPerformed(evt);
+            }
+        });
+
+        alerts.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                alertsActionPerformed(evt);
             }
         });
 
@@ -194,108 +206,91 @@ public class UserHomePage {
          LogInPage lp = new LogInPage(db);
     }
 
-    /* Populate full table view -> good for admin view*/
-    private void populateUpcoming() {
-        appointments = new JTable();
-        String [] apptHeaders = {"Date", "Time", "Description", "Service Provider"};
-            appointments.setModel(new DefaultTableModel(apptHeaders, 0));
-            appointments.getTableHeader().setBackground(new Color(33, 104, 105));
-            appointments.getTableHeader().setForeground(Color.WHITE);
-        try{
-            String sql = "SELECT * FROM Appointment WHERE UserEmail = \"" + user.getEmail() + 
-                        "\" AND Date >= date(NOW());";
-            ResultSet rs = db.executeSQL(sql);
-    
-            DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
+    public void alertsActionPerformed(ActionEvent e){
+        alertFrame = new JFrame("Your Alerts");
+        //new alerts table
+        String [] newHeader = {"New Alerts"};
+        newTable = new JTable();
+        newTable.setModel(new DefaultTableModel(newHeader, 0));
+        newTable.getTableHeader().setBackground(new Color(33, 104, 105));
+        newTable.getTableHeader().setForeground(Color.WHITE);
+        DefaultTableModel tblModel = (DefaultTableModel)newTable.getModel();
 
-            //no appts to be shown
-            if(rs.next() == false){
-                noappts = new JLabel("No Upcoming Appointments");
-                noappts.setFont(new Font("Sarif", Font.PLAIN, 10));
-                Dimension noSize = noappts.getPreferredSize();
-                noappts.setBounds(20, 80, noSize.width+20, noSize.height);
-                p.add(noappts);
-            }
-            while(rs.next()){
-                //data will be added until finished
-                String descr = rs.getString("Description");
-                String date = String.valueOf(rs.getDate("Date"));
-                String time = String.valueOf(rs.getTime("Time"));
-                String spEmail = rs.getString("SPEmail");
-                String spName = getSPName(spEmail);
-
-                Object tbData[] = {date, time, descr, spName};
-
-                //addstring array into jtable
-                tblModel.addRow(tbData);
-            }
+        ArrayList<String> notifs = db.getNewAlerts(user);
+        if(notifs.size() == 0){
+            String[] data = {"No new alerts"};
+            tblModel.addRow(data);
         }
-        catch(Exception e){
-            System.out.println(e.getMessage());
-        }
-        scroll = new JScrollPane(appointments);
-        scroll.setBounds(10, 80, 950, 350);
-        scroll.validate();
-        appointments.getColumnModel().getColumn(0).setMaxWidth(100);
-        appointments.getColumnModel().getColumn(1).setMaxWidth(100);
-        appointments.getColumnModel().getColumn(2).setPreferredWidth(150);
-        f.add(scroll);
-        f.validate();
-    }   
-
-    private void updateUpcoming(){
-        try{
-            String sql = "SELECT * FROM Appointment WHERE UserEmail = \"" + user.getEmail() + 
-                        "\" AND Date >= date(NOW());";
-            ResultSet rs = db.executeSQL(sql);
-    
-            DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
-
-            //no appts to be shown
-            if(rs.next() == false){
-                noappts = new JLabel("No Upcoming Appointments");
-                noappts.setFont(new Font("Sarif", Font.PLAIN, 10));
-                Dimension noSize = noappts.getPreferredSize();
-                noappts.setBounds(20, 80, noSize.width+20, noSize.height);
-                p.add(noappts);
-            }
-            int row = 0;
-            while(rs.next()){
-                //data will be added until finished
-                String descr = rs.getString("Description");
-                String date = String.valueOf(rs.getDate("Date"));
-                String time = String.valueOf(rs.getTime("Time"));
-                String spEmail = rs.getString("SPEmail");
-                String spName = getSPName(spEmail);
-                //if model already contains the value... don't add it
-                if(tblModel.getValueAt(row, 0).equals(date) && 
-                   tblModel.getValueAt(row, 1).equals(time)){
-                    continue;
-                }
-
-                Object tbData[] = {date, time, descr, spName};
-
+        else{
+            for(String s : notifs){
                 //add string array into jtable
-                tblModel.addRow(tbData);
-                row++;
+                String[] data = {s};
+                tblModel.addRow(data);
             }
         }
-        catch(Exception e){
-            System.out.println(e.getMessage());
+        
+        //add to frame
+        JScrollPane scroll2 = new JScrollPane(newTable);
+        scroll2.setBounds(10, 30, 450, 200);
+        scroll2.validate();
+        newTable.validate();
+        alertFrame.add(scroll2);
+
+        //previous alerts table
+        String [] oldHeader = {"Previous Alerts"};
+        oldTable = new JTable();
+        oldTable.setModel(new DefaultTableModel(oldHeader, 0));
+        oldTable.getTableHeader().setBackground(new Color(33, 104, 105));
+        oldTable.getTableHeader().setForeground(Color.WHITE);
+        DefaultTableModel tblModel2 = (DefaultTableModel)oldTable.getModel();
+        
+        ArrayList<String> oldNotifs = db.getPastAlerts(user);
+        if(oldNotifs.size() == 0){
+            String[] data = {"No previous alerts"};
+            tblModel2.addRow(data);
         }
-        scroll.validate();
-        f.validate();
+        else{
+            for(String s : oldNotifs){
+                //add string array into jtable
+                String[] data = {s};
+                tblModel2.addRow(data);
+            }
+        }
+        //add to frame
+        JScrollPane scroll3 = new JScrollPane(oldTable);
+        scroll3.setBounds(10, 250, 450, 200);
+        scroll3.validate();
+        oldTable.validate();
+        alertFrame.add(scroll3);
+
+        JButton ok = new JButton("OK");
+        ok.setBackground(new Color(156, 197, 161));
+        Dimension okSize = ok.getPreferredSize();
+        ok.setBounds(10, 500, okSize.width+10, okSize.height);
+        ok.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt){
+                alertCloseActionPerformed(evt);
+            }
+        });
+        alertFrame.add(ok);
+
+        alertFrame.setLayout(null);
+        alertFrame.setSize(500,580);
+        alertFrame.setVisible(true);
+        alertFrame.validate();
+
     }
 
-    private void greyOutCanceled() {
-        for (int i = 0; i <appointments.getRowCount(); i++) {
-            int apptId = db.getApptIdUser(String.valueOf(appointments.getValueAt(i, 0)),
-                    String.valueOf(appointments.getValueAt(i, 1)), user.getEmail());
-            int canceled = db.getCanceled(apptId);
-            if (canceled == 1) {
-                //need to do
-            }
-        }
+    private void alertCloseActionPerformed(ActionEvent e){
+
+        //update that new appts have been alerted
+        db.sawNewAlerts(user);
+
+        //change color of alerts button
+        alerts.setBackground(new Color(73, 160, 120));
+        f.validate();
+
+        alertFrame.dispose();
     }
 
     private void cancelActionPerformed(ActionEvent e) {
@@ -353,4 +348,128 @@ public class UserHomePage {
         f2.setLocation(275, 150);
         f2.setVisible(true);
     }
+
+    /* Populate full table view -> good for admin view*/
+    private void populateUpcoming() {
+        appointments = new JTable();
+        String [] apptHeaders = {"Date", "Time", "Description", "Service Provider", "Canceled"};
+            appointments.setModel(new DefaultTableModel(apptHeaders, 0));
+            appointments.getTableHeader().setBackground(new Color(33, 104, 105));
+            appointments.getTableHeader().setForeground(Color.WHITE);
+        try{
+            String sql = "SELECT * FROM Appointment WHERE UserEmail = \"" + user.getEmail() + 
+                        "\" AND Date >= date(NOW());";
+            ResultSet rs = db.executeSQL(sql);
+    
+            DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
+
+            //no appts to be shown
+            if(rs.next() == false){
+                noappts = new JLabel("No Upcoming Appointments");
+                noappts.setFont(new Font("Sarif", Font.PLAIN, 10));
+                Dimension noSize = noappts.getPreferredSize();
+                noappts.setBounds(20, 80, noSize.width+20, noSize.height);
+                p.add(noappts);
+            }
+            while(rs.next()){
+                //data will be added until finished
+                String descr = rs.getString("Description");
+                String date = String.valueOf(rs.getDate("Date"));
+                String time = String.valueOf(rs.getTime("Time"));
+                String spEmail = rs.getString("SPEmail");
+                int isCanceled = rs.getInt("Canceled");
+                String yesno;
+                if(isCanceled == 1){
+                    yesno = "Yes";
+                }
+                else{
+                    yesno = "No";
+                }
+
+                String spName = getSPName(spEmail);
+
+                Object tbData[] = {date, time, descr, spName, yesno};
+
+                //addstring array into jtable
+                tblModel.addRow(tbData);
+            }
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        scroll = new JScrollPane(appointments);
+        scroll.setBounds(10, 80, 950, 350);
+        scroll.validate();
+        appointments.getColumnModel().getColumn(0).setMaxWidth(100);
+        appointments.getColumnModel().getColumn(1).setMaxWidth(100);
+        appointments.getColumnModel().getColumn(2).setPreferredWidth(150);
+        f.add(scroll);
+        f.validate();
+    }   
+
+    private void updateUpcoming(){
+        try{
+            String sql = "SELECT * FROM Appointment WHERE UserEmail = \"" + user.getEmail() + 
+                        "\" AND Date >= date(NOW());";
+            ResultSet rs = db.executeSQL(sql);
+    
+            DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
+
+            //no appts to be shown
+            if(rs.next() == false){
+                noappts = new JLabel("No Upcoming Appointments");
+                noappts.setFont(new Font("Sarif", Font.PLAIN, 10));
+                Dimension noSize = noappts.getPreferredSize();
+                noappts.setBounds(20, 80, noSize.width+20, noSize.height);
+                p.add(noappts);
+            }
+            int row = 0;
+            while(rs.next()){
+                //data will be added until finished
+                String descr = rs.getString("Description");
+                String date = String.valueOf(rs.getDate("Date"));
+                String time = String.valueOf(rs.getTime("Time"));
+                String spEmail = rs.getString("SPEmail");
+                int isCanceled = rs.getInt("Canceled");
+                String yesno;
+                if(isCanceled == 1){
+                    yesno = "Yes";
+                }
+                else{
+                    yesno = "No";
+                }
+
+                String spName = getSPName(spEmail);
+                //if model already contains the value... don't add it
+                if(tblModel.getValueAt(row, 0).equals(date) && 
+                   tblModel.getValueAt(row, 1).equals(time)){
+                    continue;
+                }
+
+                Object tbData[] = {date, time, descr, spName, yesno};
+
+                //add string array into jtable
+                tblModel.addRow(tbData);
+                row++;
+            }
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        scroll.validate();
+        f.validate();
+    }
+
+    private void greyOutCanceled() {
+        for (int i = 0; i <appointments.getRowCount(); i++) {
+            int apptId = db.getApptIdUser(String.valueOf(appointments.getValueAt(i, 0)),
+                    String.valueOf(appointments.getValueAt(i, 1)), user.getEmail());
+            int canceled = db.getCanceled(apptId);
+            if (canceled == 1) {
+                //need to do
+            }
+        }
+    }
+
+    
 }

@@ -1,21 +1,11 @@
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.ActionEvent;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Year;
-import java.time.LocalDate;
-import java.text.SimpleDateFormat;
-
-
+import java.time.*;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 
 public class SPBookPage implements ActionListener {
     JFrame f;

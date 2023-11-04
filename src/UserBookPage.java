@@ -129,7 +129,6 @@ public class UserBookPage implements ActionListener {
         bookButton = new JButton("Book Selection Now");
         bookButton.setFont(new Font("Sarif", Font.PLAIN, 15));
         bookButton.setBackground(new Color(156, 197, 161));
-        bookButton.setForeground(Color.WHITE);
         Dimension startBSize = bookButton.getPreferredSize();
         bookButton.setBounds(10, 520, startBSize.width+10, startBSize.height);
         bookButton.addActionListener(new ActionListener() {
@@ -139,7 +138,6 @@ public class UserBookPage implements ActionListener {
         });
         bookPanel.add(bookButton);
         bookPanel.validate();
-        // f.validate(); 
     }
 
     private String getSPName(String email){
@@ -249,7 +247,7 @@ public class UserBookPage implements ActionListener {
         User user = hp.getUser();
 
         //check for conflicts
-        if (db.apptConflictUser(user.getEmail(), date, time) < 0){
+        if (db.apptConflictUser(user.getEmail(), date, time) > 0){
             JOptionPane.showMessageDialog(null, 
                 "Unable to book. You have an appointment conflict with this time.");
         }
@@ -259,7 +257,7 @@ public class UserBookPage implements ActionListener {
 
             //confirmation message
             JOptionPane.showMessageDialog(null, 
-                "Appointment with " + spName + "on" + date + " at " + time + " successfully booked.");
+                "Appointment with " + spName + " on " + date + " at " + time + " successfully booked.");
 
             //reset selections
             appointments.clearSelection();

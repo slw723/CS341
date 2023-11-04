@@ -11,17 +11,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 public class SPHomePage {
-    JFrame f, f2;
+    JFrame f, f2, alertFrame;
     JMenuBar mb;
     JMenuItem menu, home, makeAppt, history;
-    JButton logout, cancel, modify;
+    JButton logout, cancel, modify, alerts;
     JPanel p;
     JLabel hello, upcoming, noappts;
     DefaultTableModel model;
     JScrollPane scroll;
-    JTable appointments;
+    JTable appointments, newTable, oldTable;
     ServiceProvider sp;
     static Database db = new Database();
 
@@ -42,10 +43,20 @@ public class SPHomePage {
         logout = new JButton("Log Out");
         logout.setBackground(new Color(73, 160, 120));
 
+        alerts = new JButton("Alerts");
+        if(db.haveAlerts(sp)){
+            alerts.setBackground(Color.RED);
+        }
+        else{
+            alerts.setBackground(new Color(73, 160, 120));
+        }
+
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
         mb.add(Box.createHorizontalGlue());
+        mb.add(alerts);
         mb.add(logout);
+        
 
         home = new JMenuItem("Home");
         home.setFont(new Font("Sarif", Font.PLAIN, 15));
@@ -78,6 +89,12 @@ public class SPHomePage {
         logout.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 logoutActionPerformed(evt);
+            }
+        });
+
+        alerts.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                alertsActionPerformed(evt);
             }
         });
 
@@ -154,7 +171,7 @@ public class SPHomePage {
     /* Populate full table view -> good for admin view*/
     private void populateUpcoming() {
         
-        String [] apptHeaders = {"Date", "Time", "Description", "Booked", "Booked By"};
+        String [] apptHeaders = {"Date", "Time", "Description", "Booked", "Booked By", "Canceled"};
         appointments.setModel(new DefaultTableModel(apptHeaders, 0));
         appointments.getTableHeader().setBackground(new Color(33, 104, 105));
         appointments.getTableHeader().setForeground(Color.WHITE);
@@ -180,12 +197,20 @@ public class SPHomePage {
                 String time = String.valueOf(rs.getTime("Time"));
                 String user = rs.getString("UserEmail");
                 int book = rs.getInt("Booked");
-                String yesno, userName;
+                int isCanceled = rs.getInt("Canceled");
+                String yesno, userName, canceledStr;
                 if(book == 1){
                     yesno = "Yes";
                 }
                 else{
                     yesno = "No";
+                }
+
+                if(isCanceled == 1){
+                    canceledStr = "Yes";
+                }
+                else{
+                    canceledStr = "No";
                 }
 
                 ResultSet r = db.getUserName(user);
@@ -195,9 +220,9 @@ public class SPHomePage {
                 else{
                     userName = "No Client";
                 }
-                String tbData[] = {date, time, descr, yesno, userName};
+                String tbData[] = {date, time, descr, yesno, userName, canceledStr};
 
-                //addstring array into jtable
+                //add string array into jtable
                 tblModel.addRow(tbData);
             }
         }
@@ -212,6 +237,7 @@ public class SPHomePage {
         appointments.getColumnModel().getColumn(1).setMaxWidth(100);
         appointments.getColumnModel().getColumn(2).setPreferredWidth(250);
         appointments.getColumnModel().getColumn(3).setMaxWidth(100);
+        appointments.getColumnModel().getColumn(4).setPreferredWidth(175);
         f.add(scroll);
         f.validate();
     }
@@ -241,6 +267,7 @@ public class SPHomePage {
                 String time = String.valueOf(rs.getTime("Time"));
                 String user = rs.getString("UserEmail");
                 int book = rs.getInt("Booked");
+                int isCanceled = rs.getInt("Canceled");
                 //if model already contains the value... don't add it
                 if(tblModel.getValueAt(row, 0).equals(date) && 
                    tblModel.getValueAt(row, 1).equals(time)){
@@ -248,12 +275,19 @@ public class SPHomePage {
                     continue;
                 }
                 
-                String yesno, userName;
+                String yesno, userName, canceledStr;
                 if(book == 1){
                     yesno = "Yes";
                 }
                 else{
                     yesno = "No";
+                }
+
+                if(isCanceled == 1){
+                    canceledStr = "Yes";
+                }
+                else{
+                    canceledStr = "No";
                 }
 
                 ResultSet r = db.getUserName(user);
@@ -264,7 +298,7 @@ public class SPHomePage {
                     userName = "No Client";
                 }
 
-                String tbData[] = {date, time, descr, yesno, userName};
+                String tbData[] = {date, time, descr, yesno, userName, canceledStr};
 
                 //add string array into jtable
                 tblModel.addRow(tbData);
@@ -313,6 +347,94 @@ public class SPHomePage {
     private void logoutActionPerformed(ActionEvent e) {
         f.setVisible(false);
         new LogInPage(db);
+    }
+
+    //TODO not updating tables after close
+    private void alertsActionPerformed(ActionEvent e){
+        alertFrame = new JFrame("Your Alerts");
+        //new alerts table
+        String [] newHeader = {"New Alerts"};
+        newTable = new JTable();
+        newTable.setModel(new DefaultTableModel(newHeader, 0));
+        newTable.getTableHeader().setBackground(new Color(33, 104, 105));
+        newTable.getTableHeader().setForeground(Color.WHITE);
+        DefaultTableModel tblModel = (DefaultTableModel)newTable.getModel();
+
+        ArrayList<String> notifs = db.getNewAlerts(sp);
+        if(notifs.size() == 0){
+            String[] data = {"No new alerts"};
+            tblModel.addRow(data);
+        }
+        else{
+            for(String s : notifs){
+                //add string array into jtable
+                String[] data = {s};
+                tblModel.addRow(data);
+            }
+        }
+        
+        //add to frame
+        JScrollPane scroll2 = new JScrollPane(newTable);
+        scroll2.setBounds(10, 30, 450, 200);
+        scroll2.validate();
+        newTable.validate();
+        alertFrame.add(scroll2);
+
+        //previous alerts table
+        String [] oldHeader = {"Previous Alerts"};
+        oldTable = new JTable();
+        oldTable.setModel(new DefaultTableModel(oldHeader, 0));
+        oldTable.getTableHeader().setBackground(new Color(33, 104, 105));
+        oldTable.getTableHeader().setForeground(Color.WHITE);
+        DefaultTableModel tblModel2 = (DefaultTableModel)oldTable.getModel();
+        
+        ArrayList<String> oldNotifs = db.getPastAlerts(sp);
+        if(oldNotifs.size() == 0){
+            String[] data = {"No previous alerts"};
+            tblModel2.addRow(data);
+        }
+        else{
+            for(String s : oldNotifs){
+                //add string array into jtable
+                String[] data = {s};
+                tblModel2.addRow(data);
+            }
+        }
+        //add to frame
+        JScrollPane scroll3 = new JScrollPane(oldTable);
+        scroll3.setBounds(10, 250, 450, 200);
+        scroll3.validate();
+        oldTable.validate();
+        alertFrame.add(scroll3);
+
+        JButton ok = new JButton("OK");
+        ok.setBackground(new Color(156, 197, 161));
+        Dimension okSize = ok.getPreferredSize();
+        ok.setBounds(10, 500, okSize.width+10, okSize.height);
+        ok.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt){
+                alertCloseActionPerformed(evt);
+            }
+        });
+        alertFrame.add(ok);
+
+        alertFrame.setLayout(null);
+        alertFrame.setSize(500,580);
+        alertFrame.setVisible(true);
+        alertFrame.validate();
+
+    }
+
+    private void alertCloseActionPerformed(ActionEvent e){
+
+        //update that new appts have been alerted
+        db.sawNewAlerts(sp);
+
+        //change color of alerts button
+        alerts.setBackground(new Color(73, 160, 120));
+        f.validate();
+
+        alertFrame.dispose();
     }
 
     private void cancelActionPerformed(ActionEvent e){
