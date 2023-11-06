@@ -12,13 +12,14 @@ public class UserBookPage implements ActionListener {
     JFrame f;
     JMenuBar mb;
     JMenuItem menu, home, makeAppt, history;
-    JLabel title, type, start, end, apptAvailable;
+    JLabel title, type, start, end, apptAvailable, search;
     JPanel bookPanel;
     String[] apptTypes;
     JComboBox<String> typesCB;
+    JTextField searchBox;
     JButton bookButton;
     JButton endButton;
-    JButton go;
+    JButton go, searchButton;
     DefaultTableModel model;
     JTable appointments;
     JScrollPane scroll;
@@ -97,13 +98,39 @@ public class UserBookPage implements ActionListener {
         });
         bookPanel.add(go);
 
+        // add search text
+        search = new JLabel("Search available appointments: ");
+        type.setFont(new Font("Sarif", Font.PLAIN, 15));
+        type.setForeground(new Color(31, 36, 33));
+        Dimension searchSize = search.getPreferredSize();
+        search.setBounds(10, 125, searchSize.width+10, searchSize.height);
+        bookPanel.add(search);
+
+        // add search text box
+        searchBox = new JTextField();
+        searchBox.setFont(new Font("Sarif", Font.PLAIN, 15));
+        searchBox.setSize(300, 20);
+        searchBox.setLocation(10, 150);
+        bookPanel.add(searchBox);
+
+        // add search button
+        searchButton = new JButton("Search");
+        Dimension searchButtonSize = searchButton.getPreferredSize();
+        searchButton.setBounds(10, 175, searchButtonSize.width+10, searchButtonSize.height);
+        searchButton.setBackground(new Color(156, 197, 161));
+        bookPanel.add(searchButton);
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
 
         // add text for picking appointment timeframe
         apptAvailable = new JLabel("Available appointments: ");
         apptAvailable.setFont(new Font("Sarif", Font.BOLD, 15));
         apptAvailable.setForeground(new Color(33, 104, 105));
         Dimension availSize = apptAvailable.getPreferredSize();
-        apptAvailable.setBounds(10, 125, availSize.width+10, availSize.height);
+        apptAvailable.setBounds(10, 225, availSize.width+10, availSize.height);
         bookPanel.add(apptAvailable);
 
         // bookPanel specifications
@@ -130,7 +157,7 @@ public class UserBookPage implements ActionListener {
         bookButton.setFont(new Font("Sarif", Font.PLAIN, 15));
         bookButton.setBackground(new Color(156, 197, 161));
         Dimension startBSize = bookButton.getPreferredSize();
-        bookButton.setBounds(10, 520, startBSize.width+10, startBSize.height);
+        bookButton.setBounds(10, 595, startBSize.width+10, startBSize.height);
         bookButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
                 bookActionPerformed(evt);
@@ -223,7 +250,7 @@ public class UserBookPage implements ActionListener {
         }
         scroll = new JScrollPane(appointments);
         // set sizes
-        scroll.setBounds(10, 150, 950, 350);
+        scroll.setBounds(10, 250, 950, 350);
         scroll.validate();
         appointments.getColumnModel().getColumn(0).setMaxWidth(100);
         appointments.getColumnModel().getColumn(1).setMaxWidth(100);
@@ -264,6 +291,78 @@ public class UserBookPage implements ActionListener {
             appointments.removeAll();
             typesCB.setSelectedIndex(0);
         }
+    }
+
+    // searches available appointments from text box
+    public void searchButtonActionPerformed(ActionEvent evt) {
+        String searchText = searchBox.getText();
+        //checking if user searched by appointment type
+        if (searchText.equals("Facial") || searchText.equals("facial")) {
+            searchTable("Appointment type", "Facial");
+        }
+        else if (searchText.equals("Beauty") || searchText.equals("beauty")) {
+            searchTable("Appointment type", "Beauty");
+        }
+        else if (searchText.equals("Medical") || searchText.equals("medical")) {
+            searchTable("Appointment type", "Medical");
+        }
+
+        //checking if user searched by service provider
+        String[] splitFirstLast = searchText.split(" ");
+        ResultSet email = db.getSPEmail(splitFirstLast[0], splitFirstLast[1]);
+        if (email != null) {
+            searchTable("Service Provider", String.valueOf(email));
+        }
+
+        //checking if user searched by date
+
+        //checking if user searched by time
+    }
+
+    public void searchTable (String type, String searchText) {
+        appointments = new JTable();
+        String [] apptHeaders = {"Date", "Time", "Description","Service Provider", "Qualification"};
+        appointments.setModel(new DefaultTableModel(apptHeaders, 0));
+        appointments.getTableHeader().setBackground(new Color(33, 104, 105));
+        appointments.getTableHeader().setForeground(Color.WHITE);
+        try{
+            // Show the available time slots
+            ResultSet rs = null;
+            if (type.equals("Appointment type")) {
+                rs = db.getApptType(searchText);
+            }
+            else if (type.equals("Service Provider")) {
+                rs = db.getApptSP(searchText);
+            }
+            DefaultTableModel tblmodel = (DefaultTableModel)appointments.getModel();
+            while(rs.next()){
+                //data will be added until finished
+                String descr = rs.getString("Description");
+                String date = String.valueOf(rs.getDate("Date"));
+                String time = String.valueOf(rs.getTime("Time"));
+                String spEmail = rs.getString("SPEmail");
+                String spName = getSPName(spEmail);
+                String spQualif = getSPQualif(spEmail);
+
+                Object tbData[] = {date, time, descr, spName, spQualif};
+
+                // add data into jtable
+                tblmodel.addRow(tbData);
+            }
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        scroll = new JScrollPane(appointments);
+        // set sizes
+        scroll.setBounds(10, 250, 950, 350);
+        scroll.validate();
+        appointments.getColumnModel().getColumn(0).setMaxWidth(100);
+        appointments.getColumnModel().getColumn(1).setMaxWidth(100);
+        appointments.getColumnModel().getColumn(2).setMaxWidth(200);
+        bookPanel.add(scroll);
+        bookPanel.validate();
+        makeBookButton();
     }
 
     public void actionPerformed(ActionEvent e){
