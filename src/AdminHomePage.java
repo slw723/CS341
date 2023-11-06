@@ -12,17 +12,24 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+// Light Black: 31, 36, 33
+// Dark Teal: 33, 104, 105
+// Mint Green: 73, 160, 120
+// Light Green: 156, 197, 161
+// Off white: 220, 225, 222
 public class AdminHomePage {
     JFrame f;
     JButton logout;
     JMenuBar mb;
     JMenuItem menu, home, trends;
-    JPanel p;
+    JPanel p, userPanel, spPanel, apptPanel;
     JScrollPane scroll, scroll2;
 
     JLabel welcome, usersLabel, noUsers, spsLabel, noSPs;
     JTable users, serviceProviders;
     Admin admin;
+
+    JTabbedPane tabbedPane;
     static Database db = new Database();
 
     public AdminHomePage(Database db, Admin admin){
@@ -32,6 +39,7 @@ public class AdminHomePage {
         /*Make frame*/
         f = new JFrame("Admin Home Page");
         f.setBackground(new Color(220, 225, 222));
+        f.setLayout(null);
 
         mb = new JMenuBar();
         menu = new JMenu("Menu");
@@ -72,7 +80,6 @@ public class AdminHomePage {
         });
 
         f.setJMenuBar(mb);
-
         // welcome
         p = new JPanel();
         f.getContentPane();
@@ -82,7 +89,28 @@ public class AdminHomePage {
         welcome.setForeground(new Color(31, 36, 33));
         Dimension wcSize = welcome.getPreferredSize();
         welcome.setBounds(450, 10, wcSize.width+10, wcSize.height);
-        p.add(welcome);
+        f.add(welcome);
+
+        /*Create JTabbedPane and its tabs (panels)*/
+        userPanel = new JPanel();
+        spPanel = new JPanel();
+        apptPanel = new JPanel();
+        UIManager.put("TabbedPane.selected", new Color(31, 36, 33));
+
+        tabbedPane = new JTabbedPane();
+        tabbedPane.setBounds(50,75, 900, 650);
+        tabbedPane.add("Users", userPanel);
+        tabbedPane.add("Service Providers", spPanel);
+        tabbedPane.add("Appointments", apptPanel);
+        tabbedPane.setBackgroundAt(0, new Color(33, 104, 105));
+        tabbedPane.setForegroundAt(0, Color.WHITE);
+        tabbedPane.setBackgroundAt(1, new Color(33, 104, 105));
+        tabbedPane.setForegroundAt(1, Color.WHITE);
+        tabbedPane.setBackgroundAt(2, new Color(33, 104, 105));
+        tabbedPane.setForegroundAt(2, Color.WHITE);
+
+        userPanel.setLayout(null);
+        f.add(tabbedPane);
 
         // add current users title
         usersLabel = new JLabel("Current system Users");
@@ -90,7 +118,7 @@ public class AdminHomePage {
         usersLabel.setForeground(new Color(33, 104, 105));
         Dimension upSize = usersLabel.getPreferredSize();
         usersLabel.setBounds(10, 60, upSize.width+10, upSize.height);
-        p.add(usersLabel);
+       // p.add(usersLabel);
 
         // add current users title
         spsLabel = new JLabel("Current system Service Providers");
@@ -98,19 +126,18 @@ public class AdminHomePage {
         spsLabel.setForeground(new Color(33, 104, 105));
         Dimension upSize1 = spsLabel.getPreferredSize();
         spsLabel.setBounds(10, 350, upSize1.width+10, upSize.height);
-        p.add(spsLabel);
+      //  p.add(spsLabel);
         // show the database's current Users and Service Providers
         users = new JTable();
         populateUsers();
         serviceProviders = new JTable();
-        populateSPs();
+       // populateSPs();
 
 
         p.setLayout(null);
         p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        f.add(p);
-
+        //f.add(p);
         /* Make visible */
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         f.setSize(1000,800);
@@ -146,15 +173,15 @@ public class AdminHomePage {
             System.out.println(e.getStackTrace());
         }
         scroll = new JScrollPane(users);
-        scroll.setBounds(10, 80, 600, 250);
+        scroll.setBounds(0, 100, 900, 700);
         scroll.validate();
         users.validate();
         users.getColumnModel().getColumn(0).setMinWidth(100);
         users.getColumnModel().getColumn(1).setMinWidth(100);
         users.getColumnModel().getColumn(2).setMinWidth(100);
         users.getColumnModel().getColumn(3).setMinWidth(100);
-        f.add(scroll);
-        f.validate();
+        userPanel.add(scroll);
+        userPanel.validate();
 
     }
 
