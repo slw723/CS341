@@ -179,9 +179,11 @@ public class SPHomePage {
             String sql = "SELECT * FROM Appointment WHERE SPEmail = \"" + sp.getEmail() +
                     "\" AND Date >= date(NOW());";
             ResultSet rs = db.executeSQL(sql);
-        
+            boolean currentRS = rs.next();
+
             // no appts to be shown
-            if(!rs.next()){
+            if(!currentRS){
+                // don't know if its ever getting here
                 noappts = new JLabel("No Upcoming Appointments");
                 noappts.setFont(new Font("Sarif", Font.PLAIN, 10));
                 Dimension noSize = noappts.getPreferredSize();
@@ -190,7 +192,7 @@ public class SPHomePage {
                 p.validate();
             }
             DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
-            while(rs.next()){
+            while(currentRS){
                 //data will be added until finished
                 String descr = rs.getString("Description");
                 String date = String.valueOf(rs.getDate("Date"));
@@ -224,6 +226,7 @@ public class SPHomePage {
 
                 //add string array into jtable
                 tblModel.addRow(tbData);
+                currentRS = rs.next();
             }
         }
         catch(Exception e){

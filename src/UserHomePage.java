@@ -366,15 +366,16 @@ public class UserHomePage extends DefaultTableCellRenderer {
     
             DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
 
+            boolean currentRS = rs.next();
             //no appts to be shown
-            if(rs.next() == false){
+            if(!currentRS){
                 noappts = new JLabel("No Upcoming Appointments");
                 noappts.setFont(new Font("Sarif", Font.PLAIN, 10));
                 Dimension noSize = noappts.getPreferredSize();
                 noappts.setBounds(20, 80, noSize.width+20, noSize.height);
                 p.add(noappts);
             }
-            while(rs.next()){
+            while(currentRS){
                 //data will be added until finished
                 String descr = rs.getString("Description");
                 String date = String.valueOf(rs.getDate("Date"));
@@ -395,6 +396,7 @@ public class UserHomePage extends DefaultTableCellRenderer {
 
                 //addstring array into jtable
                 tblModel.addRow(tbData);
+                currentRS = rs.next();
             }
         }
         catch(Exception e){
