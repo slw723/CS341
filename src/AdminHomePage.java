@@ -5,6 +5,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableRowSorter;
+import javax.swing.DefaultRowSorter;
+
 
 import java.awt.*;
 import java.sql.ResultSet;
@@ -19,17 +22,20 @@ import java.time.LocalTime;
 // Off white: 220, 225, 222
 public class AdminHomePage {
     JFrame f;
-    JButton logout;
+    JButton logout, spGoButton;
     JMenuBar mb;
     JMenuItem menu, home, trends;
     JPanel p, userPanel, spPanel, apptPanel;
-    JScrollPane scroll, scroll2;
+    JScrollPane scroll, scroll2, scroll3;
 
-    JLabel welcome, usersLabel, noUsers, spsLabel, noSPs;
-    JTable users, serviceProviders;
+    JLabel welcome, usersLabel, noUsers, spsLabel, noSPs, spSearchLabel;
+    JTextField spSearchText;
+    JTable users, serviceProviders, appointments;
     Admin admin;
 
     JTabbedPane tabbedPane;
+
+    TableRowSorter spSorter;
     static Database db = new Database();
 
     public AdminHomePage(Database db, Admin admin){
@@ -93,8 +99,30 @@ public class AdminHomePage {
 
         /*Create JTabbedPane and its tabs (panels)*/
         userPanel = new JPanel();
+        userPanel.setLayout(null);
+
         spPanel = new JPanel();
+        spPanel.setLayout(null);
+        spSearchLabel = new JLabel("Search: ");
+        spSearchLabel.setBounds(20, 25, 50, 25);
+        spSearchText = new JTextField();
+        spSearchText.setBounds(80, 25, 200, 25);
+        spGoButton = new JButton("Go");
+        spGoButton.setBounds(290, 25, 75, 25);
+        spGoButton.setBackground(new Color(73, 160, 120));
+        spGoButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt){
+                goActionPerformed(evt);
+            }
+        });
+
+        spPanel.add(spSearchLabel);
+        spPanel.add(spSearchText);
+        spPanel.add(spGoButton);
+
+
         apptPanel = new JPanel();
+        apptPanel.setLayout(null);
         UIManager.put("TabbedPane.selected", new Color(31, 36, 33));
 
         tabbedPane = new JTabbedPane();
@@ -108,41 +136,24 @@ public class AdminHomePage {
         tabbedPane.setForegroundAt(1, Color.WHITE);
         tabbedPane.setBackgroundAt(2, new Color(33, 104, 105));
         tabbedPane.setForegroundAt(2, Color.WHITE);
-
-        userPanel.setLayout(null);
         f.add(tabbedPane);
 
-        // add current users title
-        usersLabel = new JLabel("Current system Users");
-        usersLabel.setFont(new Font("Sarif", Font.PLAIN, 15));
-        usersLabel.setForeground(new Color(33, 104, 105));
-        Dimension upSize = usersLabel.getPreferredSize();
-        usersLabel.setBounds(10, 60, upSize.width+10, upSize.height);
-       // p.add(usersLabel);
-
-        // add current users title
-        spsLabel = new JLabel("Current system Service Providers");
-        spsLabel.setFont(new Font("Sarif", Font.PLAIN, 15));
-        spsLabel.setForeground(new Color(33, 104, 105));
-        Dimension upSize1 = spsLabel.getPreferredSize();
-        spsLabel.setBounds(10, 350, upSize1.width+10, upSize.height);
-      //  p.add(spsLabel);
         // show the database's current Users and Service Providers
         users = new JTable();
         populateUsers();
         serviceProviders = new JTable();
-       // populateSPs();
+        populateSPs();
+        spSorter = new TableRowSorter(serviceProviders.getModel());
+        serviceProviders.setRowSorter(spSorter);
+        appointments = new JTable();
+        populateAppts();
 
-
-        p.setLayout(null);
-        p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        //f.add(p);
         /* Make visible */
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         f.setSize(1000,800);
         f.setVisible(true);
     }
+
 
     private void populateUsers(){
         String [] userHeaders = {"First Name", "Last Name", "Email", "Phone Number"};
@@ -187,7 +198,8 @@ public class AdminHomePage {
 
     private void populateSPs(){
         String [] spHeaders = {"First Name", "Last Name", "Type", "Qualification", "Year Graduated", "Email", "Phone Number"};
-        serviceProviders.setModel(new DefaultTableModel(spHeaders, 0));
+        DefaultTableModel model = new DefaultTableModel(spHeaders, 0);
+        serviceProviders.setModel(model);
         serviceProviders.getTableHeader().setBackground(new Color(33, 104, 105));
         serviceProviders.getTableHeader().setForeground(Color.WHITE);
 
@@ -195,6 +207,7 @@ public class AdminHomePage {
             String sql = "SELECT * FROM serviceprovider";
             ResultSet rs = db.executeSQL(sql);
             DefaultTableModel tblModel = (DefaultTableModel)serviceProviders.getModel();
+
             while(rs.next()){
                 //data will be added until finished
                 String fName = rs.getString("FirstName");
@@ -216,7 +229,7 @@ public class AdminHomePage {
             System.out.println(e.getStackTrace());
         }
         scroll2 = new JScrollPane(serviceProviders);
-        scroll2.setBounds(10, 370, 950, 250);
+        scroll2.setBounds(00, 100, 900, 700);
         scroll2.validate();
         serviceProviders.validate();
         serviceProviders.getColumnModel().getColumn(0).setMinWidth(75);
@@ -226,8 +239,83 @@ public class AdminHomePage {
         serviceProviders.getColumnModel().getColumn(4).setMinWidth(50);
         serviceProviders.getColumnModel().getColumn(5).setMinWidth(100);
         serviceProviders.getColumnModel().getColumn(5).setMinWidth(75);
-        f.add(scroll2);
-        f.validate();
+        spPanel.add(scroll2);
+        spPanel.validate();
+    }
+
+    private void populateAppts(){
+        String [] apptHeaders = {"Description", "Date", "Time", "Type", "User", "Service Provider", "Booked", "Cancelled"};
+        appointments.setModel(new DefaultTableModel(apptHeaders, 0));
+        appointments.getTableHeader().setBackground(new Color(33, 104, 105));
+        appointments.getTableHeader().setForeground(Color.WHITE);
+
+        try{
+            String sql = "SELECT * FROM appointments";
+            ResultSet rs = db.executeSQL(sql);
+            DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
+            while(rs.next()){
+                //data will be added until finished
+                String descr = rs.getString("Description");
+                String date = String.valueOf(rs.getDate("Date"));
+                String time = String.valueOf(rs.getTime("Time"));
+                String type = rs.getString("Type");
+                String user = rs.getString("UserEmail");
+                String sp = rs.getString("SPEmail");
+                int book = rs.getInt("Booked");
+                int isCanceled = rs.getInt("Canceled");
+                String yesno, userName, spName, canceledStr;
+                if(book == 1){
+                    yesno = "Yes";
+                }
+                else{
+                    yesno = "No";
+                }
+
+                if(isCanceled == 1){
+                    canceledStr = "Yes";
+                }
+                else{
+                    canceledStr = "No";
+                }
+
+                ResultSet r = db.getUserName(user);
+                if(r.next()){
+                    userName = r.getString("FirstName") + " " + r.getString("LastName");
+                }
+                else{
+                    userName = "No Client";
+                }
+
+                ResultSet r2 = db.getSPName(sp);
+                if(r.next()){
+                    spName = r.getString("FirstName") + " " + r.getString("LastName");
+                }
+                else{
+                    spName = "No Client";
+                }
+                String tbData[] = {descr, date, time, type, userName, spName, yesno, canceledStr};
+
+                //add string array into jtable
+                tblModel.addRow(tbData);
+            }
+
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            System.out.println(e.getStackTrace());
+        }
+        scroll3 = new JScrollPane(appointments);
+        scroll3.setBounds(00, 100, 900, 700);
+        scroll3.validate();
+        appointments.validate();
+        appointments.getColumnModel().getColumn(0).setMinWidth(250);
+        appointments.getColumnModel().getColumn(1).setMinWidth(75);
+        appointments.getColumnModel().getColumn(2).setMinWidth(50);
+        appointments.getColumnModel().getColumn(3).setMinWidth(75);
+        appointments.getColumnModel().getColumn(4).setMinWidth(50);
+        appointments.getColumnModel().getColumn(5).setMinWidth(100);
+        appointments.getColumnModel().getColumn(5).setMinWidth(75);
+        apptPanel.add(scroll3);
+        apptPanel.validate();
     }
 
     private void logoutActionPerformed(ActionEvent e) {
@@ -240,5 +328,19 @@ public class AdminHomePage {
     }
     private void trendsActionPerformed(ActionEvent e){
 
+    }
+
+    public void goActionPerformed(ActionEvent e){
+        RowFilter filter = new RowFilter() {
+            String searchText = spSearchText.getText();
+            public boolean include(Entry entry) {
+                boolean result = entry.getStringValue(0).indexOf(searchText) >=0 || entry.getStringValue(1).indexOf(searchText) >=0
+                                || entry.getStringValue(2).indexOf(searchText) >=0 || entry.getStringValue(3).indexOf(searchText) >=0
+                                || entry.getStringValue(4).indexOf(searchText) >=0 || entry.getStringValue(5).indexOf(searchText) >=0
+                                || entry.getStringValue(6).indexOf(searchText) >=0;
+                return result;
+            }
+        };
+        spSorter.setRowFilter(filter);
     }
 }
