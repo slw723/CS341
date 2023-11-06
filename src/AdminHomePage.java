@@ -22,20 +22,20 @@ import java.time.LocalTime;
 // Off white: 220, 225, 222
 public class AdminHomePage {
     JFrame f;
-    JButton logout, spGoButton;
+    JButton logout, userGoButton, spGoButton, apptGoButton;
     JMenuBar mb;
     JMenuItem menu, home, trends;
     JPanel p, userPanel, spPanel, apptPanel;
     JScrollPane scroll, scroll2, scroll3;
 
-    JLabel welcome, usersLabel, noUsers, spsLabel, noSPs, spSearchLabel;
-    JTextField spSearchText;
+    JLabel welcome, usersLabel, noUsers, spsLabel, noSPs, userSearchLabel, spSearchLabel, apptSearchLabel;
+    JTextField userSearchText, spSearchText, apptSearchText;
     JTable users, serviceProviders, appointments;
     Admin admin;
 
     JTabbedPane tabbedPane;
 
-    TableRowSorter spSorter;
+    TableRowSorter userSorter, spSorter, apptSorter;
     static Database db = new Database();
 
     public AdminHomePage(Database db, Admin admin){
@@ -100,6 +100,22 @@ public class AdminHomePage {
         /*Create JTabbedPane and its tabs (panels)*/
         userPanel = new JPanel();
         userPanel.setLayout(null);
+        userSearchLabel = new JLabel("Search: ");
+        userSearchLabel.setBounds(20, 25, 50, 25);
+        userSearchText = new JTextField();
+        userSearchText.setBounds(80, 25, 200, 25);
+        userGoButton = new JButton("Go");
+        userGoButton.setBounds(290, 25, 75, 25);
+        userGoButton.setBackground(new Color(73, 160, 120));
+        userGoButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt){
+                goUserActionPerformed(evt);
+            }
+        });
+
+        userPanel.add(userSearchLabel);
+        userPanel.add(userSearchText);
+        userPanel.add(userGoButton);
 
         spPanel = new JPanel();
         spPanel.setLayout(null);
@@ -112,7 +128,7 @@ public class AdminHomePage {
         spGoButton.setBackground(new Color(73, 160, 120));
         spGoButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
-                goActionPerformed(evt);
+                goSPActionPerformed(evt);
             }
         });
 
@@ -123,6 +139,23 @@ public class AdminHomePage {
 
         apptPanel = new JPanel();
         apptPanel.setLayout(null);
+        apptSearchLabel = new JLabel("Search: ");
+        apptSearchLabel.setBounds(20, 25, 50, 25);
+        apptSearchText = new JTextField();
+        apptSearchText.setBounds(80, 25, 200, 25);
+        apptGoButton = new JButton("Go");
+        apptGoButton.setBounds(290, 25, 75, 25);
+        apptGoButton.setBackground(new Color(73, 160, 120));
+        apptGoButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt){
+                goApptActionPerformed(evt);
+            }
+        });
+
+        apptPanel.add(apptSearchLabel);
+        apptPanel.add(apptSearchText);
+        apptPanel.add(apptGoButton);
+
         UIManager.put("TabbedPane.selected", new Color(31, 36, 33));
 
         tabbedPane = new JTabbedPane();
@@ -141,12 +174,19 @@ public class AdminHomePage {
         // show the database's current Users and Service Providers
         users = new JTable();
         populateUsers();
+        userSorter = new TableRowSorter(users.getModel());
+        users.setRowSorter(userSorter);
+
+
         serviceProviders = new JTable();
         populateSPs();
         spSorter = new TableRowSorter(serviceProviders.getModel());
         serviceProviders.setRowSorter(spSorter);
+
         appointments = new JTable();
         populateAppts();
+        apptSorter = new TableRowSorter(appointments.getModel());
+        appointments.setRowSorter(apptSorter);
 
         /* Make visible */
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -238,7 +278,7 @@ public class AdminHomePage {
         serviceProviders.getColumnModel().getColumn(3).setMinWidth(250);
         serviceProviders.getColumnModel().getColumn(4).setMinWidth(50);
         serviceProviders.getColumnModel().getColumn(5).setMinWidth(100);
-        serviceProviders.getColumnModel().getColumn(5).setMinWidth(75);
+        serviceProviders.getColumnModel().getColumn(6).setMinWidth(75);
         spPanel.add(scroll2);
         spPanel.validate();
     }
@@ -250,7 +290,7 @@ public class AdminHomePage {
         appointments.getTableHeader().setForeground(Color.WHITE);
 
         try{
-            String sql = "SELECT * FROM appointments";
+            String sql = "SELECT * FROM appointment";
             ResultSet rs = db.executeSQL(sql);
             DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
             while(rs.next()){
@@ -287,11 +327,11 @@ public class AdminHomePage {
                 }
 
                 ResultSet r2 = db.getSPName(sp);
-                if(r.next()){
-                    spName = r.getString("FirstName") + " " + r.getString("LastName");
+                if(r2.next()){
+                    spName = r2.getString("FirstName") + " " + r2.getString("LastName");
                 }
                 else{
-                    spName = "No Client";
+                    spName = "No Service Provider";
                 }
                 String tbData[] = {descr, date, time, type, userName, spName, yesno, canceledStr};
 
@@ -313,7 +353,7 @@ public class AdminHomePage {
         appointments.getColumnModel().getColumn(3).setMinWidth(75);
         appointments.getColumnModel().getColumn(4).setMinWidth(50);
         appointments.getColumnModel().getColumn(5).setMinWidth(100);
-        appointments.getColumnModel().getColumn(5).setMinWidth(75);
+        appointments.getColumnModel().getColumn(6).setMinWidth(75);
         apptPanel.add(scroll3);
         apptPanel.validate();
     }
@@ -330,7 +370,7 @@ public class AdminHomePage {
 
     }
 
-    public void goActionPerformed(ActionEvent e){
+    public void goSPActionPerformed(ActionEvent e){
         RowFilter filter = new RowFilter() {
             String searchText = spSearchText.getText();
             public boolean include(Entry entry) {
@@ -342,5 +382,31 @@ public class AdminHomePage {
             }
         };
         spSorter.setRowFilter(filter);
+    }
+
+    public void goUserActionPerformed(ActionEvent e){
+        RowFilter filter = new RowFilter() {
+            String searchText = userSearchText.getText();
+            public boolean include(Entry entry) {
+                boolean result = entry.getStringValue(0).indexOf(searchText) >=0 || entry.getStringValue(1).indexOf(searchText) >=0
+                        || entry.getStringValue(2).indexOf(searchText) >=0 || entry.getStringValue(3).indexOf(searchText) >=0;
+                return result;
+            }
+        };
+        userSorter.setRowFilter(filter);
+    }
+
+    public void goApptActionPerformed(ActionEvent e){
+        RowFilter filter = new RowFilter() {
+            String searchText = apptSearchText.getText();
+            public boolean include(Entry entry) {
+                boolean result = entry.getStringValue(0).indexOf(searchText) >=0 || entry.getStringValue(1).indexOf(searchText) >=0
+                        || entry.getStringValue(2).indexOf(searchText) >=0 || entry.getStringValue(3).indexOf(searchText) >=0
+                        || entry.getStringValue(4).indexOf(searchText) >=0 || entry.getStringValue(5).indexOf(searchText) >=0
+                        || entry.getStringValue(6).indexOf(searchText) >=0;
+                return result;
+            }
+        };
+        apptSorter.setRowFilter(filter);
     }
 }
