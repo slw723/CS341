@@ -5,7 +5,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -467,15 +467,15 @@ public class SPHomePage {
         
     }
 
-    private void modifyActionPerformed(ActionEvent e){
+    private void modifyActionPerformed(ActionEvent e) {
         JFrame f2;
         JPanel p2;
         JLabel date, time, sp, descr;
         JTextField dateField, timeField, spField, descrField;
         int rowIndex = appointments.getSelectedRow();
-        if(rowIndex == -1){
-            JOptionPane.showMessageDialog(null, 
-            "Please select an appointment.");
+        if (rowIndex == -1) {
+            JOptionPane.showMessageDialog(null,
+                    "Please select an appointment.");
             return;
         }
         f2 = new JFrame();
@@ -488,9 +488,9 @@ public class SPHomePage {
         // set default text uneditable
         String d = String.valueOf(appointments.getValueAt(rowIndex, 0));
         descrField.setText(d);
-        descrField.setEditable(false);       
+        descrField.setEditable(false);
         descrField.setSize(100, 20);
-        
+
 
         /* add components */
         p2.add(descr);
@@ -498,7 +498,7 @@ public class SPHomePage {
 
         /* Make visible */
         f2.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        f2.setSize(500,500);
+        f2.setSize(500, 500);
         f2.setLocation(275, 150);
         f2.setVisible(true);
     }

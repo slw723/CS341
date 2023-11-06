@@ -4,13 +4,13 @@ import java.util.List;
 
 import javax.naming.spi.DirStateFactory.Result;
 
-import com.mysql.cj.protocol.Resultset;
+//import com.mysql.cj.protocol.Resultset;
 
 
 public class Database {
 
     private Connection connection;
-    private String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=5628";
+    private String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=3871";
 
 
     public void connect() throws SQLException {
@@ -144,6 +144,16 @@ public class Database {
         return null;
     }
 
+    public ResultSet getSPEmail (String firstName, String lastName) {
+        String sql = "SELECT Email FROM ServiceProvider WHERE FirstName = \"" + firstName + "\" AND LastName = \"" + lastName + "\"";
+        try {
+            return runQuery(sql);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public void insertAdmin(Admin admin){
         String sql = "INSERT INTO Admin(UserId, Password) VALUES (?, ?)";
@@ -392,6 +402,21 @@ System.out.println(results.getString("ApptId"));
         return result;
     }
 
+    public ResultSet getApptSP (String SPEmail) {
+        ResultSet result = null;
+        if (SPEmail.equals("")) {
+            return null;
+        }
+        String sql = "SELECT * FROM Appointment WHERE SPEmail = \"" + SPEmail + "\" AND Booked = 0";
+        try {
+            result = runQuery(sql);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     public ArrayList<String> getNewAlerts(ServiceProvider sp){
         String sql = "SELECT * FROM Appointment WHERE SPEmail = \"" + sp.getEmail() + "\" AND Canceled = 1";
         ArrayList<String> notifs = new ArrayList<>();
@@ -549,7 +574,7 @@ System.out.println(results.getString("ApptId"));
         try{
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setString(1, username);
-        // stmt.setBytes(2, password);
+        //stmt.setBytes(2, password);
         return stmt.executeQuery();
         }
         catch(SQLException e){

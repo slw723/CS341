@@ -1,8 +1,24 @@
-2. remove the driver file as the login page is the starting page
 3. set up modify (SP and User)
 5. setup history
 7. password query at login
 8. fix view when toggling between SP and User registration
 9. Search Appts (User & Admin)
 10. Alerts (SP & User)
-11. User appt conflict validations
+
+# Sidney's To-do's
+- re-do database in command line --> DONE!
+- test demo 1 data
+   - when registering a service provider, Active doesn't have a default value (hasn't created a SP in database yet) --> FIXED
+   - Upcoming appointments for SP don't show up after they have been made. Even after logging out and back in --> FIXED
+   - Upcoming appointments for User don't show up after they have been booked. Even after logging out and back in --> FIXED
+   - User cannot book appointments because it says there is a time conflict --> FIXED
+- data validation for user (line 494 of LogInPage)
+- fix gray out Canceled in UserHomePage and SPHomePage - Do later! Not top priority
+- use actual password when logging in for user
+   - change in Database 547
+- use actual password when logging in for service provider
+   - change in Database 561
+- when user makes appointment, you have to log out and back in to see it populate in the home page
+- when user cancels appointment, you have to log out and back in to see it say yes under canceled
+- when user cancels appointment, they can't go back and make that appointment. Doesn't show in table
+   - booked needs to be switched back to 0
