@@ -281,6 +281,8 @@ public class SPBookPage implements ActionListener {
             }
             else{
                 db.insertAppt(appt);
+                JOptionPane.showMessageDialog(null, 
+                "Successfully created " + des + " on " + dateStr + " at " + timeStr);
                 f.setVisible(false);
                 hp.setHomeVisible();
             }

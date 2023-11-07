@@ -10,7 +10,7 @@ import javax.naming.spi.DirStateFactory.Result;
 public class Database {
 
     private Connection connection;
-    private String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=3871";
+    private String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=5628";
 
 
     public void connect() throws SQLException {
