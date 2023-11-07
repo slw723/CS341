@@ -319,11 +319,9 @@ public class Database {
         String sql = "SELECT * FROM Appointment WHERE UserEmail = \"" + email + "\" "
                     + "AND Date = \"" + date + "\" "
                     + "AND Time = \"" + time + "\";";
-System.out.println(sql);
         try{
             ResultSet results = runQuery(sql);
             if(results.next()){
-System.out.println(results.getString("ApptId"));
                 return 1;
             }
         }

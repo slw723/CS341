@@ -253,7 +253,8 @@ public class SPHomePage {
             ResultSet rs = db.executeSQL(sql);
         
             // no appts to be shown
-            if(!rs.next()){
+            boolean currentRS = rs.next();
+            if(!currentRS){
                 noappts = new JLabel("No Upcoming Appointments");
                 noappts.setFont(new Font("Sarif", Font.PLAIN, 10));
                 Dimension noSize = noappts.getPreferredSize();
@@ -263,7 +264,7 @@ public class SPHomePage {
             }
             DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
             int row = 0;
-            while(rs.next()){
+            while(currentRS){
                 //data will be added until finished
                 String descr = rs.getString("Description");
                 String date = String.valueOf(rs.getDate("Date"));
@@ -272,10 +273,13 @@ public class SPHomePage {
                 int book = rs.getInt("Booked");
                 int isCanceled = rs.getInt("Canceled");
                 //if model already contains the value... don't add it
-                if(tblModel.getValueAt(row, 0).equals(date) && 
-                   tblModel.getValueAt(row, 1).equals(time)){
-                    row++;
-                    continue;
+                if(row < tblModel.getRowCount()){
+                    if(tblModel.getValueAt(row, 0).equals(date) && 
+                    tblModel.getValueAt(row, 1).equals(time)){
+                        row++;
+                        currentRS = rs.next();
+                        continue;
+                    }
                 }
                 
                 String yesno, userName, canceledStr;
@@ -306,12 +310,13 @@ public class SPHomePage {
                 //add string array into jtable
                 tblModel.addRow(tbData);
                 row++;
+                currentRS = rs.next();
             }
         }
         catch(Exception e){
-            System.out.println(e.getMessage());
+            System.out.println(e);
         }
-        greyOutCanceled();
+        // greyOutCanceled();
         scroll.validate();
         f.validate();
     }

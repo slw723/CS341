@@ -20,7 +20,6 @@ import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 // Light Black: 31, 36, 33
 // Dark Teal: 33, 104, 105
