@@ -17,18 +17,18 @@ import java.util.ArrayList;
 // Off white: 220, 225, 222
 
 public class UserHomePage extends DefaultTableCellRenderer {
-        JFrame f, f2, alertFrame;
-        JMenuBar mb;
-        JMenuItem menu, home, makeAppt, history;
-        JButton logout,cancel, modify, alerts;
-        JPanel p;
-        JLabel hello, upcoming, noappts;
-        DefaultTableModel model;
-        JTable appointments, newTable, oldTable;
-        JScrollPane scroll;
-        User user;
-        static Database db = new Database();
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    JFrame f, f2, alertFrame;
+    JMenuBar mb;
+    JMenuItem menu, home, makeAppt, history;
+    JButton logout,cancel, modify, alerts;
+    JPanel p;
+    JLabel hello, upcoming, noappts;
+    DefaultTableModel model;
+    JTable appointments, newTable, oldTable;
+    JScrollPane scroll;
+    User user;
+    static Database db = new Database();
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
     public UserHomePage(Database db, User user){
         this.db = db;
@@ -60,7 +60,7 @@ public class UserHomePage extends DefaultTableCellRenderer {
         mb.add(Box.createHorizontalGlue());
         mb.add(alerts);
         mb.add(logout);
-        
+
         home = new JMenuItem("Home");
         home.setFont(new Font("Sarif", Font.PLAIN, 15));
         makeAppt = new JMenuItem("Make Appointment");
@@ -82,7 +82,7 @@ public class UserHomePage extends DefaultTableCellRenderer {
                 makeApptActionPerformed(evt);
             }
         });
-            
+
         history.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
                 historyActionPerformed(evt);
@@ -189,25 +189,25 @@ public class UserHomePage extends DefaultTableCellRenderer {
 
     /* ACTION PERFORMED */
 
-     public void goHomeActionPerformed(ActionEvent e){
-      
+    public void goHomeActionPerformed(ActionEvent e){
+
     }
 
     public void makeApptActionPerformed(ActionEvent e){
-      
+
         f.setVisible(false);
         UserBookPage bp = new UserBookPage(db, this);
     }
 
     public void historyActionPerformed(ActionEvent e){
-      
+
         f.setVisible(false);
-            
+
     }
 
     public void logoutActionPerformed(ActionEvent e) {
-         f.setVisible(false);
-         LogInPage lp = new LogInPage(db);
+        f.setVisible(false);
+        LogInPage lp = new LogInPage(db);
     }
 
     public void alertsActionPerformed(ActionEvent e){
@@ -232,7 +232,7 @@ public class UserHomePage extends DefaultTableCellRenderer {
                 tblModel.addRow(data);
             }
         }
-        
+
         //add to frame
         JScrollPane scroll2 = new JScrollPane(newTable);
         scroll2.setBounds(10, 30, 450, 200);
@@ -247,7 +247,7 @@ public class UserHomePage extends DefaultTableCellRenderer {
         oldTable.getTableHeader().setBackground(new Color(33, 104, 105));
         oldTable.getTableHeader().setForeground(Color.WHITE);
         DefaultTableModel tblModel2 = (DefaultTableModel)oldTable.getModel();
-        
+
         ArrayList<String> oldNotifs = db.getPastAlerts(user);
         if(oldNotifs.size() == 0){
             String[] data = {"No previous alerts"};
@@ -306,8 +306,8 @@ public class UserHomePage extends DefaultTableCellRenderer {
 
         int selection = JOptionPane.showConfirmDialog(null,
                 "Are you sure you want to cancel your appointment on "
-                + appointments.getValueAt(rowIndex, 0) + " at "
-                + appointments.getValueAt(rowIndex, 1) + "?");
+                        + appointments.getValueAt(rowIndex, 0) + " at "
+                        + appointments.getValueAt(rowIndex, 1) + "?");
         if (selection == 1 || selection == 2) {
             return;
         }
@@ -357,14 +357,14 @@ public class UserHomePage extends DefaultTableCellRenderer {
     private void populateUpcoming() {
         appointments = new JTable();
         String [] apptHeaders = {"Date", "Time", "Description", "Service Provider", "Canceled"};
-            appointments.setModel(new DefaultTableModel(apptHeaders, 0));
-            appointments.getTableHeader().setBackground(new Color(33, 104, 105));
-            appointments.getTableHeader().setForeground(Color.WHITE);
+        appointments.setModel(new DefaultTableModel(apptHeaders, 0));
+        appointments.getTableHeader().setBackground(new Color(33, 104, 105));
+        appointments.getTableHeader().setForeground(Color.WHITE);
         try{
-            String sql = "SELECT * FROM Appointment WHERE UserEmail = \"" + user.getEmail() + 
-                        "\" AND Date >= date(NOW());";
+            String sql = "SELECT * FROM Appointment WHERE UserEmail = \"" + user.getEmail() +
+                    "\" AND Date >= date(NOW());";
             ResultSet rs = db.executeSQL(sql);
-    
+
             DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
 
             boolean currentRS = rs.next();
@@ -411,14 +411,14 @@ public class UserHomePage extends DefaultTableCellRenderer {
         appointments.getColumnModel().getColumn(2).setPreferredWidth(300);
         f.add(scroll);
         f.validate();
-    }   
+    }
 
     private void updateUpcoming(){
         try{
-            String sql = "SELECT * FROM Appointment WHERE UserEmail = \"" + user.getEmail() + 
-                        "\" AND Date >= date(NOW());";
+            String sql = "SELECT * FROM Appointment WHERE UserEmail = \"" + user.getEmail() +
+                    "\" AND Date >= date(NOW());";
             ResultSet rs = db.executeSQL(sql);
-    
+
             DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
 
             //no appts to be shown
@@ -447,8 +447,8 @@ public class UserHomePage extends DefaultTableCellRenderer {
 
                 String spName = getSPName(spEmail);
                 //if model already contains the value... don't add it
-                if(tblModel.getValueAt(row, 0).equals(date) && 
-                   tblModel.getValueAt(row, 1).equals(time)){
+                if(tblModel.getValueAt(row, 0).equals(date) &&
+                        tblModel.getValueAt(row, 1).equals(time)){
                     continue;
                 }
 
@@ -477,5 +477,5 @@ public class UserHomePage extends DefaultTableCellRenderer {
         }
     }
 
-    
+
 }

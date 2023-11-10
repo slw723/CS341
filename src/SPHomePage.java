@@ -30,7 +30,7 @@ public class SPHomePage {
     public SPHomePage(Database db, ServiceProvider sp){
         this.db = db;
         this.sp = sp;
-    
+
         /* Make frame */
         f = new JFrame("Appointment Booker for Service Provider");
         f.setBackground(new Color(220, 225, 222));
@@ -57,7 +57,7 @@ public class SPHomePage {
         mb.add(Box.createHorizontalGlue());
         mb.add(alerts);
         mb.add(logout);
-        
+
 
         home = new JMenuItem("Home");
         home.setFont(new Font("Sarif", Font.PLAIN, 15));
@@ -171,7 +171,7 @@ public class SPHomePage {
 
     /* Populate full table view -> good for admin view*/
     private void populateUpcoming() {
-        
+
         String [] apptHeaders = {"Date", "Time", "Description", "Booked", "Booked By", "Canceled"};
         appointments.setModel(new DefaultTableModel(apptHeaders, 0));
         appointments.getTableHeader().setBackground(new Color(33, 104, 105));
@@ -276,7 +276,7 @@ public class SPHomePage {
                 //if model already contains the value... don't add it
                 if(row < tblModel.getRowCount()){
                     if(tblModel.getValueAt(row, 0).equals(date) &&
-                    tblModel.getValueAt(row, 1).equals(time)){
+                            tblModel.getValueAt(row, 1).equals(time)){
                         row++;
                         currentRS = rs.next();
                         continue;
@@ -315,7 +315,7 @@ public class SPHomePage {
             }
         }
         catch(Exception e){
-            System.out.println(e.getMessage());
+            System.out.println(e);
         }
         // greyOutCanceled();
         scroll.validate();
@@ -327,10 +327,10 @@ public class SPHomePage {
 
         for(int i = 0; i < appointments.getRowCount(); i++){
             int apptId = db.getApptId(String.valueOf(appointments.getValueAt(i, 0)),
-                    String.valueOf(appointments.getValueAt(i, 1)), sp.getEmail()); 
+                    String.valueOf(appointments.getValueAt(i, 1)), sp.getEmail());
             int canceled = db.getCanceled(apptId);
             if(canceled == 1){
-                // TODO                 
+                // TODO
             }
         }
 
@@ -338,7 +338,7 @@ public class SPHomePage {
 
     /* ACTION LISTENERS */
     private void goHomeActionPerformed(ActionEvent e){
-        
+
     }
 
     private void makeApptActionPerformed(ActionEvent e){
@@ -381,7 +381,7 @@ public class SPHomePage {
                 tblModel.addRow(data);
             }
         }
-        
+
         //add to frame
         JScrollPane scroll2 = new JScrollPane(newTable);
         scroll2.setBounds(10, 30, 450, 200);
@@ -396,7 +396,7 @@ public class SPHomePage {
         oldTable.getTableHeader().setBackground(new Color(33, 104, 105));
         oldTable.getTableHeader().setForeground(Color.WHITE);
         DefaultTableModel tblModel2 = (DefaultTableModel)oldTable.getModel();
-        
+
         ArrayList<String> oldNotifs = db.getPastAlerts(sp);
         if(oldNotifs.size() == 0){
             String[] data = {"No previous alerts"};
@@ -449,29 +449,28 @@ public class SPHomePage {
     private void cancelActionPerformed(ActionEvent e){
         int rowIndex = appointments.getSelectedRow();
         if(rowIndex == -1){
-            JOptionPane.showMessageDialog(null, 
-            "Please select an appointment.");
+            JOptionPane.showMessageDialog(null,
+                    "Please select an appointment.");
             return;
         }
 
-        int selection = JOptionPane.showConfirmDialog(null, 
+        int selection = JOptionPane.showConfirmDialog(null,
                 "Are you sure you want to cancel your appointment on "
-                + appointments.getValueAt(rowIndex, 0) + " at "
-                + appointments.getValueAt(rowIndex, 1) + "?");
+                        + appointments.getValueAt(rowIndex, 0) + " at "
+                        + appointments.getValueAt(rowIndex, 1) + "?");
         if(selection == 1 || selection == 2){ //no || cancel
             return;
         }
         else{ //yes
             int apptId = db.getApptId(String.valueOf(appointments.getValueAt(rowIndex, 0)),
-             String.valueOf(appointments.getValueAt(rowIndex, 1)), sp.getEmail());
-            
+                    String.valueOf(appointments.getValueAt(rowIndex, 1)), sp.getEmail());
+
             db.cancelAppointment(apptId);
-            JOptionPane.showMessageDialog(null, 
-            "Successfully canceled.");
-            appointments = new JTable();
+            JOptionPane.showMessageDialog(null,
+                    "Successfully canceled.");
             updateUpcoming();
         }
-        
+
     }
 
     private void modifyActionPerformed(ActionEvent e) {
@@ -509,5 +508,5 @@ public class SPHomePage {
         f2.setLocation(275, 150);
         f2.setVisible(true);
     }
-   
+
 }

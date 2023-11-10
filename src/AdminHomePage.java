@@ -36,6 +36,7 @@ public class AdminHomePage {
     JTabbedPane tabbedPane;
 
     TableRowSorter userSorter, spSorter, apptSorter;
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     static Database db = new Database();
 
     public AdminHomePage(Database db, Admin admin){
@@ -190,7 +191,7 @@ public class AdminHomePage {
 
         /* Make visible */
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        f.setSize(1000,800);
+        f.setSize(screenSize.width, screenSize.height);
         f.setVisible(true);
     }
 

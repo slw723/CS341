@@ -72,7 +72,7 @@ public class UserBookPage implements ActionListener {
         title.setBounds(10, 0, titleSize.width+10, titleSize.height);
         bookPanel.add(title);
 
-         // add type of appointment text
+        // add type of appointment text
         type = new JLabel("Type of Appointment: ");
         type.setFont(new Font("Sarif", Font.PLAIN, 15));
         type.setForeground(new Color(31, 36, 33));
@@ -85,7 +85,7 @@ public class UserBookPage implements ActionListener {
         typesCB = new JComboBox<>(apptTypes);
         typesCB.setBounds(10, 75, 90, 20);
         typesCB.setSelectedIndex(0);
-        
+
         bookPanel.add(typesCB);
 
         // add go button
@@ -205,8 +205,8 @@ public class UserBookPage implements ActionListener {
         try{
             String[] names = name.split(" ", 2);
             String sql = "Select Email FROM ServiceProvider" +
-                         " WHERE FirstName = \"" +  names[0]+ "\"" +
-                         " AND LastName = \"" + names[1] + "\";";
+                    " WHERE FirstName = \"" +  names[0]+ "\"" +
+                    " AND LastName = \"" + names[1] + "\";";
             ResultSet rs = db.executeSQL(sql);
             if(rs.next()){
                 return rs.getString("Email");
@@ -307,7 +307,7 @@ public class UserBookPage implements ActionListener {
         appointments.validate();
         appointments.getColumnModel().getColumn(0).setMaxWidth(100);
         appointments.getColumnModel().getColumn(1).setMaxWidth(100);
-        appointments.getColumnModel().getColumn(2).setMaxWidth(200);
+        appointments.getColumnModel().getColumn(2).setMinWidth(200);
         bookPanel.add(scroll);
         bookPanel.validate();
     }
@@ -327,16 +327,16 @@ public class UserBookPage implements ActionListener {
 
         //check for conflicts
         if (db.apptConflictUser(user.getEmail(), date, time) > 0){
-            JOptionPane.showMessageDialog(null, 
-                "Unable to book. You have an appointment conflict with this time.");
+            JOptionPane.showMessageDialog(null,
+                    "Unable to book. You have an appointment conflict with this time.");
         }
         else{
             //update appointment in db
             db.bookAppt(user.getEmail(), apptId);
 
             //confirmation message
-            JOptionPane.showMessageDialog(null, 
-                "Appointment with " + spName + " on " + date + " at " + time + " successfully booked.");
+            JOptionPane.showMessageDialog(null,
+                    "Appointment with " + spName + " on " + date + " at " + time + " successfully booked.");
 
             //reset selections
             appointments.clearSelection();
@@ -416,11 +416,11 @@ public class UserBookPage implements ActionListener {
         }
         scroll = new JScrollPane(appointments);
         // set sizes
-        scroll.setBounds(10, 250, 950, 350);
+        scroll.setBounds(10, 250, 1300, 350);
         scroll.validate();
         appointments.getColumnModel().getColumn(0).setMaxWidth(100);
         appointments.getColumnModel().getColumn(1).setMaxWidth(100);
-        appointments.getColumnModel().getColumn(2).setMaxWidth(200);
+        appointments.getColumnModel().getColumn(2).setPreferredWidth(300);
         bookPanel.add(scroll);
         bookPanel.validate();
         makeBookButton();
