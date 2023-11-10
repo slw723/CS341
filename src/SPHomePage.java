@@ -25,6 +25,7 @@ public class SPHomePage {
     JTable appointments, newTable, oldTable;
     ServiceProvider sp;
     static Database db = new Database();
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
     public SPHomePage(Database db, ServiceProvider sp){
         this.db = db;
@@ -125,7 +126,7 @@ public class SPHomePage {
 
         cancel = new JButton("Cancel Selection Now");
         Dimension cancelSize = cancel.getPreferredSize();
-        cancel.setBounds(600, 40, cancelSize.width+10, cancelSize.height);
+        cancel.setBounds(925, 40, cancelSize.width+10, cancelSize.height);
         cancel.setBackground(new Color(156, 197, 161));
         cancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
@@ -136,7 +137,7 @@ public class SPHomePage {
 
         modify = new JButton("Modify Selection Now");
         Dimension modSize = modify.getPreferredSize();
-        modify.setBounds(620+cancelSize.width, 40, modSize.width+10, modSize.height);
+        modify.setBounds(950+cancelSize.width, 40, modSize.width+10, modSize.height);
         modify.setBackground(new Color(156, 197, 161));
         modify.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
@@ -154,7 +155,7 @@ public class SPHomePage {
 
         /* Make visible */
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        f.setSize(1000,800);
+        f.setSize(screenSize.width, screenSize.height);
         f.setVisible(true);
     }
 
@@ -233,14 +234,14 @@ public class SPHomePage {
             System.out.println(e.getMessage());
         }
         scroll = new JScrollPane(appointments);
-        scroll.setBounds(10, 80, 940, 350);
+        scroll.setBounds(10, 80, 1300, 350);
         scroll.validate();
         appointments.validate();
-        appointments.getColumnModel().getColumn(0).setMaxWidth(400);
-        appointments.getColumnModel().getColumn(1).setMaxWidth(100);
-        appointments.getColumnModel().getColumn(2).setPreferredWidth(250);
-        appointments.getColumnModel().getColumn(3).setMaxWidth(100);
-        appointments.getColumnModel().getColumn(4).setPreferredWidth(175);
+        appointments.getColumnModel().getColumn(0).setMaxWidth(500);
+        appointments.getColumnModel().getColumn(1).setMaxWidth(200);
+        appointments.getColumnModel().getColumn(2).setPreferredWidth(350);
+        appointments.getColumnModel().getColumn(3).setMaxWidth(200);
+        appointments.getColumnModel().getColumn(4).setPreferredWidth(275);
         f.add(scroll);
         f.validate();
     }
@@ -251,7 +252,7 @@ public class SPHomePage {
             String sql = "SELECT * FROM Appointment WHERE SPEmail = \"" + sp.getEmail() +
                     "\" AND Date >= date(NOW());";
             ResultSet rs = db.executeSQL(sql);
-        
+
             // no appts to be shown
             boolean currentRS = rs.next();
             if(!currentRS){
@@ -274,14 +275,14 @@ public class SPHomePage {
                 int isCanceled = rs.getInt("Canceled");
                 //if model already contains the value... don't add it
                 if(row < tblModel.getRowCount()){
-                    if(tblModel.getValueAt(row, 0).equals(date) && 
+                    if(tblModel.getValueAt(row, 0).equals(date) &&
                     tblModel.getValueAt(row, 1).equals(time)){
                         row++;
                         currentRS = rs.next();
                         continue;
                     }
                 }
-                
+
                 String yesno, userName, canceledStr;
                 if(book == 1){
                     yesno = "Yes";
@@ -314,7 +315,7 @@ public class SPHomePage {
             }
         }
         catch(Exception e){
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
         // greyOutCanceled();
         scroll.validate();
@@ -467,6 +468,7 @@ public class SPHomePage {
             db.cancelAppointment(apptId);
             JOptionPane.showMessageDialog(null, 
             "Successfully canceled.");
+            appointments = new JTable();
             updateUpcoming();
         }
         

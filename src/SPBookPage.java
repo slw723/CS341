@@ -23,6 +23,7 @@ public class SPBookPage implements ActionListener {
     JButton go;
     SPHomePage hp;
     Database db;
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     
     public SPBookPage(Database db, SPHomePage hp){
         this.hp = hp;
@@ -178,7 +179,7 @@ public class SPBookPage implements ActionListener {
 
         // Make visible
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        f.setSize(1000, 800);
+        f.setSize(screenSize.width, screenSize.height);
         f.setVisible(true);
     }
 
@@ -233,20 +234,22 @@ public class SPBookPage implements ActionListener {
         String[] str = oldTime.split(":", 2);
         String hr = str[0];
         int hour = Integer.parseInt(hr);
+        System.out.println(str[1]);
         String[] str2 = str[1].split(" ", 2);
+        int minute = Integer.parseInt(str2[0]);
         String timeOfDay = str2[1];
 
         if(timeOfDay.equals("AM")){
             if(hour == 12){
                 hour = 0;
             }
-            return LocalTime.of(hour, 0, 0, 0);
+            return LocalTime.of(hour, minute, 0, 0);
         }
         else{ //PM
             if(hour != 12){
                 hour = hour + 12;
             }
-            return LocalTime.of(hour, 0, 0, 0);
+            return LocalTime.of(hour, minute, 0, 0);
         }
     }
 

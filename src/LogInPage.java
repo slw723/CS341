@@ -45,7 +45,7 @@ public class LogInPage extends JFrame  {
     JTextField userText;
     JPasswordField passwordText;
     JButton loginButton, registerButton;
-
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     public static void main(String[] args){
         db = new Database();
         new LogInPage(db);
@@ -76,9 +76,10 @@ public class LogInPage extends JFrame  {
         //load the page
         Font wcFont = new Font ("Sarif", Font.BOLD, 25);
         Font shFont = new Font ("Sarif", Font.BOLD, 15);
+        pack();
 
         loginWin = new JFrame(); //creates the log in frame
-        loginWin.setSize(1000, 1000);
+        loginWin.setSize(screenSize.width, screenSize.height);
         loginWin.setLayout(null);
         //loginWin.setResizable(false); //prevents frame from being resized
         loginWin.setTitle("Appointment Booker Login");
@@ -86,12 +87,12 @@ public class LogInPage extends JFrame  {
         loginWin.setBackground(new Color(220, 225, 222));
 
         wcPanel = new JPanel();
-        wcPanel.setBounds(425, 200, 150, 45);
+        wcPanel.setBounds(775, 200, 150, 45);
         welcome = new JLabel("Welcome!");
         welcome.setFont(wcFont);
 
         shPanel = new JPanel(); //subheading panel
-        shPanel.setBounds(350, 250, 300, 30);
+        shPanel.setBounds(700, 250, 300, 30);
         enterInfo = new JLabel("Please enter your log in information.");
         enterInfo.setFont(shFont);
         wcPanel.add(welcome);
@@ -104,7 +105,7 @@ public class LogInPage extends JFrame  {
         loginPanel.setLayout(null);
         loginPanel.setBackground(new Color(33, 104, 105)); //dark teal
         loginPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-        loginPanel.setBounds(350, 305, 300, 175);
+        loginPanel.setBounds(700, 305, 300, 175);
 
         /*Text fields, labels, and buttons*/
         userLabel = new JLabel("Username");
@@ -167,7 +168,7 @@ public class LogInPage extends JFrame  {
         Font shFont = new Font ("Sarif", Font.BOLD, 12);
 
         regWin = new JFrame(); //creates the log in frame
-        regWin.setSize(1000, 1000);
+        regWin.setSize(screenSize.width, screenSize.height);
         regWin.setLayout(null);
         regWin.setResizable(false); //prevents frame from being resized
         regWin.setTitle("Account Registration");
@@ -175,12 +176,12 @@ public class LogInPage extends JFrame  {
         regWin.setBackground(new Color(220, 225, 222));
 
         arPanel = new JPanel();
-        arPanel.setBounds(260, 10, 200, 25);
+        arPanel.setBounds(760, 10, 200, 25);
         arLabel = new JLabel("Account Registration");
         arLabel.setFont(wcFont);
 
         instPanel = new JPanel(); //subheading panel
-        instPanel.setBounds(110, 40, 500, 30);
+        instPanel.setBounds(600, 40, 500, 30);
         instruct = new JLabel("Please select and Account type and fill in the applicable information.");
         instruct.setFont(shFont);
         arPanel.add(arLabel);
@@ -190,7 +191,7 @@ public class LogInPage extends JFrame  {
 
         /*Drop down for Service Provider and User*/
         cbPanel = new JPanel();
-        cbPanel.setBounds(30, 75, 700, 40);
+        cbPanel.setBounds(500, 75, 700, 40);
         cbLabel = new JLabel("Account Type: ");
         cbLabel.setBounds(30, 75, 100, 25);
         String[] acctTypes = {"", "User", "Service Provider"};
@@ -214,7 +215,7 @@ public class LogInPage extends JFrame  {
         regPanel = new JPanel();
         regPanel.setBackground(new Color(33, 104, 105)); //dark teal
         regPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-        regPanel.setBounds(200, 140, 275, 300);
+        regPanel.setBounds(715, 140, 285, 300);
 
         hideOtherReg();
 
@@ -277,7 +278,7 @@ public class LogInPage extends JFrame  {
         regPanel = new JPanel();
         regPanel.setBackground(new Color(33, 104, 105)); //dark teal
         regPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-        regPanel.setBounds(200, 140, 275, 300);
+        regPanel.setBounds(715, 140, 275, 300);
 
         hideOtherReg();
 

@@ -28,6 +28,7 @@ public class UserHomePage extends DefaultTableCellRenderer {
         JScrollPane scroll;
         User user;
         static Database db = new Database();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
     public UserHomePage(Database db, User user){
         this.db = db;
@@ -127,7 +128,7 @@ public class UserHomePage extends DefaultTableCellRenderer {
 
         cancel = new JButton("Cancel Selection Now");
         Dimension cancelSize = cancel.getPreferredSize();
-        cancel.setBounds(600, 40, cancelSize.width+10, cancelSize.height);
+        cancel.setBounds(925, 40, cancelSize.width+10, cancelSize.height);
         cancel.setBackground(new Color(156, 197, 161));
         cancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -138,7 +139,7 @@ public class UserHomePage extends DefaultTableCellRenderer {
 
         modify = new JButton("Modify Selection Now");
         Dimension modSize = modify.getPreferredSize();
-        modify.setBounds(cancelSize.width+620, 40, modSize.width+10, modSize.height);
+        modify.setBounds(cancelSize.width+950, 40, modSize.width+10, modSize.height);
         modify.setBackground(new Color(156, 197, 161));
         modify.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -156,7 +157,7 @@ public class UserHomePage extends DefaultTableCellRenderer {
 
         /* Make visible */
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        f.setSize(1000,800);
+        f.setSize(screenSize.width, screenSize.height);
         f.setVisible(true);
     }
 
@@ -403,11 +404,11 @@ public class UserHomePage extends DefaultTableCellRenderer {
             System.out.println(e.getMessage());
         }
         scroll = new JScrollPane(appointments);
-        scroll.setBounds(10, 80, 950, 350);
+        scroll.setBounds(10, 80, 1300, 350);
         scroll.validate();
-        appointments.getColumnModel().getColumn(0).setMaxWidth(100);
-        appointments.getColumnModel().getColumn(1).setMaxWidth(100);
-        appointments.getColumnModel().getColumn(2).setPreferredWidth(150);
+        appointments.getColumnModel().getColumn(0).setMaxWidth(200);
+        appointments.getColumnModel().getColumn(1).setMaxWidth(200);
+        appointments.getColumnModel().getColumn(2).setPreferredWidth(300);
         f.add(scroll);
         f.validate();
     }   

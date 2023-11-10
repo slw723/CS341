@@ -27,6 +27,7 @@ public class UserBookPage implements ActionListener {
     UserHomePage hp;
     Database db;
     TableRowSorter apptSorter;
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
     public UserBookPage(Database db, UserHomePage hp){
         this.hp = hp;
@@ -142,12 +143,14 @@ public class UserBookPage implements ActionListener {
         scroll = new JScrollPane(appointments);
         f.add(scroll);
 
+        makeBookButton();
+
         // add panel to frame
         f.add(bookPanel);
 
         // Make visible
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        f.setSize(1000, 800);
+        f.setSize(screenSize.width, screenSize.height);
         f.setVisible(true);
     }
 
@@ -158,7 +161,7 @@ public class UserBookPage implements ActionListener {
         bookButton.setFont(new Font("Sarif", Font.PLAIN, 15));
         bookButton.setBackground(new Color(156, 197, 161));
         Dimension startBSize = bookButton.getPreferredSize();
-        bookButton.setBounds(10, 595, startBSize.width+10, startBSize.height);
+        bookButton.setBounds(10, 600, startBSize.width+10, startBSize.height);
         bookButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
                 bookActionPerformed(evt);
@@ -258,12 +261,12 @@ public class UserBookPage implements ActionListener {
         }
         scroll = new JScrollPane(appointments);
         // set sizes
-        scroll.setBounds(10, 250, 950, 350);
+        scroll.setBounds(10, 250, 1300, 350);
         scroll.validate();
         appointments.validate();
-        appointments.getColumnModel().getColumn(0).setMaxWidth(100);
-        appointments.getColumnModel().getColumn(1).setMaxWidth(100);
-        appointments.getColumnModel().getColumn(2).setMaxWidth(200);
+        appointments.getColumnModel().getColumn(0).setMaxWidth(200);
+        appointments.getColumnModel().getColumn(1).setMaxWidth(200);
+        appointments.getColumnModel().getColumn(2).setMinWidth(175);
         bookPanel.add(scroll);
         bookPanel.validate();
     }
