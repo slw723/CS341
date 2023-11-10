@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
+import javax.swing.table.TableRowSorter;
 
 public class UserBookPage implements ActionListener {
     JFrame f;
@@ -26,6 +26,7 @@ public class UserBookPage implements ActionListener {
     String apptSelected;
     UserHomePage hp;
     Database db;
+    TableRowSorter apptSorter;
 
     public UserBookPage(Database db, UserHomePage hp){
         this.hp = hp;
@@ -220,6 +221,13 @@ public class UserBookPage implements ActionListener {
      */
 
     public void goActionPerformed(ActionEvent evt){
+        populateAppt();
+        apptSorter = new TableRowSorter(appointments.getModel());
+        appointments.setRowSorter(apptSorter);
+        makeBookButton();
+    }
+
+    public void populateAppt() {
         apptSelected = typesCB.getSelectedItem().toString();
         appointments = new JTable();
         String [] apptHeaders = {"Date", "Time", "Description","Service Provider", "Qualification"};
@@ -243,7 +251,7 @@ public class UserBookPage implements ActionListener {
 
                 // add data into jtable
                 tblmodel.addRow(tbData);
-                }
+            }
         }
         catch(Exception e){
             System.out.println(e.getMessage());
@@ -252,12 +260,53 @@ public class UserBookPage implements ActionListener {
         // set sizes
         scroll.setBounds(10, 250, 950, 350);
         scroll.validate();
+        appointments.validate();
         appointments.getColumnModel().getColumn(0).setMaxWidth(100);
         appointments.getColumnModel().getColumn(1).setMaxWidth(100);
         appointments.getColumnModel().getColumn(2).setMaxWidth(200);
         bookPanel.add(scroll);
         bookPanel.validate();
-        makeBookButton();
+    }
+
+    public void populateApptSearch() {
+        apptSelected = typesCB.getSelectedItem().toString();
+        appointments = new JTable();
+        String [] apptHeaders = {"Date", "Time", "Description","Service Provider", "Qualification"};
+        appointments.setModel(new DefaultTableModel(apptHeaders, 0));
+        appointments.getTableHeader().setBackground(new Color(33, 104, 105));
+        appointments.getTableHeader().setForeground(Color.WHITE);
+        try{
+            // Show the available time slots
+            ResultSet rs = db.executeSQL("SELECT * FROM appointment");
+            DefaultTableModel tblmodel = (DefaultTableModel)appointments.getModel();
+            while(rs.next()){
+                //data will be added until finished
+                String descr = rs.getString("Description");
+                String date = String.valueOf(rs.getDate("Date"));
+                String time = String.valueOf(rs.getTime("Time"));
+                String spEmail = rs.getString("SPEmail");
+                String spName = getSPName(spEmail);
+                String spQualif = getSPQualif(spEmail);
+
+                Object tbData[] = {date, time, descr, spName, spQualif};
+
+                // add data into jtable
+                tblmodel.addRow(tbData);
+            }
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        scroll = new JScrollPane(appointments);
+        // set sizes
+        scroll.setBounds(10, 250, 950, 350);
+        scroll.validate();
+        appointments.validate();
+        appointments.getColumnModel().getColumn(0).setMaxWidth(100);
+        appointments.getColumnModel().getColumn(1).setMaxWidth(100);
+        appointments.getColumnModel().getColumn(2).setMaxWidth(200);
+        bookPanel.add(scroll);
+        bookPanel.validate();
     }
 
     private void bookActionPerformed(ActionEvent evt){
@@ -295,28 +344,37 @@ public class UserBookPage implements ActionListener {
 
     // searches available appointments from text box
     public void searchButtonActionPerformed(ActionEvent evt) {
-        String searchText = searchBox.getText();
         //checking if user searched by appointment type
-        if (searchText.equals("Facial") || searchText.equals("facial")) {
-            searchTable("Appointment type", "Facial");
-        }
-        else if (searchText.equals("Beauty") || searchText.equals("beauty")) {
-            searchTable("Appointment type", "Beauty");
-        }
-        else if (searchText.equals("Medical") || searchText.equals("medical")) {
-            searchTable("Appointment type", "Medical");
-        }
+//        if (searchText.equals("Facial") || searchText.equals("facial")) {
+//            searchTable("Appointment type", "Facial");
+//        }
+//        else if (searchText.equals("Beauty") || searchText.equals("beauty")) {
+//            searchTable("Appointment type", "Beauty");
+//        }
+//        else if (searchText.equals("Medical") || searchText.equals("medical")) {
+//            searchTable("Appointment type", "Medical");
+//        }
+//
+//        //checking if user searched by service provider
+//        String[] splitFirstLast = searchText.split(" ");
+//        ResultSet email = db.getSPEmail(splitFirstLast[0], splitFirstLast[1]);
+//        if (email != null) {
+//            searchTable("Service Provider", String.valueOf(email));
+//        }
 
-        //checking if user searched by service provider
-        String[] splitFirstLast = searchText.split(" ");
-        ResultSet email = db.getSPEmail(splitFirstLast[0], splitFirstLast[1]);
-        if (email != null) {
-            searchTable("Service Provider", String.valueOf(email));
-        }
-
-        //checking if user searched by date
-
-        //checking if user searched by time
+        populateApptSearch();
+        apptSorter = new TableRowSorter(appointments.getModel());
+        appointments.setRowSorter(apptSorter);
+        makeBookButton();
+        RowFilter filter = new RowFilter() {
+            String searchText = searchBox.getText();
+            public boolean include(Entry entry) {
+                boolean result = entry.getStringValue(0).indexOf(searchText) >=0 || entry.getStringValue(1).indexOf(searchText) >=0
+                        || entry.getStringValue(2).indexOf(searchText) >=0;
+                return result;
+            }
+        };
+        apptSorter.setRowFilter(filter);
     }
 
     public void searchTable (String type, String searchText) {
