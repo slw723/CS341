@@ -6,8 +6,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
-import javax.swing.DefaultRowSorter;
-
 
 import java.awt.*;
 import java.sql.ResultSet;
@@ -22,7 +20,7 @@ import java.time.LocalTime;
 // Off white: 220, 225, 222
 public class AdminHomePage {
     JFrame f;
-    JButton logout, userGoButton, spGoButton, apptGoButton;
+    JButton logout, userGoButton, spGoButton, apptGoButton, apptCancel;
     JMenuBar mb;
     JMenuItem menu, home, trends;
     JPanel p, userPanel, spPanel, apptPanel;
@@ -113,7 +111,7 @@ public class AdminHomePage {
                 goUserActionPerformed(evt);
             }
         });
-
+        
         userPanel.add(userSearchLabel);
         userPanel.add(userSearchText);
         userPanel.add(userGoButton);
@@ -132,7 +130,7 @@ public class AdminHomePage {
                 goSPActionPerformed(evt);
             }
         });
-
+        
         spPanel.add(spSearchLabel);
         spPanel.add(spSearchText);
         spPanel.add(spGoButton);
@@ -152,7 +150,17 @@ public class AdminHomePage {
                 goApptActionPerformed(evt);
             }
         });
+        apptCancel = new JButton("Cancel Selection Now");
+        Dimension apptCancelSize = apptCancel.getPreferredSize();
+        apptCancel.setBounds(700, 25, apptCancelSize.width+10, apptCancelSize.height);
+        apptCancel.setBackground(new Color(73, 160, 120));
+        apptCancel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt){
+                cancelApptActionPerformed(evt);
+            }
+        });
 
+        apptPanel.add(apptCancel);
         apptPanel.add(apptSearchLabel);
         apptPanel.add(apptSearchText);
         apptPanel.add(apptGoButton);
@@ -369,6 +377,52 @@ public class AdminHomePage {
     }
     private void trendsActionPerformed(ActionEvent e){
 
+    }
+
+    private void cancelApptActionPerformed(ActionEvent e){
+        int rowIndex = appointments.getSelectedRow();
+        if(rowIndex == -1){
+            JOptionPane.showMessageDialog(null,
+                    "Please select an appointment.");
+            return;
+        }
+
+        int selection = JOptionPane.showConfirmDialog(null,
+                "Are you sure you want to cancel the appointment on "
+                        + appointments.getValueAt(rowIndex, 0) + " at "
+                        + appointments.getValueAt(rowIndex, 1) + " for "
+                        + appointments.getValueAt(rowIndex, 4) + " with"
+                        + appointments.getValueAt(rowIndex, 5));
+        if(selection == 1 || selection == 2){ //no || cancel
+            return;
+        }
+        else{ //yes
+            String spName = String.valueOf(appointments.getValueAt(rowIndex, 5));
+            String email = getSPEmail(spName);
+            int apptId = db.getApptId(String.valueOf(appointments.getValueAt(rowIndex, 1)),
+                    String.valueOf(appointments.getValueAt(rowIndex, 2)), email);
+
+            db.cancelAppointment(apptId);
+            JOptionPane.showMessageDialog(null,
+                    "Successfully canceled.");
+            // TODO update table
+        }
+
+    }
+
+    private String getSPEmail(String name){
+        try{
+            String[] names = name.split(" ", 2);
+            ResultSet rs = db.getSPEmail(names[0], names[1]);
+            if(rs.next()){
+                return rs.getString("Email");
+            }
+        }
+        catch(SQLException e){
+            System.out.println(e.getMessage());
+
+        }
+        return null;
     }
 
     public void goSPActionPerformed(ActionEvent e){
