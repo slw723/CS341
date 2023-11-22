@@ -416,7 +416,7 @@ public class Database {
     }
 
     public ArrayList<String> getNewAlerts(ServiceProvider sp){
-        String sql = "SELECT * FROM Appointment WHERE SPEmail = \"" + sp.getEmail() + "\" AND Canceled = 1";
+        String sql = "SELECT * FROM Appointment WHERE SPEmail = \"" + sp.getEmail() + "\" AND Canceled = '1'";
         ArrayList<String> notifs = new ArrayList<>();
         try{
             ResultSet rs = runQuery(sql);
@@ -427,11 +427,17 @@ public class Database {
                     String date = String.valueOf(rs.getDate("Date"));
                     String time = String.valueOf(rs.getTime("Time"));
 
-                    ResultSet username = getUserName(client);
-                    if(username.next()){
-                        String clientName = username.getString("FirstName") 
-                                    + " " + username.getString("LastName");
-                        notifs.add(clientName + " has canceled the appointment on " + date + " at " + time);
+                    if(client == null){
+                        client = "Admin";
+                        notifs.add(client + " has canceled the appointment on " + date + " at " + time);
+                    }
+                    else{
+                        ResultSet username = getUserName(client);
+                        if(username.next()){
+                            String clientName = username.getString("FirstName") 
+                                        + " " + username.getString("LastName");
+                            notifs.add(clientName + " has canceled the appointment on " + date + " at " + time);
+                        }
                     }
                 }
             }
@@ -442,7 +448,7 @@ public class Database {
     }
 
     public ArrayList<String> getNewAlerts(User user){
-        String sql = "SELECT * FROM Appointment WHERE UserEmail = \"" + user.getEmail() + "\" AND Canceled = 1";
+        String sql = "SELECT * FROM Appointment WHERE UserEmail = \"" + user.getEmail() + "\" AND Canceled = '1'";
         ArrayList<String> notifs = new ArrayList<>();
         try{
             ResultSet rs = runQuery(sql);
@@ -452,12 +458,17 @@ public class Database {
                     String sp = rs.getString("SPEmail");
                     String date = String.valueOf(rs.getDate("Date"));
                     String time = String.valueOf(rs.getTime("Time"));
-
-                    ResultSet username = getSPName(sp);
-                    if(username.next()){
-                        String spName = username.getString("FirstName") 
-                                    + " " + username.getString("LastName");
-                        notifs.add(spName + " has canceled the appointment on " + date + " at " + time);
+                    if(sp == null){
+                        sp = "Admin";
+                        notifs.add(sp + " has canceled the appointment on " + date + " at " + time);
+                    }
+                    else{
+                        ResultSet username = getSPName(sp);
+                        if(username.next()){
+                            String spName = username.getString("FirstName") 
+                                        + " " + username.getString("LastName");
+                            notifs.add(spName + " has canceled the appointment on " + date + " at " + time);
+                        }
                     }
                 }
             }
@@ -468,7 +479,7 @@ public class Database {
     }
 
     public ArrayList<String> getPastAlerts(ServiceProvider sp){
-        String sql = "SELECT * FROM Appointment WHERE SPEmail = \"" + sp.getEmail() + "\" AND Canceled = 1";
+        String sql = "SELECT * FROM Appointment WHERE SPEmail = \"" + sp.getEmail() + "\" AND Canceled = '1'";
         ArrayList<String> notifs = new ArrayList<>();
         try{
             ResultSet rs = runQuery(sql);
@@ -479,11 +490,17 @@ public class Database {
                     String date = String.valueOf(rs.getDate("Date"));
                     String time = String.valueOf(rs.getTime("Time"));
 
-                    ResultSet username = getUserName(client);
-                    if(username.next()){
-                        String clientName = username.getString("FirstName") 
-                                        + " " + username.getString("LastName");
-                        notifs.add(clientName + " has canceled the appointment on " + date + " at " + time);
+                    if(client == null){
+                        client = "Admin";
+                        notifs.add(client + " has canceled the appointment on " + date + " at " + time);
+                    }
+                    else{
+                        ResultSet username = getUserName(client);
+                        if(username.next()){
+                            String clientName = username.getString("FirstName") 
+                                            + " " + username.getString("LastName");
+                            notifs.add(clientName + " has canceled the appointment on " + date + " at " + time);
+                        }
                     }
                 }
             }
@@ -504,12 +521,17 @@ public class Database {
                     String sp = rs.getString("SPEmail");
                     String date = String.valueOf(rs.getDate("Date"));
                     String time = String.valueOf(rs.getTime("Time"));
-
-                    ResultSet username = getSPName(sp);
-                    if(username.next()){
-                        String spName = username.getString("FirstName") 
-                                        + " " + username.getString("LastName");
-                        notifs.add(spName + " has canceled the appointment on " + date + " at " + time);
+                    if(sp == null){
+                        sp = "Admin";
+                        notifs.add(sp + " has canceled the appointment on " + date + " at " + time);
+                    }
+                    else{
+                        ResultSet username = getSPName(sp);
+                        if(username.next()){
+                            String spName = username.getString("FirstName") 
+                                            + " " + username.getString("LastName");
+                            notifs.add(spName + " has canceled the appointment on " + date + " at " + time);
+                        }
                     }
                 }
             }

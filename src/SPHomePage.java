@@ -264,7 +264,7 @@ public class SPHomePage {
                 p.validate();
             }
             DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
-            int row = 0;
+            tblModel.setRowCount(0);
             while(currentRS){
                 //data will be added until finished
                 String descr = rs.getString("Description");
@@ -273,15 +273,6 @@ public class SPHomePage {
                 String user = rs.getString("UserEmail");
                 int book = rs.getInt("Booked");
                 int isCanceled = rs.getInt("Canceled");
-                //if model already contains the value... don't add it
-                if(row < tblModel.getRowCount()){
-                    if(tblModel.getValueAt(row, 0).equals(date) &&
-                            tblModel.getValueAt(row, 1).equals(time)){
-                        row++;
-                        currentRS = rs.next();
-                        continue;
-                    }
-                }
 
                 String yesno, userName, canceledStr;
                 if(book == 1){
@@ -310,7 +301,6 @@ public class SPHomePage {
 
                 //add string array into jtable
                 tblModel.addRow(tbData);
-                row++;
                 currentRS = rs.next();
             }
         }

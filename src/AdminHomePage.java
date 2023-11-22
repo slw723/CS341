@@ -367,6 +367,69 @@ public class AdminHomePage {
         apptPanel.validate();
     }
 
+    private void updateAppts(){
+        
+        try{
+            String sql = "SELECT * FROM appointment";
+            ResultSet rs = db.executeSQL(sql);
+            DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
+            tblModel.setRowCount(0);
+            while(rs.next()){
+                //data will be added until finished
+                String descr = rs.getString("Description");
+                String date = String.valueOf(rs.getDate("Date"));
+                String time = String.valueOf(rs.getTime("Time"));
+                String type = rs.getString("Type");
+                String user = rs.getString("UserEmail");
+                String sp = rs.getString("SPEmail");
+                int book = rs.getInt("Booked");
+                int isCanceled = rs.getInt("Canceled");
+                String yesno, userName, spName, canceledStr;
+                if(book == 1){
+                    yesno = "Yes";
+                }
+                else{
+                    yesno = "No";
+                }
+
+                if(isCanceled == 1){
+                    canceledStr = "Yes";
+                }
+                else{
+                    canceledStr = "No";
+                }
+
+                ResultSet r = db.getUserName(user);
+                if(r.next()){
+                    userName = r.getString("FirstName") + " " + r.getString("LastName");
+                }
+                else{
+                    userName = "No Client";
+                }
+
+                ResultSet r2 = db.getSPName(sp);
+                if(r2.next()){
+                    spName = r2.getString("FirstName") + " " + r2.getString("LastName");
+                }
+                else{
+                    spName = "No Service Provider";
+                }
+                String tbData[] = {descr, date, time, type, userName, spName, yesno, canceledStr};
+
+                //add string array into jtable
+                tblModel.addRow(tbData);
+            }
+
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            System.out.println(e.getStackTrace());
+        }
+        scroll3.validate();
+        appointments.validate();
+        apptPanel.validate();
+    }
+
+
     private void logoutActionPerformed(ActionEvent e) {
         f.setVisible(false);
         new LogInPage(db);
@@ -391,7 +454,7 @@ public class AdminHomePage {
                 "Are you sure you want to cancel the appointment on "
                         + appointments.getValueAt(rowIndex, 0) + " at "
                         + appointments.getValueAt(rowIndex, 1) + " for "
-                        + appointments.getValueAt(rowIndex, 4) + " with"
+                        + appointments.getValueAt(rowIndex, 4) + " with "
                         + appointments.getValueAt(rowIndex, 5));
         if(selection == 1 || selection == 2){ //no || cancel
             return;
@@ -405,7 +468,7 @@ public class AdminHomePage {
             db.cancelAppointment(apptId);
             JOptionPane.showMessageDialog(null,
                     "Successfully canceled.");
-            // TODO update table
+            updateAppts();
         }
 
     }
