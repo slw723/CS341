@@ -67,12 +67,6 @@ public class AdminHomePage {
         menu.add(home);
         menu.add(reports);
 
-        home.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt){
-                goHomeActionPerformed(evt);
-            }
-        });
-
         reports.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
                 reportsActionPerformed(evt);

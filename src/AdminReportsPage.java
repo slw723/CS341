@@ -78,7 +78,7 @@ public class AdminReportsPage {
         f.add(reportsLabel);
 
 
-        /* Make visible */
+        /* Make visible. */
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         f.setSize(screenSize.width, screenSize.height);
         f.setVisible(true);
