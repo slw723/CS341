@@ -22,7 +22,7 @@ public class AdminHomePage {
     JFrame f;
     JButton logout, userGoButton, spGoButton, apptGoButton, apptCancel;
     JMenuBar mb;
-    JMenuItem menu, home, trends;
+    JMenuItem menu, home, reports;
     JPanel p, userPanel, spPanel, apptPanel;
     JScrollPane scroll, scroll2, scroll3;
 
@@ -61,11 +61,11 @@ public class AdminHomePage {
 
         home = new JMenuItem("Home");
         home.setFont(new Font("Sarif", Font.PLAIN, 15));
-        trends = new JMenuItem("History");
-        trends.setFont(new Font("Sarif", Font.PLAIN, 15));
+        reports = new JMenuItem("Reports");
+        reports.setFont(new Font("Sarif", Font.PLAIN, 15));
 
         menu.add(home);
-        menu.add(trends);
+        menu.add(reports);
 
         home.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
@@ -73,9 +73,9 @@ public class AdminHomePage {
             }
         });
 
-        trends.addActionListener(new ActionListener() {
+        reports.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
-                trendsActionPerformed(evt);
+                reportsActionPerformed(evt);
             }
         });
         logout.addActionListener(new ActionListener() {
@@ -438,8 +438,9 @@ public class AdminHomePage {
     private void goHomeActionPerformed(ActionEvent e){
 
     }
-    private void trendsActionPerformed(ActionEvent e){
-
+    private void reportsActionPerformed(ActionEvent e){
+        f.setVisible(false);
+        new AdminReportsPage(db, this);
     }
 
     private void cancelApptActionPerformed(ActionEvent e){
@@ -526,5 +527,8 @@ public class AdminHomePage {
             }
         };
         apptSorter.setRowFilter(filter);
+    }
+    public void setHomeVisible(){
+        f.setVisible(true);
     }
 }
