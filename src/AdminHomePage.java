@@ -1,6 +1,7 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
+import javax.print.attribute.standard.JobMessageFromOperator;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
@@ -20,7 +21,7 @@ import java.time.LocalTime;
 // Off white: 220, 225, 222
 public class AdminHomePage {
     JFrame f;
-    JButton logout, userGoButton, spGoButton, apptGoButton, apptCancel;
+    JButton logout, userGoButton, spGoButton, apptGoButton, apptCancel, userDeleteButton;
     JMenuBar mb;
     JMenuItem menu, home, reports;
     JPanel p, userPanel, spPanel, apptPanel;
@@ -105,10 +106,20 @@ public class AdminHomePage {
                 goUserActionPerformed(evt);
             }
         });
+
+        userDeleteButton = new JButton("Delete User");
+        userDeleteButton.setBounds(700, 25, 150, 25);
+        userDeleteButton.setBackground(new Color(73, 160, 120));
+        userDeleteButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                deleteUserActionPerformed(evt);
+            }
+        });
         
         userPanel.add(userSearchLabel);
         userPanel.add(userSearchText);
         userPanel.add(userGoButton);
+        userPanel.add(userDeleteButton);
 
         spPanel = new JPanel();
         spPanel.setLayout(null);
@@ -199,7 +210,7 @@ public class AdminHomePage {
 
 
     private void populateUsers(){
-        String [] userHeaders = {"First Name", "Last Name", "Email", "Phone Number"};
+        String [] userHeaders = {"First Name", "Last Name", "Email", "Phone Number", "Active"};
         users.setModel(new DefaultTableModel(userHeaders, 0));
         users.getTableHeader().setBackground(new Color(33, 104, 105));
         users.getTableHeader().setForeground(Color.WHITE);
@@ -215,8 +226,17 @@ public class AdminHomePage {
                 String lName = rs.getString("LastName");
                 String email = rs.getString("Email");
                 String phoneNum = String.valueOf(rs.getLong("PhoneNum"));
+                int active = rs.getInt("Active");
 
-                String tbData[] = {fName, lName, email, phoneNum};
+                String yesno;
+                if(active == 1){
+                    yesno = "Yes";
+                }
+                else{
+                    yesno = "No";
+                }
+
+                String tbData[] = {fName, lName, email, phoneNum, yesno};
 
                 //add string array into jtable
                 tblModel.addRow(tbData);
@@ -234,6 +254,7 @@ public class AdminHomePage {
         users.getColumnModel().getColumn(1).setMinWidth(100);
         users.getColumnModel().getColumn(2).setMinWidth(100);
         users.getColumnModel().getColumn(3).setMinWidth(100);
+        users.getColumnModel().getColumn(4).setMinWidth(100);
         userPanel.add(scroll);
         userPanel.validate();
 
@@ -423,6 +444,44 @@ public class AdminHomePage {
         apptPanel.validate();
     }
 
+    private void updateUsers(){
+
+        try{
+            String sql = "SELECT * FROM user";
+            ResultSet rs = db.executeSQL(sql);
+            DefaultTableModel tblModel = (DefaultTableModel)users.getModel();
+            tblModel.setRowCount(0);
+            while(rs.next()){
+                //data will be added until finished
+                String fName = rs.getString("FirstName");
+                String lName = rs.getString("LastName");
+                String email = rs.getString("Email");
+                String phoneNum = String.valueOf(rs.getLong("PhoneNum"));
+                int active = rs.getInt("Active");
+
+                String yesno;
+                if(active == 1){
+                    yesno = "Yes";
+                }
+                else{
+                    yesno = "No";
+                }
+
+                String tbData[] = {fName, lName, email, phoneNum, yesno};
+
+                //add string array into jtable
+                tblModel.addRow(tbData);
+            }
+
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            System.out.println(e.getStackTrace());
+        }
+        scroll3.validate();
+        users.validate();
+        userPanel.validate();
+    }
+
 
     private void logoutActionPerformed(ActionEvent e) {
         f.setVisible(false);
@@ -521,6 +580,28 @@ public class AdminHomePage {
             }
         };
         apptSorter.setRowFilter(filter);
+    }
+
+    public void deleteUserActionPerformed(ActionEvent e) {
+        int rowIndex = users.getSelectedRow();
+        if (rowIndex == -1) {
+            JOptionPane.showMessageDialog(null, "Please select a user.");
+            return;
+        }
+
+        int selection = JOptionPane.showConfirmDialog(null,
+                "Are you sure you want to delete "
+                        + users.getValueAt(rowIndex, 0) + " "
+                        + users.getValueAt(rowIndex, 1) + "?");
+        if (selection == 1 || selection == 2) {
+            return;
+        }
+        else {
+            db.deleteUser(String.valueOf(users.getValueAt(rowIndex, 2)));
+            JOptionPane.showMessageDialog(null, "Successfully deleted.");
+            //update table
+            updateUsers();
+        }
     }
     public void setHomeVisible(){
         f.setVisible(true);
