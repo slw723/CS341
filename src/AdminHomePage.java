@@ -601,6 +601,9 @@ public class AdminHomePage {
             JOptionPane.showMessageDialog(null, "Successfully deleted.");
             //update table
             updateUsers();
+
+            //cancel appointments
+            db.cancelAppointment(String.valueOf(users.getValueAt(rowIndex, 2)));
         }
     }
     public void setHomeVisible(){

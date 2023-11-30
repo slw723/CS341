@@ -285,6 +285,16 @@ public class Database {
         }
     }
 
+    public void cancelAppointment (String userEmail) {
+        String sql = "UPDATE Appointment SET Canceled = 1 , Notified = 0 WHERE UserEmail = \"" + userEmail + "\"";
+        try {
+            dbExecuteUpdate(sql);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public int getCanceled(int apptId){
         String sql = "SELECT Canceled FROM Appointment WHERE ApptID = \'" + apptId + "\';";
         try{
@@ -590,7 +600,7 @@ public class Database {
     /*The below methods are for the purpose of log in validation. DEMO #1 asks for just names, not emails, keep the column name the same or
      * change to username for now?*/
     public ResultSet findUser(String username, byte[] password) {
-        String query = "SELECT * FROM User WHERE Email = ?";
+        String query = "SELECT * FROM User WHERE Email = ? AND Active = 1";
         try{
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setString(1, username);
