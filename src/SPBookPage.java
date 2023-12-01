@@ -1,6 +1,10 @@
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,7 +24,7 @@ public class SPBookPage implements ActionListener {
     JPanel bookPanel;
     JButton bookButton;
     JScrollBar scroll, scroll2, scroll3, scroll4;
-    JButton go;
+    JButton go, userManual;
     SPHomePage hp;
     Database db;
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -37,13 +41,29 @@ public class SPBookPage implements ActionListener {
         mb = new JMenuBar();
         menu = new JMenu("Menu");
 
-        mb.add(menu);
-        mb.setBackground(new Color(73, 160, 120));
-        menu.setFont(new Font("Sarif", Font.PLAIN, 15));
-        menu.setForeground(new Color(31, 36, 33));
+        userManual = new JButton("User Help");
+        userManual.setBackground(new Color(73, 160, 120));
+
+        userManual.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    manualActionPerformed(evt);
+                }
+                catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
+        mb.add(Box.createHorizontalGlue());
+        mb.add(userManual);
+        menu.setFont(new Font("Sarif", Font.PLAIN, 15));
+        menu.setForeground(new Color(31, 36, 33));
+
+//        mb.add(menu);
+//        mb.setBackground(new Color(73, 160, 120));
 
         home = new JMenuItem("Home");
         home.setFont(new Font("Sarif", Font.PLAIN, 15));
@@ -290,6 +310,28 @@ public class SPBookPage implements ActionListener {
                         "Successfully created " + des + " on " + dateStr + " at " + timeStr);
                 f.setVisible(false);
                 hp.setHomeVisible();
+            }
+        }
+    }
+
+    public void manualActionPerformed(ActionEvent e) throws MalformedURLException {
+        URL manualURL = new URL("file:///C:/Users/slw72/OneDrive/Documents/CS%20341/TestManual.pdf");
+        try {
+            openWebpage(manualURL.toURI());
+        }
+        catch (URISyntaxException exc) {
+            exc.printStackTrace();
+        }
+    }
+
+    public static void openWebpage(URI uri) {
+        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+            try {
+                desktop.browse(uri);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

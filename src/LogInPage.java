@@ -2,43 +2,34 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
-import java.sql.*;
-
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-
 import java.awt.*;
 import java.sql.ResultSet;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
 
-// Light Black: 31, 36, 33
-// Dark Teal: 33, 104, 105
-// Mint Green: 73, 160, 120
-// Light Green: 156, 197, 161
-// Off white: 220, 225, 222
+/*
+Color scheme used in application:
+Light Black: 31, 36, 33
+Dark Teal: 33, 104, 105
+Mint Green: 73, 160, 120
+Light Green: 156, 197, 161
+Off white: 220, 225, 222
+ */
+
 
 public class LogInPage extends JFrame  {
+    // Static variables
     private static User user;
     private static ServiceProvider sp;
 
     private static Admin admin;
     public static Database db;
 
-    // ArrayList<User> users = new ArrayList<>();
-    // ArrayList<ServiceProvider> sp = new ArrayList<>();
-    // ArrayList<Appointment> appointments = new ArrayList<>();
 
-    /*Global variables below for log-in gui*/
+    // Global variables below for log-in gui
     JFrame loginWin;
     JPanel wcPanel, shPanel, loginPanel;
     JLabel userLabel, passwordLabel, welcome, enterInfo;
@@ -46,6 +37,8 @@ public class LogInPage extends JFrame  {
     JPasswordField passwordText;
     JButton loginButton, registerButton;
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+    // Main method
     public static void main(String[] args){
         db = new Database();
         new LogInPage(db);

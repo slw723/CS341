@@ -1,11 +1,14 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-import javax.swing.table.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import java.awt.*;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,7 +23,7 @@ public class UserHomePage extends DefaultTableCellRenderer {
     JFrame f, f2, alertFrame;
     JMenuBar mb;
     JMenuItem menu, home, makeAppt, history;
-    JButton logout,cancel, modify, alerts;
+    JButton logout,cancel, modify, alerts, userManual;
     JPanel p;
     JLabel hello, upcoming, noappts;
     DefaultTableModel model;
@@ -55,10 +58,14 @@ public class UserHomePage extends DefaultTableCellRenderer {
             alerts.setBackground(new Color(73, 160, 120));
         }
 
+        userManual = new JButton("User Help");
+        userManual.setBackground(new Color(73, 160, 120));
+
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
         mb.add(Box.createHorizontalGlue());
         mb.add(alerts);
+        mb.add(userManual);
         mb.add(logout);
 
         home = new JMenuItem("Home");
@@ -98,6 +105,16 @@ public class UserHomePage extends DefaultTableCellRenderer {
         alerts.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 alertsActionPerformed(evt);
+            }
+        });
+
+        userManual.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    manualActionPerformed(evt);
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -351,6 +368,28 @@ public class UserHomePage extends DefaultTableCellRenderer {
         f2.setSize(500, 500);
         f2.setLocation(275, 150);
         f2.setVisible(true);
+    }
+
+    public void manualActionPerformed(ActionEvent e) throws MalformedURLException {
+        URL manualURL = new URL("file:///C:/Users/slw72/OneDrive/Documents/CS%20341/TestManual.pdf");
+        try {
+            openWebpage(manualURL.toURI());
+        }
+        catch (URISyntaxException exc) {
+            exc.printStackTrace();
+        }
+    }
+
+    public static void openWebpage(URI uri) {
+        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+            try {
+                desktop.browse(uri);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /* Populate full table view -> good for admin view*/

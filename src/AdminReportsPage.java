@@ -1,6 +1,11 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.sql.*;
+import javax.management.Descriptor;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
@@ -16,7 +21,7 @@ public class AdminReportsPage {
     JFrame f;
     JPanel p;
     JLabel reportsLabel;
-    JButton logout, userGoButton, spGoButton, apptGoButton, apptCancel;
+    JButton logout, userGoButton, spGoButton, apptGoButton, apptCancel, userManual;
     JMenuBar mb;
     JMenuItem menu, home, reports;
     AdminHomePage ahp;
@@ -40,9 +45,13 @@ public class AdminReportsPage {
         logout = new JButton("Log Out");
         logout.setBackground(new Color(73, 160, 120));
 
+        userManual = new JButton("User Help");
+        userManual.setBackground(new Color(73, 160, 120));
+
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
         mb.add(Box.createHorizontalGlue());
+        mb.add(userManual);
         mb.add(logout);
 
         home = new JMenuItem("Home");
@@ -62,6 +71,17 @@ public class AdminReportsPage {
         logout.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 logoutActionPerformed(evt);
+            }
+        });
+
+        userManual.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    manualActionPerformed(evt);
+                }
+                catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -93,5 +113,27 @@ public class AdminReportsPage {
     private void logoutActionPerformed(ActionEvent e) {
         f.setVisible(false);
         new LogInPage(db);
+    }
+
+    public void manualActionPerformed(ActionEvent e) throws MalformedURLException {
+        URL manualURL = new URL("file:///C:/Users/slw72/OneDrive/Documents/CS%20341/TestManual.pdf");
+        try {
+            openWebpage(manualURL.toURI());
+        }
+        catch (URISyntaxException exc) {
+            exc.printStackTrace();
+        }
+    }
+
+    public static void openWebpage(URI uri) {
+        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+            try {
+                desktop.browse(uri);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

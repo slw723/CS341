@@ -1,6 +1,10 @@
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 
@@ -17,7 +21,7 @@ public class UserBookPage implements ActionListener {
     String[] apptTypes;
     JComboBox<String> typesCB;
     JTextField searchBox;
-    JButton bookButton;
+    JButton bookButton, userManual;
     JButton endButton;
     JButton go, searchButton;
     DefaultTableModel model;
@@ -41,13 +45,29 @@ public class UserBookPage implements ActionListener {
         mb = new JMenuBar();
         menu = new JMenu("Menu");
 
-        mb.add(menu);
-        mb.setBackground(new Color(73, 160, 120));
-        menu.setFont(new Font("Sarif", Font.PLAIN, 15));
-        menu.setForeground(new Color(31, 36, 33));
+        userManual = new JButton("User Help");
+        userManual.setBackground(new Color(73, 160, 120));
+
+        userManual.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    manualActionPerformed(evt);
+                }
+                catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
         mb.add(menu);
         mb.setBackground(new Color(73, 160, 120));
+        mb.add(Box.createHorizontalGlue());
+        mb.add(userManual);
+        menu.setFont(new Font("Sarif", Font.PLAIN, 15));
+        menu.setForeground(new Color(31, 36, 33));
+
+//        mb.add(menu);
+//        mb.setBackground(new Color(73, 160, 120));
 
         home = new JMenuItem("Home");
         home.setFont(new Font("Sarif", Font.PLAIN, 15));
@@ -228,6 +248,28 @@ public class UserBookPage implements ActionListener {
         apptSorter = new TableRowSorter(appointments.getModel());
         appointments.setRowSorter(apptSorter);
         makeBookButton();
+    }
+
+    public void manualActionPerformed(ActionEvent e) throws MalformedURLException {
+        URL manualURL = new URL("file:///C:/Users/slw72/OneDrive/Documents/CS%20341/TestManual.pdf");
+        try {
+            openWebpage(manualURL.toURI());
+        }
+        catch (URISyntaxException exc) {
+            exc.printStackTrace();
+        }
+    }
+
+    public static void openWebpage(URI uri) {
+        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+            try {
+                desktop.browse(uri);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void populateAppt() {
