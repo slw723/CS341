@@ -281,7 +281,7 @@ public class UserBookPage implements ActionListener {
         appointments.getTableHeader().setForeground(Color.WHITE);
         try{
             // Show the available time slots
-            ResultSet rs = db.getApptType(apptSelected);
+            ResultSet rs = db.getUnbookedAppts(apptSelected);
             DefaultTableModel tblmodel = (DefaultTableModel)appointments.getModel();
             while(rs.next()){
                 //data will be added until finished
@@ -322,7 +322,7 @@ public class UserBookPage implements ActionListener {
         appointments.getTableHeader().setForeground(Color.WHITE);
         try{
             // Show the available time slots
-            ResultSet rs = db.executeSQL("SELECT * FROM appointment WHERE Date >= date(NOW())");
+            ResultSet rs = db.getUnbookedAppts(apptSelected);
             DefaultTableModel tblmodel = (DefaultTableModel)appointments.getModel();
             while(rs.next()){
                 //data will be added until finished
@@ -382,7 +382,8 @@ public class UserBookPage implements ActionListener {
 
             //reset selections
             appointments.clearSelection();
-            appointments.removeAll();
+            DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
+            tblModel.setRowCount(0);
             typesCB.setSelectedIndex(0);
         }
     }
@@ -432,7 +433,7 @@ public class UserBookPage implements ActionListener {
             // Show the available time slots
             ResultSet rs = null;
             if (type.equals("Appointment type")) {
-                rs = db.getApptType(searchText);
+                rs = db.getUnbookedAppts(searchText);
             }
             else if (type.equals("Service Provider")) {
                 rs = db.getApptSP(searchText);

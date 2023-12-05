@@ -391,7 +391,7 @@ public class Database {
         }
     }
 
-    public ResultSet getApptType(String type){
+    public ResultSet getUnbookedAppts(String type){
         ResultSet result = null;
         if(type.equals("")){
             return null;
@@ -399,7 +399,8 @@ public class Database {
         String sql = "SELECT * "+
                     "FROM Appointment " +
                     "WHERE Type = \"" + type  + "\" " +
-                    "AND Booked = 0 " + 
+                    "AND Booked = 0 " +
+                    "AND Canceled = 0 " +
                     "AND Date >= date(NOW());";
         try{
            result = runQuery(sql);

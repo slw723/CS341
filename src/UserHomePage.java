@@ -254,15 +254,16 @@ public class UserHomePage extends DefaultTableCellRenderer {
             DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
 
             //no appts to be shown
-            if(rs.next() == false){
+            boolean currentRS = rs.next();
+            if(currentRS){
                 noappts = new JLabel("No Upcoming Appointments");
                 noappts.setFont(new Font("Sarif", Font.PLAIN, 10));
                 Dimension noSize = noappts.getPreferredSize();
                 noappts.setBounds(20, 80, noSize.width+20, noSize.height);
                 p.add(noappts);
             }
-            int row = 0;
-            while(rs.next()){
+            tblModel.setRowCount(0);
+            while(currentRS){
                 //data will be added until finished
                 String descr = rs.getString("Description");
                 String date = String.valueOf(rs.getDate("Date"));
@@ -278,17 +279,12 @@ public class UserHomePage extends DefaultTableCellRenderer {
                 }
 
                 String spName = getSPName(spEmail);
-                // if model already contains the value... don't add it
-                if(tblModel.getValueAt(row, 0).equals(date) &&
-                        tblModel.getValueAt(row, 1).equals(time)){
-                    continue;
-                }
 
                 Object tbData[] = {date, time, descr, spName, yesno};
 
                 // add string array into jtable
                 tblModel.addRow(tbData);
-                row++;
+                currentRS = rs.next();
             }
         }
         catch(Exception e){
