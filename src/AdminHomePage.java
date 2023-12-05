@@ -4,25 +4,19 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.sql.*;
-import javax.print.attribute.standard.JobMessageFromOperator;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
-
 import java.awt.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 // Light Black: 31, 36, 33
 // Dark Teal: 33, 104, 105
 // Mint Green: 73, 160, 120
 // Light Green: 156, 197, 161
 // Off white: 220, 225, 222
+
 public class AdminHomePage {
     JFrame f;
     JButton logout, userGoButton, spGoButton, apptGoButton, apptCancel, userDeleteButton, userManual;
