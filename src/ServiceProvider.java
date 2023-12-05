@@ -10,6 +10,7 @@ public class ServiceProvider {
     private String type;
     private int active;
 
+    // constructor
     public ServiceProvider (String first, String last, String emailAddress, byte[] pw, long phone, String qualif, int year, String type, int active) {
         firstName = first;
         lastName = last;
@@ -22,10 +23,12 @@ public class ServiceProvider {
         this.active = active;
     }
 
+    // constructor
     public ServiceProvider() {
 
     }
 
+    // constructor
     public ServiceProvider(String emailAddress, byte[] pw){
         email = emailAddress;
         password = pw;

@@ -4,18 +4,17 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.sql.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
+
+// Light Black: 31, 36, 33
+// Dark Teal: 33, 104, 105
+// Mint Green: 73, 160, 120
+// Light Green: 156, 197, 161
+// Off white: 220, 225, 222
 
 public class SPHomePage {
     JFrame f, f2, alertFrame;
@@ -35,11 +34,11 @@ public class SPHomePage {
         this.db = db;
         this.sp = sp;
 
-        /* Make frame */
+        // Make frame 
         f = new JFrame("Appointment Booker for Service Provider");
         f.setBackground(new Color(220, 225, 222));
 
-        /* Set up the menu bar */
+        // Set up the menu bar
         mb = new JMenuBar();
         menu = new JMenu("Menu");
         menu.setFont(new Font("Sarif", Font.PLAIN, 15));
@@ -65,7 +64,6 @@ public class SPHomePage {
         mb.add(alerts);
         mb.add(userManual);
         mb.add(logout);
-
 
         home = new JMenuItem("Home");
         home.setFont(new Font("Sarif", Font.PLAIN, 15));
@@ -117,7 +115,6 @@ public class SPHomePage {
                 }
             }
         });
-
         f.setJMenuBar(mb);
 
         // add hello Name
@@ -139,10 +136,11 @@ public class SPHomePage {
         upcoming.setBounds(10, 40, upSize.width+10, upSize.height);
         p.add(upcoming);
 
-        // show the upcoming appointments if they exists
+        // show the upcoming appointments
         appointments = new JTable();
         populateUpcoming();
 
+        // make and show cancel appt button
         cancel = new JButton("Cancel Selection Now");
         Dimension cancelSize = cancel.getPreferredSize();
         cancel.setBounds(925, 40, cancelSize.width+10, cancelSize.height);
@@ -154,25 +152,14 @@ public class SPHomePage {
         });
         p.add(cancel);
 
-        modify = new JButton("Modify Selection Now");
-        Dimension modSize = modify.getPreferredSize();
-        modify.setBounds(950+cancelSize.width, 40, modSize.width+10, modSize.height);
-        modify.setBackground(new Color(156, 197, 161));
-        modify.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt){
-                modifyActionPerformed(evt);
-            }
-        });
-        p.add(modify);
-
-        //panel specifications
+        // panel specifications
         p.setLayout(null);
         p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        //add panel to frame
+        // add panel to frame
         f.add(p);
 
-        /* Make visible */
+        // Make visible
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         f.setSize(screenSize.width, screenSize.height);
         f.setVisible(true);
@@ -188,9 +175,9 @@ public class SPHomePage {
         return sp;
     }
 
-    /* Populate full table view -> good for admin view*/
+    /* Populate full table view */
     private void populateUpcoming() {
-
+        // make appointments table
         String [] apptHeaders = {"Date", "Time", "Description", "Booked", "Booked By", "Canceled"};
         appointments.setModel(new DefaultTableModel(apptHeaders, 0));
         appointments.getTableHeader().setBackground(new Color(33, 104, 105));
@@ -198,12 +185,13 @@ public class SPHomePage {
         try{
             String sql = "SELECT * FROM Appointment WHERE SPEmail = \"" + sp.getEmail() +
                     "\" AND Date >= date(NOW());";
-            ResultSet rs = db.executeSQL(sql);
+            ResultSet rs = db.executeSQL(sql);      // get the results of all future appts
+            
+            DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
+            
             boolean currentRS = rs.next();
-
             // no appts to be shown
             if(!currentRS){
-                // don't know if its ever getting here
                 noappts = new JLabel("No Upcoming Appointments");
                 noappts.setFont(new Font("Sarif", Font.PLAIN, 10));
                 Dimension noSize = noappts.getPreferredSize();
@@ -211,7 +199,7 @@ public class SPHomePage {
                 p.add(noappts);
                 p.validate();
             }
-            DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
+            // while there are more results to be added to table
             while(currentRS){
                 //data will be added until finished
                 String descr = rs.getString("Description");
@@ -252,6 +240,7 @@ public class SPHomePage {
         catch(Exception e){
             System.out.println(e.getMessage());
         }
+        // add table and scroll pane to main frame and set column widths
         scroll = new JScrollPane(appointments);
         scroll.setBounds(10, 80, 1300, 350);
         scroll.validate();
@@ -266,12 +255,13 @@ public class SPHomePage {
     }
 
     private void updateUpcoming(){
-
         try{
             String sql = "SELECT * FROM Appointment WHERE SPEmail = \"" + sp.getEmail() +
                     "\" AND Date >= date(NOW());";
-            ResultSet rs = db.executeSQL(sql);
-
+            ResultSet rs = db.executeSQL(sql);      // get the results of all future appts
+            
+            DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
+            
             // no appts to be shown
             boolean currentRS = rs.next();
             if(!currentRS){
@@ -282,7 +272,6 @@ public class SPHomePage {
                 p.add(noappts);
                 p.validate();
             }
-            DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
             tblModel.setRowCount(0);
             while(currentRS){
                 //data will be added until finished
@@ -318,7 +307,7 @@ public class SPHomePage {
 
                 String tbData[] = {date, time, descr, yesno, userName, canceledStr};
 
-                //add string array into jtable
+                // add string array into jtable
                 tblModel.addRow(tbData);
                 currentRS = rs.next();
             }
@@ -326,23 +315,9 @@ public class SPHomePage {
         catch(Exception e){
             System.out.println(e);
         }
-        // greyOutCanceled();
+        // update the main page
         scroll.validate();
         f.validate();
-    }
-
-
-    private void greyOutCanceled(){
-
-        for(int i = 0; i < appointments.getRowCount(); i++){
-            int apptId = db.getApptId(String.valueOf(appointments.getValueAt(i, 0)),
-                    String.valueOf(appointments.getValueAt(i, 1)), sp.getEmail());
-            int canceled = db.getCanceled(apptId);
-            if(canceled == 1){
-                // TODO
-            }
-        }
-
     }
 
     /* ACTION LISTENERS */
@@ -367,7 +342,6 @@ public class SPHomePage {
         new LogInPage(db);
     }
 
-    //TODO not updating tables after close
     private void alertsActionPerformed(ActionEvent e){
         alertFrame = new JFrame("Your Alerts");
         //new alerts table
@@ -480,42 +454,6 @@ public class SPHomePage {
             updateUpcoming();
         }
 
-    }
-
-    private void modifyActionPerformed(ActionEvent e) {
-        JFrame f2;
-        JPanel p2;
-        JLabel date, time, sp, descr;
-        JTextField dateField, timeField, spField, descrField;
-        int rowIndex = appointments.getSelectedRow();
-        if (rowIndex == -1) {
-            JOptionPane.showMessageDialog(null,
-                    "Please select an appointment.");
-            return;
-        }
-        f2 = new JFrame();
-        p2 = new JPanel(new GridLayout(5, 2, 10, 20));
-        f2.add(p2);
-
-        descr = new JLabel("Description: ");
-        descr.setSize(100, 20);
-        descrField = new JTextField();
-        // set default text uneditable
-        String d = String.valueOf(appointments.getValueAt(rowIndex, 0));
-        descrField.setText(d);
-        descrField.setEditable(false);
-        descrField.setSize(100, 20);
-
-
-        /* add components */
-        p2.add(descr);
-        p2.add(descrField);
-
-        /* Make visible */
-        f2.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        f2.setSize(500, 500);
-        f2.setLocation(275, 150);
-        f2.setVisible(true);
     }
 
     public void manualActionPerformed(ActionEvent e) throws MalformedURLException {

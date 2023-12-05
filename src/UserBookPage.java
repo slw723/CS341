@@ -322,7 +322,7 @@ public class UserBookPage implements ActionListener {
         appointments.getTableHeader().setForeground(Color.WHITE);
         try{
             // Show the available time slots
-            ResultSet rs = db.executeSQL("SELECT * FROM appointment");
+            ResultSet rs = db.executeSQL("SELECT * FROM appointment WHERE Date >= date(NOW())");
             DefaultTableModel tblmodel = (DefaultTableModel)appointments.getModel();
             while(rs.next()){
                 //data will be added until finished

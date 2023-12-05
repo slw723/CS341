@@ -3,7 +3,6 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
-
 import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -72,27 +71,19 @@ public class UserHomePage extends DefaultTableCellRenderer {
         home.setFont(new Font("Sarif", Font.PLAIN, 15));
         makeAppt = new JMenuItem("Make Appointment");
         makeAppt.setFont(new Font("Sarif", Font.PLAIN, 15));
-        history = new JMenuItem("History");
-        history.setFont(new Font("Sarif", Font.PLAIN, 15));
 
         menu.add(home);
         menu.add(makeAppt);
-        menu.add(history);
 
         home.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
                 goHomeActionPerformed(evt);
             }
         });
+
         makeAppt.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
                 makeApptActionPerformed(evt);
-            }
-        });
-
-        history.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt){
-                historyActionPerformed(evt);
             }
         });
 
@@ -117,7 +108,6 @@ public class UserHomePage extends DefaultTableCellRenderer {
                 }
             }
         });
-
         f.setJMenuBar(mb);
 
         // add hello Name
@@ -143,9 +133,10 @@ public class UserHomePage extends DefaultTableCellRenderer {
         appointments = new JTable();
         populateUpcoming();
 
+        // make and show cancel appt button
         cancel = new JButton("Cancel Selection Now");
         Dimension cancelSize = cancel.getPreferredSize();
-        cancel.setBounds(925, 40, cancelSize.width+10, cancelSize.height);
+        cancel.setBounds(1125, 40, cancelSize.width+10, cancelSize.height);
         cancel.setBackground(new Color(156, 197, 161));
         cancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -154,32 +145,20 @@ public class UserHomePage extends DefaultTableCellRenderer {
         });
         p.add(cancel);
 
-        modify = new JButton("Modify Selection Now");
-        Dimension modSize = modify.getPreferredSize();
-        modify.setBounds(cancelSize.width+950, 40, modSize.width+10, modSize.height);
-        modify.setBackground(new Color(156, 197, 161));
-        modify.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                modifyActionPerformed(evt);
-            }
-        });
-        p.add(modify);
-
-        //panel sepecifications
+        // panel sepecifications
         p.setLayout(null);
         p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        //add panel to frame
+        // add panel to frame
         f.add(p);
 
-        /* Make visible */
+        // Make visible
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         f.setSize(screenSize.width, screenSize.height);
         f.setVisible(true);
     }
 
     /* HELPERS */
-
     public void setHomeVisible(){
         f.setVisible(true);
         updateUpcoming();
@@ -204,197 +183,9 @@ public class UserHomePage extends DefaultTableCellRenderer {
         return null;
     }
 
-    /* ACTION PERFORMED */
-
-    public void goHomeActionPerformed(ActionEvent e){
-
-    }
-
-    public void makeApptActionPerformed(ActionEvent e){
-
-        f.setVisible(false);
-        UserBookPage bp = new UserBookPage(db, this);
-    }
-
-    public void historyActionPerformed(ActionEvent e){
-
-        f.setVisible(false);
-
-    }
-
-    public void logoutActionPerformed(ActionEvent e) {
-        f.setVisible(false);
-        LogInPage lp = new LogInPage(db);
-    }
-
-    public void alertsActionPerformed(ActionEvent e){
-        alertFrame = new JFrame("Your Alerts");
-        //new alerts table
-        String [] newHeader = {"New Alerts"};
-        newTable = new JTable();
-        newTable.setModel(new DefaultTableModel(newHeader, 0));
-        newTable.getTableHeader().setBackground(new Color(33, 104, 105));
-        newTable.getTableHeader().setForeground(Color.WHITE);
-        DefaultTableModel tblModel = (DefaultTableModel)newTable.getModel();
-
-        ArrayList<String> notifs = db.getNewAlerts(user);
-        if(notifs.size() == 0){
-            String[] data = {"No new alerts"};
-            tblModel.addRow(data);
-        }
-        else{
-            for(String s : notifs){
-                //add string array into jtable
-                String[] data = {s};
-                tblModel.addRow(data);
-            }
-        }
-
-        //add to frame
-        JScrollPane scroll2 = new JScrollPane(newTable);
-        scroll2.setBounds(10, 30, 450, 200);
-        scroll2.validate();
-        newTable.validate();
-        alertFrame.add(scroll2);
-
-        //previous alerts table
-        String [] oldHeader = {"Previous Alerts"};
-        oldTable = new JTable();
-        oldTable.setModel(new DefaultTableModel(oldHeader, 0));
-        oldTable.getTableHeader().setBackground(new Color(33, 104, 105));
-        oldTable.getTableHeader().setForeground(Color.WHITE);
-        DefaultTableModel tblModel2 = (DefaultTableModel)oldTable.getModel();
-
-        ArrayList<String> oldNotifs = db.getPastAlerts(user);
-        if(oldNotifs.size() == 0){
-            String[] data = {"No previous alerts"};
-            tblModel2.addRow(data);
-        }
-        else{
-            for(String s : oldNotifs){
-                //add string array into jtable
-                String[] data = {s};
-                tblModel2.addRow(data);
-            }
-        }
-        //add to frame
-        JScrollPane scroll3 = new JScrollPane(oldTable);
-        scroll3.setBounds(10, 250, 450, 200);
-        scroll3.validate();
-        oldTable.validate();
-        alertFrame.add(scroll3);
-
-        JButton ok = new JButton("OK");
-        ok.setBackground(new Color(156, 197, 161));
-        Dimension okSize = ok.getPreferredSize();
-        ok.setBounds(10, 500, okSize.width+10, okSize.height);
-        ok.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt){
-                alertCloseActionPerformed(evt);
-            }
-        });
-        alertFrame.add(ok);
-
-        alertFrame.setLayout(null);
-        alertFrame.setSize(500,580);
-        alertFrame.setVisible(true);
-        alertFrame.validate();
-
-    }
-
-    private void alertCloseActionPerformed(ActionEvent e){
-
-        //update that new appts have been alerted
-        db.sawNewAlerts(user);
-
-        //change color of alerts button
-        alerts.setBackground(new Color(73, 160, 120));
-        f.validate();
-
-        alertFrame.dispose();
-    }
-
-    private void cancelActionPerformed(ActionEvent e) {
-        int rowIndex = appointments.getSelectedRow();
-        if (rowIndex == -1) {
-            JOptionPane.showMessageDialog(null, "Please select an appointment.");
-            return;
-        }
-
-        int selection = JOptionPane.showConfirmDialog(null,
-                "Are you sure you want to cancel your appointment on "
-                        + appointments.getValueAt(rowIndex, 0) + " at "
-                        + appointments.getValueAt(rowIndex, 1) + "?");
-        if (selection == 1 || selection == 2) {
-            return;
-        }
-        else {
-            int apptId = db.getApptIdUser(String.valueOf(appointments.getValueAt(rowIndex, 0)),
-                    String.valueOf(appointments.getValueAt(rowIndex, 1)), user.getEmail());
-
-            db.cancelAppointment(apptId);
-            JOptionPane.showMessageDialog(null, "Successfully canceled.");
-            updateUpcoming();
-        }
-    }
-
-    private void modifyActionPerformed(ActionEvent e) {
-        JFrame f2;
-        JPanel p2;
-        JLabel date, time, user, descr;
-        JTextField dateField, timeField, userField, descrField;
-        int rowIndex = appointments.getSelectedRow();
-        if (rowIndex == -1) {
-            JOptionPane.showMessageDialog(null, "Please select an appointment.");
-            return;
-        }
-        f2 = new JFrame();
-        p2 = new JPanel(new GridLayout(5, 2, 10, 20));
-        f2.add(p2);
-
-        descr = new JLabel("Description: ");
-        descr.setSize(100, 20);
-        descrField = new JTextField();
-
-        String d = String.valueOf(appointments.getValueAt(rowIndex, 0));
-        descrField.setText(d);
-        descrField.setEditable(false);
-        descrField.setSize(100, 20);
-
-        p2.add(descr);
-        p2.add(descrField);
-
-        f2.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        f2.setSize(500, 500);
-        f2.setLocation(275, 150);
-        f2.setVisible(true);
-    }
-
-    public void manualActionPerformed(ActionEvent e) throws MalformedURLException {
-        URL manualURL = new URL("file:///C:/Users/slw72/OneDrive/Documents/CS%20341/TestManual.pdf");
-        try {
-            openWebpage(manualURL.toURI());
-        }
-        catch (URISyntaxException exc) {
-            exc.printStackTrace();
-        }
-    }
-
-    public static void openWebpage(URI uri) {
-        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
-        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-            try {
-                desktop.browse(uri);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /* Populate full table view -> good for admin view*/
+    /* Populate full table view */
     private void populateUpcoming() {
-        appointments = new JTable();
+        // make appointments table
         String [] apptHeaders = {"Date", "Time", "Description", "Service Provider", "Canceled"};
         appointments.setModel(new DefaultTableModel(apptHeaders, 0));
         appointments.getTableHeader().setBackground(new Color(33, 104, 105));
@@ -402,12 +193,12 @@ public class UserHomePage extends DefaultTableCellRenderer {
         try{
             String sql = "SELECT * FROM Appointment WHERE UserEmail = \"" + user.getEmail() +
                     "\" AND Date >= date(NOW());";
-            ResultSet rs = db.executeSQL(sql);
+            ResultSet rs = db.executeSQL(sql);      // get the results of all future appts
 
             DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
 
             boolean currentRS = rs.next();
-            //no appts to be shown
+            // no appts to be shown
             if(!currentRS){
                 noappts = new JLabel("No Upcoming Appointments");
                 noappts.setFont(new Font("Sarif", Font.PLAIN, 10));
@@ -415,6 +206,7 @@ public class UserHomePage extends DefaultTableCellRenderer {
                 noappts.setBounds(20, 80, noSize.width+20, noSize.height);
                 p.add(noappts);
             }
+            // while there are more results to be added to table
             while(currentRS){
                 //data will be added until finished
                 String descr = rs.getString("Description");
@@ -434,7 +226,7 @@ public class UserHomePage extends DefaultTableCellRenderer {
 
                 Object tbData[] = {date, time, descr, spName, yesno};
 
-                //addstring array into jtable
+                // add string array into jtable
                 tblModel.addRow(tbData);
                 currentRS = rs.next();
             }
@@ -442,6 +234,7 @@ public class UserHomePage extends DefaultTableCellRenderer {
         catch(Exception e){
             System.out.println(e.getMessage());
         }
+        // add table and scroll pane to main frame and set column widths
         scroll = new JScrollPane(appointments);
         scroll.setBounds(10, 80, 1300, 350);
         scroll.validate();
@@ -456,7 +249,7 @@ public class UserHomePage extends DefaultTableCellRenderer {
         try{
             String sql = "SELECT * FROM Appointment WHERE UserEmail = \"" + user.getEmail() +
                     "\" AND Date >= date(NOW());";
-            ResultSet rs = db.executeSQL(sql);
+            ResultSet rs = db.executeSQL(sql);      // get the results of all future appts 
 
             DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
 
@@ -485,7 +278,7 @@ public class UserHomePage extends DefaultTableCellRenderer {
                 }
 
                 String spName = getSPName(spEmail);
-                //if model already contains the value... don't add it
+                // if model already contains the value... don't add it
                 if(tblModel.getValueAt(row, 0).equals(date) &&
                         tblModel.getValueAt(row, 1).equals(time)){
                     continue;
@@ -493,7 +286,7 @@ public class UserHomePage extends DefaultTableCellRenderer {
 
                 Object tbData[] = {date, time, descr, spName, yesno};
 
-                //add string array into jtable
+                // add string array into jtable
                 tblModel.addRow(tbData);
                 row++;
             }
@@ -501,20 +294,159 @@ public class UserHomePage extends DefaultTableCellRenderer {
         catch(Exception e){
             System.out.println(e.getMessage());
         }
+        // update the main page
         scroll.validate();
         f.validate();
     }
 
-    private void greyOutCanceled() {
-        for (int i = 0; i <appointments.getRowCount(); i++) {
-            int apptId = db.getApptIdUser(String.valueOf(appointments.getValueAt(i, 0)),
-                    String.valueOf(appointments.getValueAt(i, 1)), user.getEmail());
-            int canceled = db.getCanceled(apptId);
-            if (canceled == 1) {
-                //need to do
+    /* ACTION LISTENERS */
+    public void goHomeActionPerformed(ActionEvent e){
+
+    }
+
+    public void makeApptActionPerformed(ActionEvent e){
+        f.setVisible(false);
+        UserBookPage bp = new UserBookPage(db, this);
+    }
+
+    public void logoutActionPerformed(ActionEvent e) {
+        f.setVisible(false);
+        LogInPage lp = new LogInPage(db);
+    }
+
+    public void alertsActionPerformed(ActionEvent e){
+        alertFrame = new JFrame("Your Alerts");
+        // new alerts table
+        String [] newHeader = {"New Alerts"};
+        newTable = new JTable();
+        newTable.setModel(new DefaultTableModel(newHeader, 0));
+        newTable.getTableHeader().setBackground(new Color(33, 104, 105));
+        newTable.getTableHeader().setForeground(Color.WHITE);
+        DefaultTableModel tblModel = (DefaultTableModel)newTable.getModel();
+
+        ArrayList<String> notifs = db.getNewAlerts(user);
+        if(notifs.size() == 0){
+            String[] data = {"No new alerts"};
+            tblModel.addRow(data);
+        }
+        else{
+            for(String s : notifs){
+                // add string array into jtable
+                String[] data = {s};
+                tblModel.addRow(data);
             }
+        }
+
+        // add table and scroll pane to frame
+        JScrollPane scroll2 = new JScrollPane(newTable);
+        scroll2.setBounds(10, 30, 450, 200);
+        scroll2.validate();
+        newTable.validate();
+        alertFrame.add(scroll2);
+
+        // previous alerts table
+        String [] oldHeader = {"Previous Alerts"};
+        oldTable = new JTable();
+        oldTable.setModel(new DefaultTableModel(oldHeader, 0));
+        oldTable.getTableHeader().setBackground(new Color(33, 104, 105));
+        oldTable.getTableHeader().setForeground(Color.WHITE);
+        DefaultTableModel tblModel2 = (DefaultTableModel)oldTable.getModel();
+
+        ArrayList<String> oldNotifs = db.getPastAlerts(user);
+        if(oldNotifs.size() == 0){
+            String[] data = {"No previous alerts"};
+            tblModel2.addRow(data);
+        }
+        else{
+            for(String s : oldNotifs){
+                // add string array into jtable
+                String[] data = {s};
+                tblModel2.addRow(data);
+            }
+        }
+        // add table and scroll pane to frame
+        JScrollPane scroll3 = new JScrollPane(oldTable);
+        scroll3.setBounds(10, 250, 450, 200);
+        scroll3.validate();
+        oldTable.validate();
+        alertFrame.add(scroll3);
+
+        // add close button
+        JButton ok = new JButton("OK");
+        ok.setBackground(new Color(156, 197, 161));
+        Dimension okSize = ok.getPreferredSize();
+        ok.setBounds(10, 500, okSize.width+10, okSize.height);
+        ok.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt){
+                alertCloseActionPerformed(evt);
+            }
+        });
+        alertFrame.add(ok);
+
+        alertFrame.setLayout(null);
+        alertFrame.setSize(500,580);
+        alertFrame.setVisible(true);
+        alertFrame.validate();
+    }
+
+    private void alertCloseActionPerformed(ActionEvent e){
+        //update that new appts have been alerted
+        db.sawNewAlerts(user);
+
+        //change color of alerts button
+        alerts.setBackground(new Color(73, 160, 120));
+        f.validate();
+
+        //discard the frame
+        alertFrame.dispose();
+    }
+
+    private void cancelActionPerformed(ActionEvent e) {
+        // find selected appointment to be canceled
+        int rowIndex = appointments.getSelectedRow();
+        if (rowIndex == -1) {
+            JOptionPane.showMessageDialog(null, "Please select an appointment.");
+            return;
+        }
+
+        // show confirmation message
+        int selection = JOptionPane.showConfirmDialog(null,
+                "Are you sure you want to cancel your appointment on "
+                        + appointments.getValueAt(rowIndex, 0) + " at "
+                        + appointments.getValueAt(rowIndex, 1) + "?");
+        if (selection == 1 || selection == 2) {
+            return;
+        }
+        else {
+            int apptId = db.getApptIdUser(String.valueOf(appointments.getValueAt(rowIndex, 0)),
+                    String.valueOf(appointments.getValueAt(rowIndex, 1)), user.getEmail());
+
+            db.cancelAppointment(apptId);
+            // show confirmation message
+            JOptionPane.showMessageDialog(null, "Successfully canceled.");
+            updateUpcoming();
         }
     }
 
+    public void manualActionPerformed(ActionEvent e) throws MalformedURLException {
+        URL manualURL = new URL("file:///C:/Users/slw72/OneDrive/Documents/CS%20341/TestManual.pdf");
+        try {
+            openWebpage(manualURL.toURI());
+        }
+        catch (URISyntaxException exc) {
+            exc.printStackTrace();
+        }
+    }
 
+    public static void openWebpage(URI uri) {
+        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+            try {
+                desktop.browse(uri);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

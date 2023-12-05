@@ -10,7 +10,7 @@ import javax.naming.spi.DirStateFactory.Result;
 public class Database {
 
     private Connection connection;
-    private String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=3871";
+    private String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=5628";
 
 
     public void connect() throws SQLException {
@@ -399,7 +399,8 @@ public class Database {
         String sql = "SELECT * "+
                     "FROM Appointment " +
                     "WHERE Type = \"" + type  + "\" " +
-                    "AND Booked = 0;";
+                    "AND Booked = 0 " + 
+                    "AND Date >= date(NOW());";
         try{
            result = runQuery(sql);
         }
@@ -597,8 +598,7 @@ public class Database {
     }
 
 
-    /*The below methods are for the purpose of log in validation. DEMO #1 asks for just names, not emails, keep the column name the same or
-     * change to username for now?*/
+    /*The below methods are for the purpose of log in validation. */
     public ResultSet findUser(String username, byte[] password) {
         String query = "SELECT * FROM User WHERE Email = ? AND Active = 1";
         try{
