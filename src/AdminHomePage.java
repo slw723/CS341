@@ -528,9 +528,6 @@ public class AdminHomePage {
         }
     }
 
-    private void goHomeActionPerformed(ActionEvent e){
-
-    }
     private void reportsActionPerformed(ActionEvent e){
         f.setVisible(false);
         new AdminReportsPage(db, this);

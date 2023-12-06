@@ -21,12 +21,16 @@ public class AdminReportsPage {
     JFrame f;
     JPanel p;
     JLabel reportsLabel;
-    JButton logout, userGoButton, spGoButton, apptGoButton, apptCancel, userManual;
+    JButton logout, userGenButton, userManual, apptGenButton;
     JMenuBar mb;
+    JPanel userReportPanel, apptReportPanel;
     JMenuItem menu, home, reports;
     AdminHomePage ahp;
     Database db;
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    JTabbedPane tabbedPane;
+    JComboBox<String> userMonth1CB, userMonth2CB, apptMonth1CB, apptMonth2CB;
+    JComboBox<Integer> userDay1CB, userDay2CB, userYear1CB, userYear2CB, apptDay1CB, apptDay2CB, apptYear1CB, apptYear2CB;
 
     public AdminReportsPage(Database db, AdminHomePage ahp){
         this.ahp = ahp;
@@ -98,13 +102,65 @@ public class AdminReportsPage {
         f.add(reportsLabel);
 
 
+        /*Create JTabbedPane and its tabs (panels)*/
+        userReportPanel = new JPanel();
+        userReportPanel.setLayout(null);
+
+
+        userGenButton = new JButton("Generate Report");
+        userGenButton.setBounds(700, 25, 150, 25);
+        userGenButton.setBackground(new Color(73, 160, 120));
+        userGenButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                genUserReportActionPerformed(evt);
+            }
+        });
+
+        userReportPanel.add(userGenButton);
+
+
+
+
+
+        apptReportPanel = new JPanel();
+        apptReportPanel.setLayout(null);
+
+        apptGenButton = new JButton("Generate Report");
+        apptGenButton.setBounds(700, 25, 150, 25);
+        apptGenButton.setBackground(new Color(73, 160, 120));
+        apptGenButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                genApptReportActionPerformed(evt);
+            }
+        });
+        apptReportPanel.add(apptGenButton);
+
+        UIManager.put("TabbedPane.selected", new Color(31, 36, 33));
+        tabbedPane = new JTabbedPane();
+        tabbedPane.setBounds(50,75, 900, 650);
+        tabbedPane.add("User Report", userReportPanel);
+        tabbedPane.add("Appointment Report", apptReportPanel);
+        tabbedPane.setBackgroundAt(0, new Color(33, 104, 105));
+        tabbedPane.setForegroundAt(0, Color.WHITE);
+        tabbedPane.setBackgroundAt(1, new Color(33, 104, 105));
+        tabbedPane.setForegroundAt(1, Color.WHITE);
+        f.add(tabbedPane);
+
+
+
         /* Make visible. */
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         f.setSize(screenSize.width, screenSize.height);
         f.setVisible(true);
     }
 
+    private void genUserReportActionPerformed(ActionEvent e){
 
+    }
+
+    private void genApptReportActionPerformed(ActionEvent e){
+
+    }
     private void goHomeActionPerformed(ActionEvent e){
         f.setVisible(false);
         ahp.setHomeVisible();
