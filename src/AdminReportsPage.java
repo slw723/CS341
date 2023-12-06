@@ -17,20 +17,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Year;
+
 public class AdminReportsPage {
-    JFrame f;
+    JFrame f, userReportFrame;
     JPanel p;
-    JLabel reportsLabel;
+    JLabel reportsLabel, userDateRange, userStartDate, userEndDate, apptMonthLabel, chooseLabel;
     JButton logout, userGenButton, userManual, apptGenButton;
     JMenuBar mb;
-    JPanel userReportPanel, apptReportPanel;
+    JPanel userReportFieldsPanel, apptReportFieldsPanel;
+    JScrollPane userGenReportPanel;
     JMenuItem menu, home, reports;
     AdminHomePage ahp;
     Database db;
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     JTabbedPane tabbedPane;
-    JComboBox<String> userMonth1CB, userMonth2CB, apptMonth1CB, apptMonth2CB;
+    JScrollBar scroll, scroll2, scroll3, scroll4, scroll5, scroll6, scroll7;
+    JComboBox<String> userMonth1CB, userMonth2CB, apptMonthCB;
     JComboBox<Integer> userDay1CB, userDay2CB, userYear1CB, userYear2CB, apptDay1CB, apptDay2CB, apptYear1CB, apptYear2CB;
+    String [] months;
+    Integer [] days, years;
 
     public AdminReportsPage(Database db, AdminHomePage ahp){
         this.ahp = ahp;
@@ -98,54 +104,36 @@ public class AdminReportsPage {
         reportsLabel.setFont(new Font("Sarif", Font.PLAIN, 20));
         reportsLabel.setForeground(new Color(31, 36, 33));
         Dimension wcSize = reportsLabel.getPreferredSize();
-        reportsLabel.setBounds(450, 10, wcSize.width+10, wcSize.height);
+        reportsLabel.setBounds((screenSize.width/2)-100, 30, wcSize.width+10, wcSize.height);
         f.add(reportsLabel);
 
 
         /*Create JTabbedPane and its tabs (panels)*/
-        userReportPanel = new JPanel();
-        userReportPanel.setLayout(null);
+        userReportFieldsPanel = new JPanel();
+        userReportFieldsPanel.setLayout(null);
+        showUserReportFields();
+
+        apptReportFieldsPanel = new JPanel();
+        apptReportFieldsPanel.setLayout(null);
+        showApptReportFields();
 
 
-        userGenButton = new JButton("Generate Report");
-        userGenButton.setBounds(700, 25, 150, 25);
-        userGenButton.setBackground(new Color(73, 160, 120));
-        userGenButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                genUserReportActionPerformed(evt);
-            }
-        });
-
-        userReportPanel.add(userGenButton);
-
-
-
-
-
-        apptReportPanel = new JPanel();
-        apptReportPanel.setLayout(null);
-
-        apptGenButton = new JButton("Generate Report");
-        apptGenButton.setBounds(700, 25, 150, 25);
-        apptGenButton.setBackground(new Color(73, 160, 120));
-        apptGenButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                genApptReportActionPerformed(evt);
-            }
-        });
-        apptReportPanel.add(apptGenButton);
-
+        /*tabbedPane Setup*/
         UIManager.put("TabbedPane.selected", new Color(31, 36, 33));
         tabbedPane = new JTabbedPane();
-        tabbedPane.setBounds(50,75, 900, 650);
-        tabbedPane.add("User Report", userReportPanel);
-        tabbedPane.add("Appointment Report", apptReportPanel);
+        tabbedPane.setBounds(350,100, 800, 450);
+        tabbedPane.add("User Report", userReportFieldsPanel);
+        tabbedPane.add("Appointment Report", apptReportFieldsPanel);
         tabbedPane.setBackgroundAt(0, new Color(33, 104, 105));
         tabbedPane.setForegroundAt(0, Color.WHITE);
         tabbedPane.setBackgroundAt(1, new Color(33, 104, 105));
         tabbedPane.setForegroundAt(1, Color.WHITE);
         f.add(tabbedPane);
-
+        userGenButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                genUserReportActionPerformed(evt);
+            }
+        });
 
 
         /* Make visible. */
@@ -155,6 +143,15 @@ public class AdminReportsPage {
     }
 
     private void genUserReportActionPerformed(ActionEvent e){
+        //create a new frame
+        userReportFrame= new JFrame();
+        userReportFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        userReportFrame.setSize(screenSize.width, screenSize.height);
+
+
+
+
+        userReportFrame.setVisible(true);
 
     }
 
@@ -191,5 +188,127 @@ public class AdminReportsPage {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void showUserReportFields(){
+        // add text field for User Report Start Date
+        userDateRange = new JLabel("Choose a Date Range (Inclusive)");
+        userDateRange.setFont(new Font("Sarif", Font.BOLD, 14));
+        userDateRange.setForeground(new Color(31, 36, 33));
+        userDateRange.setBounds(250, 20, 300, 20);
+        userReportFieldsPanel.add(userDateRange);
+
+        // add text field for User Report Start Date
+        userStartDate = new JLabel("Start Date (MM-DD-YYY): ");
+        userStartDate.setFont(new Font("Sarif", Font.BOLD, 12));
+        userStartDate.setForeground(new Color(33, 104, 105));
+        userStartDate.setBounds(78, 150, 200, 20);
+        userReportFieldsPanel.add(userStartDate);
+
+        /*Date range*/
+        // set up months drop down and add
+        months = new String[]{"", "01 - Jan", "02 - Feb", "03 - Mar", "04 - Apr",
+                "05 - May", "06 - Jun", "07 - Jul", "08 - Aug",
+                "09 - Sep", "10 - Oct", "11 - Nov", "12 - Dec"};
+        userMonth1CB = new JComboBox<>(months);
+        userMonth1CB.setFont(new Font("Sarif", Font.BOLD, 11));
+        userMonth1CB.setBounds(220, 150, 70, 20);
+        userMonth1CB.setSelectedIndex(0);
+        scroll = new JScrollBar();
+        userMonth1CB.add(scroll);
+        userReportFieldsPanel.add(userMonth1CB);
+
+        // set up days drop down and add
+        days = new Integer[32];
+        days[0] = null;
+        for(Integer i = 1; i < 32; i++){
+            days[i] = i;
+        }
+        userDay1CB = new JComboBox<>(days);
+        userDay1CB.setFont(new Font("Sarif", Font.PLAIN, 11));
+        userDay1CB.setBounds(300, 150, 40, 20);
+        userDay1CB.setSelectedIndex(0);
+        scroll2 = new JScrollBar();
+        userDay1CB.add(scroll2);
+        userReportFieldsPanel.add(userDay1CB);
+
+        // set up years drop down and add
+        years = new Integer[3];
+        years[0] = null;
+        years[1] = 2023;
+        userYear1CB = new JComboBox<>(years);
+        userYear1CB.setFont(new Font("Sarif", Font.PLAIN, 11));
+        userYear1CB.setBounds(350, 150, 60, 20);
+        userYear1CB.setSelectedIndex(0);
+        scroll3 = new JScrollBar();
+        userYear1CB.add(scroll3);
+        userReportFieldsPanel.add(userYear1CB);
+
+        //Second date range
+        // add text field for User Report End Date
+        userEndDate = new JLabel("End Date (MM-DD-YYY): ");
+        userEndDate.setFont(new Font("Sarif", Font.BOLD, 12));
+        userEndDate.setForeground(new Color(33, 104, 105));
+        userEndDate.setBounds(80, 230, 200, 20);
+        userReportFieldsPanel.add(userEndDate);
+
+        userMonth2CB = new JComboBox<>(months);
+        userMonth2CB.setFont(new Font("Sarif", Font.PLAIN, 11));
+        userMonth2CB.setBounds(220, 230, 70, 20);
+        userMonth2CB.setSelectedIndex(0);
+        scroll4 = new JScrollBar();
+        userMonth2CB.add(scroll4);
+        userReportFieldsPanel.add(userMonth2CB);
+
+        // set up days drop down and add
+        userDay2CB = new JComboBox<>(days);
+        userDay2CB.setFont(new Font("Sarif", Font.PLAIN, 11));
+        userDay2CB.setBounds(300, 230, 40, 20);
+        userDay2CB.setSelectedIndex(0);
+        scroll5 = new JScrollBar();
+        userDay2CB.add(scroll5);
+        userReportFieldsPanel.add(userDay2CB);
+
+        // set up years drop down and add
+        userYear2CB = new JComboBox<>(years);
+        userYear2CB.setFont(new Font("Sarif", Font.PLAIN, 11));
+        userYear2CB.setBounds(350, 230, 60, 20);
+        userYear2CB.setSelectedIndex(0);
+        scroll6 = new JScrollBar();
+        userYear2CB.add(scroll6);
+        userReportFieldsPanel.add(userYear2CB);
+
+        userGenButton = new JButton("Generate Report");
+        userGenButton.setBounds(500, 190, 130, 25);
+        userGenButton.setBackground(new Color(73, 160, 120));
+
+        userReportFieldsPanel.add(userGenButton);
+    }
+
+    public void showApptReportFields(){
+        // add text field for User Report Start Date
+        chooseLabel = new JLabel("Choose a Month and a Category");
+        chooseLabel.setFont(new Font("Sarif", Font.BOLD, 14));
+        chooseLabel.setForeground(new Color(31, 36, 33));
+        chooseLabel.setBounds(200, 20, 300, 20);
+        apptReportFieldsPanel.add(chooseLabel);
+
+        /*Date range*/
+        // set up months drop down and add
+        apptMonthLabel = new JLabel("Month: ");
+        apptMonthLabel.setFont(new Font("Sarif", Font.BOLD, 12));
+        apptMonthLabel.setForeground(new Color(33, 104, 105));
+        apptMonthLabel.setBounds(78, 150, 200, 20);
+        apptReportFieldsPanel.add(apptMonthLabel);
+        months = new String[]{"", "01 - Jan", "02 - Feb", "03 - Mar", "04 - Apr",
+                "05 - May", "06 - Jun", "07 - Jul", "08 - Aug",
+                "09 - Sep", "10 - Oct", "11 - Nov", "12 - Dec"};
+        apptMonthCB = new JComboBox<>(months);
+        apptMonthCB.setFont(new Font("Sarif", Font.BOLD, 11));
+        apptMonthCB.setBounds(220, 150, 70, 20);
+        apptMonthCB.setSelectedIndex(0);
+        scroll7 = new JScrollBar();
+        apptMonthCB.add(scroll7);
+        apptReportFieldsPanel.add(apptMonthCB);
     }
 }
