@@ -16,9 +16,8 @@ Light Black: 31, 36, 33
 Dark Teal: 33, 104, 105
 Mint Green: 73, 160, 120
 Light Green: 156, 197, 161
-Off white: 220, 225, 222
- */
-
+Off white: 220, 225, 222 
+*/
 
 public class LogInPage extends JFrame  {
     // Static variables

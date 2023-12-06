@@ -33,11 +33,11 @@ public class SPBookPage implements ActionListener {
         this.hp = hp;
         this.db = db;
 
-        /* Make frame */
+        // Make frame
         f = new JFrame("Appointment Booker");
         f.setBackground(new Color(220, 225, 222));
 
-        /* Set up the menu bar */
+        // Set up the menu bar
         mb = new JMenuBar();
         menu = new JMenu("Menu");
 
@@ -61,9 +61,6 @@ public class SPBookPage implements ActionListener {
         mb.add(userManual);
         menu.setFont(new Font("Sarif", Font.PLAIN, 15));
         menu.setForeground(new Color(31, 36, 33));
-
-//        mb.add(menu);
-//        mb.setBackground(new Color(73, 160, 120));
 
         home = new JMenuItem("Home");
         home.setFont(new Font("Sarif", Font.PLAIN, 15));
@@ -112,6 +109,7 @@ public class SPBookPage implements ActionListener {
         date.setBounds(10, 90, dateSize.width+10, dateSize.height);
         bookPanel.add(date);
 
+        // set up months drop down and add
         months = new String[]{"", "01 - Jan", "02 - Feb", "03 - Mar", "04 - Apr",
                 "05 - May", "06 - Jun", "07 - Jul", "08 - Aug",
                 "09 - Sep", "10 - Oct", "11 - Nov", "12 - Dec"};
@@ -124,6 +122,7 @@ public class SPBookPage implements ActionListener {
         monthCB.add(scroll2);
         bookPanel.add(monthCB);
 
+        // set up days drop down and add
         days = new Integer[32];
         days[0] = null;
         for(Integer i = 1; i < 32; i++){
@@ -138,6 +137,7 @@ public class SPBookPage implements ActionListener {
         dayCB.add(scroll3);
         bookPanel.add(dayCB);
 
+        // set up years drop down and add
         years = new Integer[3];
         years[0] = null;
         years[1] = Integer.valueOf(String.valueOf(Year.now()));
@@ -161,7 +161,7 @@ public class SPBookPage implements ActionListener {
         time.setBounds(10, 130, timeSize.width+10, timeSize.height);
         bookPanel.add(time);
 
-        //add time drop down
+        // add time drop down
         times = new String[]{ "", "12:00 AM", "12:30 AM", "1:00 AM", "1:30 AM", "2:00 AM",
                 "2:30 AM", "3:00 AM", "3:30 AM", "4:00 AM", "4:30 AM", "5:00 AM",
                 "5:30 AM", "6:00 AM", "6:30 AM", "7:00 AM", "7:30 AM", "8:00 AM",
@@ -203,11 +203,8 @@ public class SPBookPage implements ActionListener {
         f.setVisible(true);
     }
 
-    /*
-     * HELPERS
-     */
+    /* HELPERS */
     private int dataValidation(){
-
         // check date is valid day/months
         String[] splits = monthCB.getSelectedItem().toString().split(" - ", 2);
         int month = Integer.valueOf(splits[0]);
@@ -232,7 +229,7 @@ public class SPBookPage implements ActionListener {
                     return -1;
                 }
             }
-            //check if only a year in advance
+            // check if only a year in advance
             else if(sdf.parse(date).before(sdf.parse(today)) ||
                     sdf.parse(date).after(sdf.parse(String.valueOf(today2024)))){
                 JOptionPane.showMessageDialog(null,
@@ -245,10 +242,10 @@ public class SPBookPage implements ActionListener {
                     "Please enter a valid date.");
             return -1;
         }
-
         return 0;
     }
 
+    // convert a string to LocalTime object
     private LocalTime convertTime(String oldTime){
 
         String[] str = oldTime.split(":", 2);
@@ -272,17 +269,15 @@ public class SPBookPage implements ActionListener {
         }
     }
 
-    /*
-     * ACTION LISTENERS
-     */
-
+    /* ACTION LISTENERS */
     public void submitActionPerformed(ActionEvent evt){
-
+        // check if data entered is valid
         int valid = dataValidation();
         if(valid < 0){
             return;
         }
         else{
+            // gather the information
             String des = described.getText();
             String[] splits = monthCB.getSelectedItem().toString().split(" - ", 2);
             int month = Integer.valueOf(splits[0]);
@@ -291,20 +286,23 @@ public class SPBookPage implements ActionListener {
             Date dateStr = Date.valueOf(year + "-" + month + "-" + day);
             Time timeStr = Time.valueOf(convertTime(timeCB.getSelectedItem().toString()));
             ServiceProvider sp = hp.getSP();
+            // put info into appt object
             Appointment appt = new Appointment(des, dateStr, timeStr, sp.getType(), 0, null, sp.getEmail());
 
             //check if SP has appt at that time already,
             int ret = db.apptConflict(sp, appt);
             if(ret < 0){
+                // show conflict message
                 JOptionPane.showMessageDialog(f, "You have an appointment conflict. Pick a different time",
                         "Appointment Conflict", JOptionPane.ERROR_MESSAGE);
+                // reset fields
                 timeCB.setSelectedIndex(0);
                 monthCB.setSelectedIndex(0);
                 dayCB.setSelectedIndex(0);
                 yearCB.setSelectedIndex(0);
                 bookPanel.validate();
             }
-            else{
+            else{ // success
                 db.insertAppt(appt);
                 JOptionPane.showMessageDialog(null,
                         "Successfully created " + des + " on " + dateStr + " at " + timeStr);

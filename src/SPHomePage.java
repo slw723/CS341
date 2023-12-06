@@ -17,6 +17,7 @@ import java.util.ArrayList;
 // Off white: 220, 225, 222
 
 public class SPHomePage {
+    /* GLOBALS */
     JFrame f, f2, alertFrame;
     JMenuBar mb;
     JMenuItem menu, home, makeAppt, history;
@@ -30,6 +31,7 @@ public class SPHomePage {
     static Database db = new Database();
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
+    // constructor that calls appropriate methods upon user actions
     public SPHomePage(Database db, ServiceProvider sp){
         this.db = db;
         this.sp = sp;
@@ -344,7 +346,7 @@ public class SPHomePage {
 
     private void alertsActionPerformed(ActionEvent e){
         alertFrame = new JFrame("Your Alerts");
-        //new alerts table
+        // new alerts table
         String [] newHeader = {"New Alerts"};
         newTable = new JTable();
         newTable.setModel(new DefaultTableModel(newHeader, 0));
@@ -365,14 +367,14 @@ public class SPHomePage {
             }
         }
 
-        //add to frame
+        // add table and scroll pane to frame
         JScrollPane scroll2 = new JScrollPane(newTable);
         scroll2.setBounds(10, 30, 450, 200);
         scroll2.validate();
         newTable.validate();
         alertFrame.add(scroll2);
 
-        //previous alerts table
+        // previous alerts table
         String [] oldHeader = {"Previous Alerts"};
         oldTable = new JTable();
         oldTable.setModel(new DefaultTableModel(oldHeader, 0));
@@ -392,13 +394,14 @@ public class SPHomePage {
                 tblModel2.addRow(data);
             }
         }
-        //add to frame
+        // add table and scroll pane to frame
         JScrollPane scroll3 = new JScrollPane(oldTable);
         scroll3.setBounds(10, 250, 450, 200);
         scroll3.validate();
         oldTable.validate();
         alertFrame.add(scroll3);
 
+        // add close button
         JButton ok = new JButton("OK");
         ok.setBackground(new Color(156, 197, 161));
         Dimension okSize = ok.getPreferredSize();
@@ -418,7 +421,6 @@ public class SPHomePage {
     }
 
     private void alertCloseActionPerformed(ActionEvent e){
-
         //update that new appts have been alerted
         db.sawNewAlerts(sp);
 
@@ -426,10 +428,12 @@ public class SPHomePage {
         alerts.setBackground(new Color(73, 160, 120));
         f.validate();
 
+        // discard the frame
         alertFrame.dispose();
     }
 
     private void cancelActionPerformed(ActionEvent e){
+        // find selected appointment to be canceled
         int rowIndex = appointments.getSelectedRow();
         if(rowIndex == -1){
             JOptionPane.showMessageDialog(null,
@@ -437,6 +441,7 @@ public class SPHomePage {
             return;
         }
 
+        // show confirmation message
         int selection = JOptionPane.showConfirmDialog(null,
                 "Are you sure you want to cancel your appointment on "
                         + appointments.getValueAt(rowIndex, 0) + " at "
@@ -449,11 +454,11 @@ public class SPHomePage {
                     String.valueOf(appointments.getValueAt(rowIndex, 1)), sp.getEmail());
 
             db.cancelAppointment(apptId);
+            // show confirmation message
             JOptionPane.showMessageDialog(null,
                     "Successfully canceled.");
             updateUpcoming();
         }
-
     }
 
     public void manualActionPerformed(ActionEvent e) throws MalformedURLException {
