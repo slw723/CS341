@@ -19,10 +19,16 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Year;
 
+// Light Black: 31, 36, 33
+// Dark Teal: 33, 104, 105
+// Mint Green: 73, 160, 120
+// Light Green: 156, 197, 161
+// Off white: 220, 225, 222
+
 public class AdminReportsPage {
     JFrame f, userReportFrame;
     JPanel p;
-    JLabel reportsLabel, userDateRange, userStartDate, userEndDate, apptMonthLabel, chooseLabel;
+    JLabel reportsLabel, userDateRange, userStartDate, userEndDate, apptMonthLabel, chooseLabel, apptCategoryLabel;
     JButton logout, userGenButton, userManual, apptGenButton;
     JMenuBar mb;
     JPanel userReportFieldsPanel, apptReportFieldsPanel;
@@ -32,11 +38,14 @@ public class AdminReportsPage {
     Database db;
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     JTabbedPane tabbedPane;
-    JScrollBar scroll, scroll2, scroll3, scroll4, scroll5, scroll6, scroll7;
-    JComboBox<String> userMonth1CB, userMonth2CB, apptMonthCB;
-    JComboBox<Integer> userDay1CB, userDay2CB, userYear1CB, userYear2CB, apptDay1CB, apptDay2CB, apptYear1CB, apptYear2CB;
-    String [] months;
+    JScrollBar scroll, scroll2, scroll3, scroll4, scroll5, scroll6, scroll7, scroll8;
+    JComboBox<String> userMonth1CB, userMonth2CB, apptMonthCB, categoryCB;
+    JComboBox<Integer> userDay1CB, userDay2CB, userYear1CB, userYear2CB;
+    JRadioButton fitness, beauty, health;
+    ButtonGroup radioButtons;
+    String [] months, apptCategories;
     Integer [] days, years;
+    int numActiveUsers,numInactiveUsers, totalUsers;
 
     public AdminReportsPage(Database db, AdminHomePage ahp){
         this.ahp = ahp;
@@ -145,19 +154,42 @@ public class AdminReportsPage {
     private void genUserReportActionPerformed(ActionEvent e){
         //create a new frame
         userReportFrame= new JFrame();
+
+        /*Generate Report Data*/
+        try {
+            //count inactive users
+            String sql = "SELECT count(Email) FROM user WHERE Active = \"1\";";
+            ResultSet rs = db.executeSQL(sql);      // get the results of all inactive users
+            rs.next();
+            numActiveUsers = rs.getInt("count(Email)");
+
+            //count inactive users
+            String sql2 = "SELECT count(Email) FROM user WHERE Active = \"0\";";
+            ResultSet rs2 = db.executeSQL(sql);      // get the results of all inactive users
+            rs.next();
+            numInactiveUsers = rs.getInt("count(Email)");
+
+            totalUsers = numActiveUsers + numInactiveUsers; //total users
+
+        }catch(Exception e1){
+            System.out.println(e1.getMessage());
+        }
+
+
+
+
+
+
+
+
+
         userReportFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         userReportFrame.setSize(screenSize.width, screenSize.height);
-
-
-
-
         userReportFrame.setVisible(true);
 
     }
 
-    private void genApptReportActionPerformed(ActionEvent e){
 
-    }
     private void goHomeActionPerformed(ActionEvent e){
         f.setVisible(false);
         ahp.setHomeVisible();
@@ -290,7 +322,7 @@ public class AdminReportsPage {
         chooseLabel = new JLabel("Choose a Month and a Category");
         chooseLabel.setFont(new Font("Sarif", Font.BOLD, 14));
         chooseLabel.setForeground(new Color(31, 36, 33));
-        chooseLabel.setBounds(200, 20, 300, 20);
+        chooseLabel.setBounds(280, 20, 300, 20);
         apptReportFieldsPanel.add(chooseLabel);
 
         /*Date range*/
@@ -298,17 +330,35 @@ public class AdminReportsPage {
         apptMonthLabel = new JLabel("Month: ");
         apptMonthLabel.setFont(new Font("Sarif", Font.BOLD, 12));
         apptMonthLabel.setForeground(new Color(33, 104, 105));
-        apptMonthLabel.setBounds(78, 150, 200, 20);
+        apptMonthLabel.setBounds(200, 100, 200, 20);
         apptReportFieldsPanel.add(apptMonthLabel);
         months = new String[]{"", "01 - Jan", "02 - Feb", "03 - Mar", "04 - Apr",
                 "05 - May", "06 - Jun", "07 - Jul", "08 - Aug",
                 "09 - Sep", "10 - Oct", "11 - Nov", "12 - Dec"};
         apptMonthCB = new JComboBox<>(months);
         apptMonthCB.setFont(new Font("Sarif", Font.BOLD, 11));
-        apptMonthCB.setBounds(220, 150, 70, 20);
+        apptMonthCB.setBounds(250, 100, 70, 20);
         apptMonthCB.setSelectedIndex(0);
         scroll7 = new JScrollBar();
         apptMonthCB.add(scroll7);
         apptReportFieldsPanel.add(apptMonthCB);
+
+
+        //Set up category combo box
+        apptCategoryLabel = new JLabel("Appointment Category: ");
+        apptCategoryLabel.setBounds(400, 100, 200, 20);
+        apptCategoryLabel.setForeground(new Color(33, 104, 105));
+        apptReportFieldsPanel.add(apptCategoryLabel);
+
+        apptCategories = new String[]{"", "Fitness", "Beauty", "Health" };
+        categoryCB = new JComboBox<>(apptCategories);
+        categoryCB.setFont(new Font("Sarif", Font.BOLD, 11));
+        categoryCB.setBounds(550, 100, 70, 20);
+        categoryCB.setSelectedIndex(0);
+        scroll8 = new JScrollBar();
+        categoryCB.add(scroll8);
+        apptReportFieldsPanel.add(categoryCB);
+
     }
+
 }
