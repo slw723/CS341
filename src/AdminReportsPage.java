@@ -26,13 +26,16 @@ import java.time.Year;
 // Off white: 220, 225, 222
 
 public class AdminReportsPage {
-    JFrame f, userReportFrame;
+    JFrame f, userReportFrame, apptReportFrame;
     JPanel p;
-    JLabel reportsLabel, userDateRange, userStartDate, userEndDate, apptMonthLabel, chooseLabel, apptCategoryLabel;
+    JLabel reportsLabel, userDateRange, userStartDate,
+            userEndDate, apptMonthLabel, chooseLabel,
+            apptCategoryLabel, apptHeader, apptMonthHeader, apptCategoryHeader,
+            totalLabel, canceledLabel, bookedLabel, hLine;
     JButton logout, userGenButton, userManual, apptGenButton;
     JMenuBar mb;
-    JPanel userReportFieldsPanel, apptReportFieldsPanel;
-    JScrollPane userGenReportPanel;
+    JPanel userReportFieldsPanel, apptReportFieldsPanel, apptReportHeader, apptReportStats, apptTablePanel;
+    JScrollPane userGenReportPanel, apptScrollPane;
     JMenuItem menu, home, reports;
     AdminHomePage ahp;
     Database db;
@@ -41,8 +44,7 @@ public class AdminReportsPage {
     JScrollBar scroll, scroll2, scroll3, scroll4, scroll5, scroll6, scroll7, scroll8;
     JComboBox<String> userMonth1CB, userMonth2CB, apptMonthCB, categoryCB;
     JComboBox<Integer> userDay1CB, userDay2CB, userYear1CB, userYear2CB;
-    JRadioButton fitness, beauty, health;
-    ButtonGroup radioButtons;
+    JTable apptReportData;
     String [] months, apptCategories;
     Integer [] days, years;
     int numActiveUsers,numInactiveUsers, totalUsers;
@@ -138,11 +140,6 @@ public class AdminReportsPage {
         tabbedPane.setBackgroundAt(1, new Color(33, 104, 105));
         tabbedPane.setForegroundAt(1, Color.WHITE);
         f.add(tabbedPane);
-        userGenButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                genUserReportActionPerformed(evt);
-            }
-        });
 
 
         /* Make visible. */
@@ -176,9 +173,7 @@ public class AdminReportsPage {
         }
 
 
-
-
-
+        /*Breakdown of users with appointments??*/
 
 
 
@@ -187,6 +182,251 @@ public class AdminReportsPage {
         userReportFrame.setSize(screenSize.width, screenSize.height);
         userReportFrame.setVisible(true);
 
+    }
+
+    public void genApptReportActionPerformed(ActionEvent evt){
+        if (apptMonthCB.getSelectedItem().equals("") || categoryCB.getSelectedItem().equals("")){
+            JOptionPane.showMessageDialog(null, "Month and Appointment Category cannot be blank.");
+        }
+
+        else {
+            apptReportFrame = new JFrame();
+            apptReportFrame.setLayout(null);
+
+            /*Generate Report Data*/
+            try {
+                String[] months = {"", "January", "February", "March", "April", "May", "June", "July",
+                        "August", "September", "October", "November", "December"};
+
+                String[] splits = apptMonthCB.getSelectedItem().toString().split(" - ", 2);
+                int month = Integer.valueOf(splits[0]);
+                String displayMonth = months[month]; //used for report header
+                //format month so it works with SQL query (2 digits)
+                String monthNumString;
+                if (month < 10) {monthNumString = "0" + month;}
+                else{monthNumString = month + "";}
+
+                //System.out.println("Selected Month: " + monthNumString + " " + displayMonth);
+                String category = categoryCB.getSelectedItem().toString(); //get category
+                //System.out.println("Selected Category: " + category);
+
+                int totalAppts = getTotalApptCount(monthNumString, category);
+                System.out.println("Total appointments: " + totalAppts);
+                int totalCanceled = getCanceledByMonthCategory(monthNumString, category);
+                //System.out.println("Total canceled appointments: " + totalCanceled);
+                int totalBooked = getBookedByMonthCategory(monthNumString, category);
+                //System.out.println("Total booked appointments: " + totalBooked);
+                //generate header and general stats
+                generateApptReportHeader(displayMonth, category, totalAppts, totalCanceled, totalBooked);
+
+                //generate table data
+                generateApptTable(monthNumString,displayMonth, category);
+
+
+
+
+
+
+            } catch (Exception e1) {
+                System.out.println("Error: " + e1.getMessage());
+                System.out.println(e1.getStackTrace());
+            }
+
+
+            apptReportFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            apptReportFrame.setSize(900, 900);
+            apptReportFrame.setVisible(true);
+        }
+    }
+
+    private void generateApptReportHeader(String displayMonth, String category, int totalAppts, int totalCanceled, int totalBooked){
+        apptReportHeader = new JPanel();
+        //apptReportHeader.setBackground(Color.CYAN); //just for testing purposes
+        apptReportHeader.setBounds(50, 50, 500, 60);
+        apptReportHeader.setLayout(new BoxLayout(apptReportHeader, BoxLayout.PAGE_AXIS));
+
+        String monthLabel = "Report for Month: " + displayMonth;
+        String categoryLabel = "Appointment Category: " + category;
+        apptMonthHeader = new JLabel(monthLabel);
+        apptMonthHeader.setFont(new Font("Sarif", Font.BOLD, 15));
+        apptCategoryHeader = new JLabel(categoryLabel);
+        apptCategoryHeader.setFont(new Font("Sarif", Font.BOLD, 15));
+
+        hLine = new JLabel("____________________________________________________");
+        hLine.setFont(new Font("Sarif", Font.BOLD, 15));
+
+        apptReportHeader.add(apptMonthHeader);
+        apptReportHeader.add(apptCategoryHeader);
+        apptReportHeader.add(hLine);
+
+        //Add general stats
+        apptReportStats = new JPanel();
+        //apptReportStats.setBackground(Color.GRAY); //just for testing purposes
+        apptReportStats.setBounds(50, 130, 500, 60);
+        apptReportStats.setLayout(new BoxLayout(apptReportStats, BoxLayout.PAGE_AXIS));
+        String total = "Total Created Appointments: " + totalAppts;
+        totalLabel = new JLabel(total);
+        totalLabel.setFont(new Font("Sarif", Font.PLAIN, 13));
+        String canceled = "Total Canceled Appointments: " + totalCanceled;
+        canceledLabel = new JLabel(canceled);
+        canceledLabel.setFont(new Font("Sarif", Font.PLAIN, 13));
+        String booked = "Total Booked Appointments: " + totalBooked;
+        bookedLabel = new JLabel(booked);
+        bookedLabel.setFont(new Font("Sarif", Font.PLAIN, 13));
+        apptReportStats.add(totalLabel);
+        apptReportStats.add(canceledLabel);
+        apptReportStats.add(bookedLabel);
+
+        apptReportFrame.add(apptReportHeader);
+        apptReportFrame.add(apptReportStats);
+
+    }
+
+    private void generateApptTable(String monthNumString, String displayMonth, String category){
+        apptTablePanel = new JPanel();
+        apptTablePanel.setLayout(null);
+        apptTablePanel.setBounds(50, 130, 800, 400);
+        //SQL to get the table data
+        String sql = "select appointment.Date, appointment.Description, appointment.Time, appointment.Type, appointment.Booked, " +
+                "appointment.Canceled, serviceprovider.FirstName as SPFirst, serviceprovider.LastName as SPLast, " +
+                "user.FirstName as UserFirst, user.LastName as UserLast from appointment " +
+                "inner join user on appointment.UserEmail=user.Email " +
+                "inner join serviceprovider on appointment.SPEmail = serviceprovider.Email " +
+                "where appointment.Date like \"%-" + monthNumString + "-%\" " +
+                "and appointment.type like \"" + category + "\" order by Date;";
+
+       // System.out.println("Generated sql: " + sql);
+        //now execute sql and generate the table
+        apptReportData = new JTable();
+        String [] apptHeaders = {"Date", "Description", "Time", "Type", "Booked", "Canceled", "Service Provider", "User"};
+        apptReportData.setModel(new DefaultTableModel(apptHeaders, 0));
+        apptReportData.getTableHeader().setBackground(new Color(33, 104, 105));
+        apptReportData.getTableHeader().setForeground(Color.WHITE);
+
+        try{
+            ResultSet rs = db.executeSQL(sql);
+            DefaultTableModel tblModel = (DefaultTableModel)apptReportData.getModel();
+            while(rs.next()){
+                //data will be added until finished
+                String date = String.valueOf(rs.getDate("Date"));
+                String desc = rs.getString("Description");
+                String time = String.valueOf(rs.getTime("Time"));
+                String type = rs.getString("Type");
+                int book = rs.getInt("Booked");
+                int isCanceled = rs.getInt("Canceled");
+                String booked, userName, spName, canceled;
+                if(book == 1){
+                    booked = "Yes";
+                }
+                else{
+                    booked = "No";
+                }
+
+                if(isCanceled == 1){
+                    canceled = "Yes";
+                }
+                else{
+                    canceled = "No";
+                }
+
+                String spFirst = rs.getString("SPFirst");
+                String spLast = rs.getString("SPLast");
+                String spFull = spFirst + " " + spLast; //concatenated sp names
+                String uFirst = rs.getString("UserFirst");
+                String uLast = rs.getString("UserLast");
+                String uFull = uFirst + " " + uLast;  //concatenated user names
+
+                String tbData[] = {date, desc, time, type, booked, canceled, spFull, uFull};
+
+                //add string array into jtable
+                tblModel.addRow(tbData);
+            }
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            System.out.println(e.getStackTrace());
+        }
+
+        apptScrollPane = new JScrollPane(apptReportData);
+        apptScrollPane.setBounds(00, 100, 900, 700);
+        apptScrollPane.validate();
+        apptReportData.validate();
+        apptReportData.getColumnModel().getColumn(0).setMaxWidth(85);
+        apptReportData.getColumnModel().getColumn(1).setMaxWidth(105);
+        apptReportData.getColumnModel().getColumn(2).setMaxWidth(70);
+        apptReportData.getColumnModel().getColumn(3).setMaxWidth(65);
+        apptReportData.getColumnModel().getColumn(4).setMaxWidth(85);
+        apptReportData.getColumnModel().getColumn(5).setMaxWidth(85);
+        apptReportData.getColumnModel().getColumn(6).setMaxWidth(150);
+        apptReportData.getColumnModel().getColumn(7).setMaxWidth(150);
+        apptTablePanel.add(apptScrollPane);
+        apptTablePanel.validate();
+
+        apptReportFrame.add(apptTablePanel);
+    }
+
+    private int getTotalApptCount(String monthNumString, String category){
+        //SQL to find the total number appointments for that month and category
+        String apptCountSql = "select count(ApptId) " +
+                "from appointment inner join user on appointment.UserEmail=user.Email " +
+                "inner join serviceprovider on appointment.SPEmail = serviceprovider.Email " +
+                "where appointment.Date like \"%-" + monthNumString + "-%\" " +
+                "and appointment.type like \"" + category + "\" order by Date;";
+
+        //System.out.println("Formatted count SQL: " + apptCountSql); //TEST GOOD
+        int totalAppts;
+        try {
+            ResultSet totalCountRS = db.executeSQL(apptCountSql);
+            totalCountRS.next();
+            totalAppts = totalCountRS.getInt("count(ApptId)");
+            return totalAppts;
+        }catch(Exception e){
+            System.out.println("Error: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    private int getCanceledByMonthCategory(String monthNumString, String category){
+        //SQL to find only the number cancelled appointments for that month and category
+        String apptCountSql = "select count(ApptId) " +
+                "from appointment inner join user on appointment.UserEmail=user.Email " +
+                "inner join serviceprovider on appointment.SPEmail = serviceprovider.Email " +
+                "where appointment.Date like \"%-" + monthNumString + "-%\" " +
+                "and appointment.type like \"" + category + "\" and appointment.Canceled like \"1\" " +
+                "order by Date;";
+
+        //System.out.println("Formatted count SQL: " + apptCountSql); //TEST GOOD
+        int totalCanceled;
+        try {
+            ResultSet totalCanceledRS = db.executeSQL(apptCountSql);
+            totalCanceledRS.next();
+            totalCanceled = totalCanceledRS.getInt("count(ApptId)");
+            return totalCanceled;
+        }catch(Exception e){
+            System.out.println("Error: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    private int getBookedByMonthCategory(String monthNumString, String category){
+        //SQL to find only the number booked appointments for that month and category
+        String apptCountSql = "select count(ApptId) " +
+                "from appointment inner join user on appointment.UserEmail=user.Email " +
+                "inner join serviceprovider on appointment.SPEmail = serviceprovider.Email " +
+                "where appointment.Date like \"%-" + monthNumString + "-%\" " +
+                "and appointment.type like \"" + category + "\" and appointment.Booked like \"1\" " +
+                "order by Date;";
+
+        //System.out.println("Formatted count SQL: " + apptCountSql); //TEST GOOD
+        int totalBooked;
+        try {
+            ResultSet totalBookedRS = db.executeSQL(apptCountSql);
+            totalBookedRS.next();
+            totalBooked = totalBookedRS.getInt("count(ApptId)");
+            return totalBooked;
+        }catch(Exception e){
+            System.out.println("Error: " + e.getMessage());
+        }
+        return 0;
     }
 
 
@@ -313,6 +553,11 @@ public class AdminReportsPage {
         userGenButton = new JButton("Generate Report");
         userGenButton.setBounds(500, 190, 130, 25);
         userGenButton.setBackground(new Color(73, 160, 120));
+        userGenButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                genUserReportActionPerformed(evt);
+            }
+        });
 
         userReportFieldsPanel.add(userGenButton);
     }
@@ -330,14 +575,14 @@ public class AdminReportsPage {
         apptMonthLabel = new JLabel("Month: ");
         apptMonthLabel.setFont(new Font("Sarif", Font.BOLD, 12));
         apptMonthLabel.setForeground(new Color(33, 104, 105));
-        apptMonthLabel.setBounds(200, 100, 200, 20);
+        apptMonthLabel.setBounds(200, 125, 200, 20);
         apptReportFieldsPanel.add(apptMonthLabel);
         months = new String[]{"", "01 - Jan", "02 - Feb", "03 - Mar", "04 - Apr",
                 "05 - May", "06 - Jun", "07 - Jul", "08 - Aug",
                 "09 - Sep", "10 - Oct", "11 - Nov", "12 - Dec"};
         apptMonthCB = new JComboBox<>(months);
         apptMonthCB.setFont(new Font("Sarif", Font.BOLD, 11));
-        apptMonthCB.setBounds(250, 100, 70, 20);
+        apptMonthCB.setBounds(250, 125, 70, 20);
         apptMonthCB.setSelectedIndex(0);
         scroll7 = new JScrollBar();
         apptMonthCB.add(scroll7);
@@ -346,18 +591,28 @@ public class AdminReportsPage {
 
         //Set up category combo box
         apptCategoryLabel = new JLabel("Appointment Category: ");
-        apptCategoryLabel.setBounds(400, 100, 200, 20);
+        apptCategoryLabel.setBounds(400, 125, 200, 20);
         apptCategoryLabel.setForeground(new Color(33, 104, 105));
         apptReportFieldsPanel.add(apptCategoryLabel);
 
         apptCategories = new String[]{"", "Fitness", "Beauty", "Health" };
         categoryCB = new JComboBox<>(apptCategories);
         categoryCB.setFont(new Font("Sarif", Font.BOLD, 11));
-        categoryCB.setBounds(550, 100, 70, 20);
+        categoryCB.setBounds(550, 125, 70, 20);
         categoryCB.setSelectedIndex(0);
         scroll8 = new JScrollBar();
         categoryCB.add(scroll8);
         apptReportFieldsPanel.add(categoryCB);
+
+        apptGenButton = new JButton("Generate Report");
+        apptGenButton.setBounds(325, 260, 130, 25);
+        apptGenButton.setBackground(new Color(73, 160, 120));
+        apptGenButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                genApptReportActionPerformed(evt);
+            }
+        });
+        apptReportFieldsPanel.add(apptGenButton);
 
     }
 
