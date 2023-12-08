@@ -2,11 +2,11 @@ public class User extends Appointment {
     private String firstName;
     private String lastName;
     private String email;
-    private byte[] password;
+    private String password;
     private long phoneNumber;
     private int active;
 
-    public User (String first, String last, String emailAddress, byte[] pw, long phone, int active) {
+    public User (String first, String last, String emailAddress, String pw, long phone, int active) {
         firstName = first;
         lastName = last;
         email = emailAddress;
@@ -19,7 +19,7 @@ public class User extends Appointment {
         
     }
 
-    public User(String emailAdress, byte[] pw){
+    public User(String emailAdress, String pw){
         email = emailAdress;
         password = pw;
     }
@@ -48,11 +48,11 @@ public class User extends Appointment {
         email = emailAddress;
     }
 
-    public byte[] getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(byte[] pw) {
+    public void setPassword(String pw) {
         password = pw;
     }
 

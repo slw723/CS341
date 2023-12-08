@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.spi.DirStateFactory.Result;
+import javax.swing.JOptionPane;
 
 //import com.mysql.cj.protocol.Resultset;
 
@@ -36,23 +37,31 @@ public class Database {
         stmt.executeUpdate();
     }
 
-    public void insertUser(User user){
+    public int insertUser(User user){
         String sql = "INSERT INTO User(FirstName, LastName, Email, Password, PhoneNum, Active) VALUES (?, ?, ?, ?, ?, ?)";
         try{
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, user.getFirstName());
             stmt.setString(2, user.getLastName());
             stmt.setString(3, user.getEmail());
-            stmt.setBytes(4, user.getPassword());
+            stmt.setString(4, user.getPassword());
             stmt.setLong(5, user.getPhoneNumber());
             stmt.setInt(6, user.getActive());
 
             if(stmt.execute())
                 System.out.println("Inserted " + user.getEmail() + " into User");
+            return 0;
+        }
+        catch(SQLIntegrityConstraintViolationException e){
+            JOptionPane.showMessageDialog(null, 
+                                "Username already in use. Please choose another.");
+            e.printStackTrace();
+            return -1;
         }
         catch(SQLException e){
             System.out.println("Something went wrong.");
             e.printStackTrace();
+            return -1;
         }
     }
 
@@ -90,14 +99,14 @@ public class Database {
         return null;
     }
 
-    public void insertSP(ServiceProvider sp){
+    public int insertSP(ServiceProvider sp){
         String sql = "INSERT INTO ServiceProvider(FirstName, LastName, Email, Password, PhoneNum, Qualification, YearGraduated, Type, Active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try{
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, sp.getFirstName());
             stmt.setString(2, sp.getLastName());
             stmt.setString(3, sp.getEmail());
-            stmt.setBytes(4, sp.getPassword());
+            stmt.setString(4, sp.getPassword());
             stmt.setLong(5, sp.getPhoneNumber());
             stmt.setString(6, sp.getQualifcation());
             stmt.setInt(7, sp.getYearGraduated());
@@ -106,10 +115,18 @@ public class Database {
 
             if(stmt.execute())
                 System.out.println("Inserted " + sp.getEmail() + " into ServiceProvider");
+            return 0;
+        }
+        catch(SQLIntegrityConstraintViolationException e){
+            JOptionPane.showMessageDialog(null, 
+                                "Username already in use. Please choose another.");
+            e.printStackTrace();
+            return -1;
         }
         catch(SQLException e){
             System.out.println("Something went wrong.");
             e.printStackTrace();
+            return -1;
         }
     }
 
@@ -160,7 +177,7 @@ public class Database {
         try{
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, admin.getID());
-            stmt.setBytes(2, admin.getPassword());
+            stmt.setString(2, admin.getPassword());
 
             if(stmt.execute())
                 System.out.println("Inserted " + admin.getID() + " into ServiceProvider");
@@ -600,12 +617,12 @@ public class Database {
 
 
     /*The below methods are for the purpose of log in validation. */
-    public ResultSet findUser(String username, byte[] password) {
-        String query = "SELECT * FROM User WHERE Email = ? AND Active = 1";
+    public ResultSet findUser(String username, String password) {
+        String query = "SELECT * FROM User WHERE Email = ? AND Active = 1 AND Password = ?";
         try{
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setString(1, username);
-        //stmt.setBytes(2, password);
+        stmt.setString(2, password);
         return stmt.executeQuery();
         }
         catch(SQLException e){
@@ -614,28 +631,29 @@ public class Database {
         return null;
     }
 
-    public ResultSet findServiceProvider(String username, byte[] password) {
-        String query = "SELECT * FROM serviceprovider WHERE Email = ?";
+    public ResultSet findServiceProvider(String username, String password) {
+        String query = "SELECT * FROM serviceprovider WHERE Email = ? AND Password = ?";
         try{
             PreparedStatement stmt = connection.prepareStatement(query);
             stmt.setString(1, username);
-            // stmt.setBytes(2, password);
+            stmt.setString(2, password);
             if(stmt.execute()){
                 return stmt.executeQuery();
             }
         }
+        
         catch(SQLException e){
             e.printStackTrace();
         }
         return null;
     }
 
-    public ResultSet findAdmin(String userID, byte[] password) throws SQLException {
-        String query = "SELECT * FROM Admin WHERE userID = ?";
+    public ResultSet findAdmin(String userID, String password) throws SQLException {
+        String query = "SELECT * FROM Admin WHERE userID = ? AND Password = ?";
             try{
                 PreparedStatement stmt = connection.prepareStatement(query);
                 stmt.setString(1, userID);
-                // stmt.setBytes(2, password);
+                stmt.setString(2, password);
                 if(stmt.execute()){
                     return stmt.executeQuery();
                 }

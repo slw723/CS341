@@ -2,6 +2,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
 import javax.crypto.SecretKeyFactory;
@@ -9,6 +11,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.swing.*;
 import java.awt.*;
 import java.sql.ResultSet;
+import java.util.Base64;
 
 /*
 Color scheme used in application:
@@ -397,18 +400,13 @@ public class LogInPage extends JFrame  {
 
 
     /*hashing a password*/
-    private byte[] hash(char[] pw){
+    private String hash(String pw) {
         try{
-        //introduce the salt
-        SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[16];
-        random.nextBytes(salt);
-        //configure SHA-512
-        KeySpec spec = new PBEKeySpec(pw, salt, 65536, 128);
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-        return factory.generateSecret(spec).getEncoded();
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashed = md.digest(pw.getBytes());
+            return Base64.getEncoder().encodeToString(hashed);
         }
-        catch(Exception e){
+        catch(NoSuchAlgorithmException e){
             e.printStackTrace();
         }
         return null;
@@ -419,14 +417,14 @@ public class LogInPage extends JFrame  {
     private void loginActionPerformed(ActionEvent e){
          try {
                 String username = userText.getText();
-                byte[] password = hash(passwordText.getPassword());
+                String password = hash(String.valueOf(passwordText.getPassword()));
                 ResultSet results = db.findUser(username, password); //executing the query method from Database class
                 if(results.next()){ //user was found
                     user = new User(username, password);
                     user.setFirstName(results.getString("FirstName"));
                     user.setLastName(results.getString("LastName"));
                     user.setPhoneNumber(results.getLong("PhoneNum"));
-                    //user.setActive(1);
+                    user.setActive(1);
                     //JOptionPane.showMessageDialog(null, "User Login Successful.");
                     UserHomePage userHP = new UserHomePage(db, user);
                     loginWin.dispose();
@@ -441,7 +439,7 @@ public class LogInPage extends JFrame  {
                         sp.setPhoneNumber(results2.getLong("PhoneNum"));
                         sp.setQualification(results2.getString("Qualification"));
                         sp.setYearGraduated(results2.getInt("YearGraduated"));
-                        //sp.setActive(1); //1 is active
+                        sp.setActive(1); //1 is active
                         //JOptionPane.showMessageDialog(null, "Service Provider Login Successful.");
                         SPHomePage spHP = new SPHomePage(db, sp); //creates Service Provider page instance
                         loginWin.dispose();
@@ -456,7 +454,7 @@ public class LogInPage extends JFrame  {
                         }
                         else{
                             JOptionPane.showMessageDialog(null, 
-                                "User not found. Use the 'Register' button to create a new account");
+                                "User not found. Use the 'Register' button to create a new account or try check your credentials");
                         }
                         
                     }
@@ -480,7 +478,7 @@ public class LogInPage extends JFrame  {
             //create new user
             User newUser = new User();
             newUser.setEmail(unText.getText()); //CURRENTLY USERNAME NOT EMAIL
-            newUser.setPassword(hash(pwText.getPassword())); 
+            newUser.setPassword(hash(String.valueOf(pwText.getPassword()))); 
             newUser.setFirstName(fText.getText());
             newUser.setLastName(lText.getText());
             newUser.setPhoneNumber(Long.parseLong(phText.getText()));
@@ -488,8 +486,10 @@ public class LogInPage extends JFrame  {
 
             //need to do data validation
 
-            db.insertUser(newUser);
-            JOptionPane.showMessageDialog(null, "New user created under username: " + unText.getText());
+            int ret = db.insertUser(newUser);
+            if(ret == 0){
+                JOptionPane.showMessageDialog(null, "New user created under username: " + unText.getText());
+            }
         }
 
         else if (selectedAcctType.equals("Service Provider")) {
@@ -497,7 +497,7 @@ public class LogInPage extends JFrame  {
             // String qualifications = JOptionPane.showInputDialog("Please enter your qualifications: ");
             ServiceProvider sp = new ServiceProvider();
             sp.setEmail(unText.getText()); //CURRENTLY USERNAME NOT EMAIL
-            sp.setPassword(hash(pwText.getPassword())); 
+            sp.setPassword(hash(String.valueOf(pwText.getPassword()))); 
             sp.setFirstName(fText.getText());
             sp.setLastName(lText.getText());
             sp.setQualification(qualText.getText());
@@ -508,8 +508,10 @@ public class LogInPage extends JFrame  {
 
             //need to do data validation
 
-            db.insertSP(sp);
-            JOptionPane.showMessageDialog(null, "New Service Provider created under username: " + unText.getText());
+            int ret = db.insertSP(sp);
+            if(ret == 0){
+                JOptionPane.showMessageDialog(null, "New Service Provider created under username: " + unText.getText());
+            }
         
         }
 
@@ -532,13 +534,13 @@ public class LogInPage extends JFrame  {
     }
 
     private void radioButtonActionPerformed(ActionEvent e){
-        if(e.getSource() == fitness){
+        if(e.getSource().equals(fitness)){
             spType = "Fitness";
         }
-        else if(e.getSource() == beauty){
+        else if(e.getSource().equals(beauty)){
             spType = "Beauty";
         }
-        else if(e.getSource() == health){
+        else if(e.getSource().equals(health)){
             spType = "Health";
         }
     }

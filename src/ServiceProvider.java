@@ -3,7 +3,7 @@ public class ServiceProvider {
     private String firstName;
     private String lastName;
     private String email;
-    private byte[] password;
+    private String password;
     private long phoneNumber;
     private String qualification;
     private int yearGraduated;
@@ -11,7 +11,7 @@ public class ServiceProvider {
     private int active;
 
     // constructor
-    public ServiceProvider (String first, String last, String emailAddress, byte[] pw, long phone, String qualif, int year, String type, int active) {
+    public ServiceProvider (String first, String last, String emailAddress, String pw, long phone, String qualif, int year, String type, int active) {
         firstName = first;
         lastName = last;
         email = emailAddress;
@@ -29,7 +29,7 @@ public class ServiceProvider {
     }
 
     // constructor
-    public ServiceProvider(String emailAddress, byte[] pw){
+    public ServiceProvider(String emailAddress, String pw){
         email = emailAddress;
         password = pw;
     }
@@ -58,11 +58,11 @@ public class ServiceProvider {
         email = emailAddress;
     }
 
-    public byte[] getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(byte[] pw) {
+    public void setPassword(String pw) {
         password = pw;
     }
 
