@@ -6,6 +6,7 @@ public class User extends Appointment {
     private long phoneNumber;
     private int active;
 
+    // constructor
     public User (String first, String last, String emailAddress, String pw, long phone, int active) {
         firstName = first;
         lastName = last;

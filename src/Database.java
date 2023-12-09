@@ -1,18 +1,10 @@
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
-
-import javax.naming.spi.DirStateFactory.Result;
 import javax.swing.JOptionPane;
 
-//import com.mysql.cj.protocol.Resultset;
-
-
 public class Database {
-
     private Connection connection;
-    private String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=5628";
-
+    private String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=3871";
 
     public void connect() throws SQLException {
         connection = DriverManager.getConnection(url);

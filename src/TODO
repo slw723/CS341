@@ -5,15 +5,16 @@
 # For Final Demo:
 1. Set up modify (SP and User)
 2. Set up history and trend
-3. Admin deletes
 4. Help link
-5. Admin cancel
 
 
 # Sidney's To-do's
-- functionality for #9
-- should just be another copy/paste situation with a couple added things
+- User comment and clean up
+- change executeQuery things to Database
+- test demo3 data
+- won't let me log in for jane doe so will probably need to delete accounts and add them back in and add data using database
+- update Database in command line since Becca updated it!
 
-- create delete button in Users tab
-- user will select person from table and press delete
-- when button is pressed, confirmation message appears for user to press okay/yes
+- User -- DONE
+- UserBookPage -- check git commits for the method at the end that I deleted if it's not working! -- DONE
+- Database

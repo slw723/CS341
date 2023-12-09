@@ -145,7 +145,7 @@ public class UserHomePage extends DefaultTableCellRenderer {
         });
         p.add(cancel);
 
-        // panel sepecifications
+        // panel specifications
         p.setLayout(null);
         p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
