@@ -7,7 +7,7 @@ public class Database {
 
     /* Open and close database connection */
     public void connect() throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=3871";
+        String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=5628";
         connection = DriverManager.getConnection(url);
     }
 

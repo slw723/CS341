@@ -20,18 +20,12 @@ import java.time.LocalTime;
 import java.time.Year;
 import java.util.ArrayList;
 
-// Light Black: 31, 36, 33
-// Dark Teal: 33, 104, 105
-// Mint Green: 73, 160, 120
-// Light Green: 156, 197, 161
-// Off white: 220, 225, 222
-
 public class AdminReportsPage {
     JFrame f, userReportFrame, apptReportFrame;
     JPanel p;
     JLabel reportsLabel, userDateRange, userStartDate,
             userEndDate, apptMonthLabel, chooseLabel,
-            apptCategoryLabel, apptHeader, apptMonthHeader, apptCategoryHeader,
+            apptCategoryLabel, apptMonthHeader, apptCategoryHeader,
             totalLabel, canceledLabel, bookedLabel, hLine, hLineAppt, userMonthHeader,
             totalUserLabel, activeLabel, inactiveLabel, usersWithApptsLabel;
     JButton logout, userGenButton, userManual, apptGenButton;
@@ -44,12 +38,12 @@ public class AdminReportsPage {
     Database db;
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     JTabbedPane tabbedPane;
-    JScrollBar scroll, scroll2, scroll3, scroll4, scroll5, scroll6, scroll7, scroll8;
+    JScrollBar scroll, scroll3, scroll4, scroll6, scroll7, scroll8;
     JComboBox<String> userMonth1CB, userMonth2CB, apptMonthCB, categoryCB;
     JComboBox<Integer> userYear1CB, userYear2CB;
     JTable apptReportData, userReportData;
     String [] months, apptCategories;
-    Integer [] days, years;
+    Integer [] years;
     int numActiveUsers,numInactiveUsers, totalUsers, numUsersWithAppts;
 
     public AdminReportsPage(Database db, AdminHomePage ahp){
@@ -121,7 +115,6 @@ public class AdminReportsPage {
         reportsLabel.setBounds((screenSize.width/2)-100, 30, wcSize.width+10, wcSize.height);
         f.add(reportsLabel);
 
-
         /*Create JTabbedPane and its tabs (panels)*/
         userReportFieldsPanel = new JPanel();
         userReportFieldsPanel.setLayout(null);
@@ -130,7 +123,6 @@ public class AdminReportsPage {
         apptReportFieldsPanel = new JPanel();
         apptReportFieldsPanel.setLayout(null);
         showApptReportFields();
-
 
         /*tabbedPane Setup*/
         UIManager.put("TabbedPane.selected", new Color(31, 36, 33));
@@ -143,7 +135,6 @@ public class AdminReportsPage {
         tabbedPane.setBackgroundAt(1, new Color(33, 104, 105));
         tabbedPane.setForegroundAt(1, Color.WHITE);
         f.add(tabbedPane);
-
 
         /* Make visible. */
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -192,7 +183,6 @@ public class AdminReportsPage {
                 System.out.println(e1.getMessage());
             }
 
-
             /*Breakdown of users with appointments??*/
             userReportFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             userReportFrame.setSize(900, 900);
@@ -202,7 +192,6 @@ public class AdminReportsPage {
 
     public void generateUserReportHeader(String startMonth, String endMonth, String sMonthFormat, String eMonthFormat){
         userReportHeader = new JPanel();
-        //apptReportHeader.setBackground(Color.CYAN); //just for testing purposes
         userReportHeader.setBounds(50, 50, 500, 50);
         userReportHeader.setLayout(new BoxLayout(userReportHeader, BoxLayout.PAGE_AXIS));
 
@@ -223,7 +212,6 @@ public class AdminReportsPage {
         numUsersWithAppts = countUsersWithAppts(sMonthFormat,eMonthFormat); //count users with appointments
 
         userReportStats = new JPanel();
-        //apptReportStats.setBackground(Color.GRAY); //just for testing purposes
         userReportStats.setBounds(50, 130, 500, 70);
         userReportStats.setLayout(new BoxLayout(userReportStats, BoxLayout.PAGE_AXIS));
         String total = "Total Users in System: " + totalUsers;
@@ -401,29 +389,20 @@ public class AdminReportsPage {
                 String monthNumString;
                 if (month < 10) {monthNumString = "0" + month;}
                 else{monthNumString = month + "";}
-
-                //System.out.println("Selected Month: " + monthNumString + " " + displayMonth);
                 String category = categoryCB.getSelectedItem().toString(); //get category
-                //System.out.println("Selected Category: " + category);
 
                 int totalAppts = getTotalApptCount(monthNumString, category);
                 System.out.println("Total appointments: " + totalAppts);
                 int totalCanceled = getCanceledByMonthCategory(monthNumString, category);
-                //System.out.println("Total canceled appointments: " + totalCanceled);
                 int totalBooked = getBookedByMonthCategory(monthNumString, category);
-                //System.out.println("Total booked appointments: " + totalBooked);
                 //generate header and general stats
                 generateApptReportHeader(displayMonth, category, totalAppts, totalCanceled, totalBooked);
-
                 //generate table data
                 generateApptTable(monthNumString,displayMonth, category);
-
-
             } catch (Exception e1) {
                 System.out.println("Error: " + e1.getMessage());
                 System.out.println(e1.getStackTrace());
             }
-
 
             apptReportFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             apptReportFrame.setSize(900, 900);
@@ -433,7 +412,6 @@ public class AdminReportsPage {
 
     private void generateApptReportHeader(String displayMonth, String category, int totalAppts, int totalCanceled, int totalBooked){
         apptReportHeader = new JPanel();
-        //apptReportHeader.setBackground(Color.CYAN); //just for testing purposes
         apptReportHeader.setBounds(50, 50, 500, 60);
         apptReportHeader.setLayout(new BoxLayout(apptReportHeader, BoxLayout.PAGE_AXIS));
 
@@ -453,7 +431,6 @@ public class AdminReportsPage {
 
         //Add general stats
         apptReportStats = new JPanel();
-        //apptReportStats.setBackground(Color.GRAY); //just for testing purposes
         apptReportStats.setBounds(50, 130, 500, 60);
         apptReportStats.setLayout(new BoxLayout(apptReportStats, BoxLayout.PAGE_AXIS));
         String total = "Total Created Appointments: " + totalAppts;
@@ -487,7 +464,6 @@ public class AdminReportsPage {
                 "where appointment.Date like \"%-" + monthNumString + "-%\" " +
                 "and appointment.type like \"" + category + "\" order by Date;";
 
-       // System.out.println("Generated sql: " + sql);
         //now execute sql and generate the table
         apptReportData = new JTable();
         String [] apptHeaders = {"Date", "Description", "Time", "Type", "Booked", "Canceled", "Service Provider", "User"};
@@ -506,7 +482,7 @@ public class AdminReportsPage {
                 String type = rs.getString("Type");
                 int book = rs.getInt("Booked");
                 int isCanceled = rs.getInt("Canceled");
-                String booked, userName, spName, canceled;
+                String booked, canceled;
                 if(book == 1){
                     booked = "Yes";
                 }
@@ -564,7 +540,6 @@ public class AdminReportsPage {
                 "where appointment.Date like \"%-" + monthNumString + "-%\" " +
                 "and appointment.type like \"" + category + "\" order by Date;";
 
-        //System.out.println("Formatted count SQL: " + apptCountSql); //TEST GOOD
         int totalAppts;
         try {
             ResultSet totalCountRS = db.executeSQL(apptCountSql);
@@ -586,7 +561,6 @@ public class AdminReportsPage {
                 "and appointment.type like \"" + category + "\" and appointment.Canceled like \"1\" " +
                 "order by Date;";
 
-        //System.out.println("Formatted count SQL: " + apptCountSql); //TEST GOOD
         int totalCanceled;
         try {
             ResultSet totalCanceledRS = db.executeSQL(apptCountSql);
@@ -608,7 +582,6 @@ public class AdminReportsPage {
                 "and appointment.type like \"" + category + "\" and appointment.Booked like \"1\" " +
                 "order by Date;";
 
-        //System.out.println("Formatted count SQL: " + apptCountSql); //TEST GOOD
         int totalBooked;
         try {
             ResultSet totalBookedRS = db.executeSQL(apptCountSql);
@@ -620,7 +593,6 @@ public class AdminReportsPage {
         }
         return 0;
     }
-
 
     private void goHomeActionPerformed(ActionEvent e){
         f.setVisible(false);
@@ -682,20 +654,6 @@ public class AdminReportsPage {
         userMonth1CB.add(scroll);
         userReportFieldsPanel.add(userMonth1CB);
 
-        // set up days drop down and add
-       // days = new Integer[32];
-       // days[0] = null;
-       // for(Integer i = 1; i < 32; i++){
-       //     days[i] = i;
-      //  }
-       // userDay1CB = new JComboBox<>(days);
-       // userDay1CB.setFont(new Font("Sarif", Font.PLAIN, 11));
-       // userDay1CB.setBounds(300, 150, 40, 20);
-       // userDay1CB.setSelectedIndex(0);
-       // scroll2 = new JScrollBar();
-       // userDay1CB.add(scroll2);
-       // userReportFieldsPanel.add(userDay1CB);
-
         // set up years drop down and add
         years = new Integer[3];
         years[0] = null;
@@ -723,15 +681,6 @@ public class AdminReportsPage {
         scroll4 = new JScrollBar();
         userMonth2CB.add(scroll4);
         userReportFieldsPanel.add(userMonth2CB);
-
-        // set up days drop down and add
-       // userDay2CB = new JComboBox<>(days);
-        //userDay2CB.setFont(new Font("Sarif", Font.PLAIN, 11));
-       // userDay2CB.setBounds(300, 230, 40, 20);
-       // userDay2CB.setSelectedIndex(0);
-       // scroll5 = new JScrollBar();
-       // userDay2CB.add(scroll5);
-       // userReportFieldsPanel.add(userDay2CB);
 
         // set up years drop down and add
         userYear2CB = new JComboBox<>(years);
@@ -780,7 +729,6 @@ public class AdminReportsPage {
         apptMonthCB.add(scroll7);
         apptReportFieldsPanel.add(apptMonthCB);
 
-
         //Set up category combo box
         apptCategoryLabel = new JLabel("Appointment Category: ");
         apptCategoryLabel.setBounds(400, 125, 200, 20);
@@ -805,7 +753,5 @@ public class AdminReportsPage {
             }
         });
         apptReportFieldsPanel.add(apptGenButton);
-
     }
-
 }
