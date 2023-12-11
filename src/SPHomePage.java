@@ -447,7 +447,7 @@ public class SPHomePage {
     }
 
     public void manualActionPerformed(ActionEvent e) throws MalformedURLException {
-        URL manualURL = new URL("file:///C:/Users/slw72/OneDrive/Documents/CS%20341/TestManual.pdf");
+        URL manualURL = new URL("file:///C:/Users/slw72/Downloads/User%20Guide.pdf");
         try {
             openWebpage(manualURL.toURI());
         }

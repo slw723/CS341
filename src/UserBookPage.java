@@ -6,8 +6,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.*;
-import java.text.SimpleDateFormat;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
@@ -21,10 +19,7 @@ public class UserBookPage implements ActionListener {
     String[] apptTypes;
     JComboBox<String> typesCB;
     JTextField searchBox;
-    JButton bookButton, userManual;
-    JButton endButton;
-    JButton go, searchButton;
-    DefaultTableModel model;
+    JButton bookButton, userManual, go, searchButton;
     JTable appointments;
     JScrollPane scroll;
     String apptSelected;
@@ -44,9 +39,24 @@ public class UserBookPage implements ActionListener {
         /* Set up the menu bar */
         mb = new JMenuBar();
         menu = new JMenu("Menu");
+        menu.setFont(new Font("Sarif", Font.PLAIN, 15));
+        menu.setForeground(new Color(31, 36, 33));
 
         userManual = new JButton("User Help");
         userManual.setBackground(new Color(73, 160, 120));
+
+        mb.add(menu);
+        mb.setBackground(new Color(73, 160, 120));
+        mb.add(Box.createHorizontalGlue());
+        mb.add(userManual);
+
+        home = new JMenuItem("Home");
+        home.setFont(new Font("Sarif", Font.PLAIN, 15));
+        history = new JMenuItem("History");
+        history.setFont(new Font("Sarif", Font.PLAIN, 15));
+
+        menu.add(home);
+        menu.add(history);
 
         userManual.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -157,6 +167,7 @@ public class UserBookPage implements ActionListener {
         scroll = new JScrollPane(appointments);
         f.add(scroll);
 
+        // generate book button
         makeBookButton();
 
         // add panel to frame
@@ -170,6 +181,7 @@ public class UserBookPage implements ActionListener {
 
     /*HELPERS */
 
+    /* Generates and displays book button below table */
     private void makeBookButton(){
         bookButton = new JButton("Book Selection Now");
         bookButton.setFont(new Font("Sarif", Font.PLAIN, 15));
@@ -238,22 +250,23 @@ public class UserBookPage implements ActionListener {
      */
 
     public void goActionPerformed(ActionEvent evt){
-        populateAppt();
+        populateAppt(); // populates all available appointments
         apptSorter = new TableRowSorter(appointments.getModel());
         appointments.setRowSorter(apptSorter);
         makeBookButton();
     }
 
     public void manualActionPerformed(ActionEvent e) throws MalformedURLException {
-        URL manualURL = new URL("file:///C:/Users/slw72/OneDrive/Documents/CS%20341/TestManual.pdf");
+        URL manualURL = new URL("file:///C:/Users/slw72/Downloads/User%20Guide.pdf");
         try {
-            openWebpage(manualURL.toURI());
+            openWebpage(manualURL.toURI()); // opens user manual in external file opener as a pdf
         }
         catch (URISyntaxException exc) {
             exc.printStackTrace();
         }
     }
 
+    // helper method to open user manual
     public static void openWebpage(URI uri) {
         Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
@@ -266,6 +279,7 @@ public class UserBookPage implements ActionListener {
         }
     }
 
+    /* Populates full table of available appointments */
     public void populateAppt() {
         apptSelected = typesCB.getSelectedItem().toString();
         appointments = new JTable();
@@ -274,11 +288,11 @@ public class UserBookPage implements ActionListener {
         appointments.getTableHeader().setBackground(new Color(33, 104, 105));
         appointments.getTableHeader().setForeground(Color.WHITE);
         try{
-            // Show the available time slots
-            ResultSet rs = db.getUnbookedAppts(apptSelected);
+            // Show the available appointments
+            ResultSet rs = db.getApptType(apptSelected);
             DefaultTableModel tblmodel = (DefaultTableModel)appointments.getModel();
+            // while another appointment needs to be added to the table
             while(rs.next()){
-                //data will be added until finished
                 String descr = rs.getString("Description");
                 String date = String.valueOf(rs.getDate("Date"));
                 String time = String.valueOf(rs.getTime("Time"));
@@ -288,15 +302,15 @@ public class UserBookPage implements ActionListener {
 
                 Object tbData[] = {date, time, descr, spName, spQualif};
 
-                // add data into jtable
+                // add data into table
                 tblmodel.addRow(tbData);
             }
         }
         catch(Exception e){
             System.out.println(e.getMessage());
         }
+        // add table and scroll pane to main frame and set column widths
         scroll = new JScrollPane(appointments);
-        // set sizes
         scroll.setBounds(10, 250, 1300, 350);
         scroll.validate();
         appointments.validate();
@@ -315,11 +329,11 @@ public class UserBookPage implements ActionListener {
         appointments.getTableHeader().setBackground(new Color(33, 104, 105));
         appointments.getTableHeader().setForeground(Color.WHITE);
         try{
-            // Show the available time slots
-            ResultSet rs = db.getUnbookedAppts(apptSelected);
+            // Show the available appointments
+            ResultSet rs = db.executeSQL("SELECT * FROM appointment");
             DefaultTableModel tblmodel = (DefaultTableModel)appointments.getModel();
+            // while another appointment needs to be added to the table
             while(rs.next()){
-                //data will be added until finished
                 String descr = rs.getString("Description");
                 String date = String.valueOf(rs.getDate("Date"));
                 String time = String.valueOf(rs.getTime("Time"));
@@ -329,15 +343,15 @@ public class UserBookPage implements ActionListener {
 
                 Object tbData[] = {date, time, descr, spName, spQualif};
 
-                // add data into jtable
+                // add data into table
                 tblmodel.addRow(tbData);
             }
         }
         catch(Exception e){
             System.out.println(e.getMessage());
         }
+        // add table and scroll pane to main frame and set column widths
         scroll = new JScrollPane(appointments);
-        // set sizes
         scroll.setBounds(10, 250, 950, 350);
         scroll.validate();
         appointments.validate();
@@ -376,40 +390,23 @@ public class UserBookPage implements ActionListener {
 
             //reset selections
             appointments.clearSelection();
-            DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
-            tblModel.setRowCount(0);
+            appointments.removeAll();
             typesCB.setSelectedIndex(0);
         }
     }
 
     // searches available appointments from text box
     public void searchButtonActionPerformed(ActionEvent evt) {
-        //checking if user searched by appointment type
-//        if (searchText.equals("Facial") || searchText.equals("facial")) {
-//            searchTable("Appointment type", "Facial");
-//        }
-//        else if (searchText.equals("Beauty") || searchText.equals("beauty")) {
-//            searchTable("Appointment type", "Beauty");
-//        }
-//        else if (searchText.equals("Medical") || searchText.equals("medical")) {
-//            searchTable("Appointment type", "Medical");
-//        }
-//
-//        //checking if user searched by service provider
-//        String[] splitFirstLast = searchText.split(" ");
-//        ResultSet email = db.getSPEmail(splitFirstLast[0], splitFirstLast[1]);
-//        if (email != null) {
-//            searchTable("Service Provider", String.valueOf(email));
-//        }
-
-        populateApptSearch();
+        populateApptSearch(); // initially populates full table before filtering
         apptSorter = new TableRowSorter(appointments.getModel());
         appointments.setRowSorter(apptSorter);
         makeBookButton();
         RowFilter filter = new RowFilter() {
             String searchText = searchBox.getText();
+            // filters available appointments by text from search textbox
             public boolean include(Entry entry) {
-                boolean result = entry.getStringValue(0).indexOf(searchText) >=0 || entry.getStringValue(1).indexOf(searchText) >=0
+                boolean result = entry.getStringValue(0).indexOf(searchText) >=0
+                        || entry.getStringValue(1).indexOf(searchText) >=0
                         || entry.getStringValue(2).indexOf(searchText) >=0;
                 return result;
             }
@@ -417,52 +414,7 @@ public class UserBookPage implements ActionListener {
         apptSorter.setRowFilter(filter);
     }
 
-    public void searchTable (String type, String searchText) {
-        appointments = new JTable();
-        String [] apptHeaders = {"Date", "Time", "Description","Service Provider", "Qualification"};
-        appointments.setModel(new DefaultTableModel(apptHeaders, 0));
-        appointments.getTableHeader().setBackground(new Color(33, 104, 105));
-        appointments.getTableHeader().setForeground(Color.WHITE);
-        try{
-            // Show the available time slots
-            ResultSet rs = null;
-            if (type.equals("Appointment type")) {
-                rs = db.getUnbookedAppts(searchText);
-            }
-            else if (type.equals("Service Provider")) {
-                rs = db.getApptSP(searchText);
-            }
-            DefaultTableModel tblmodel = (DefaultTableModel)appointments.getModel();
-            while(rs.next()){
-                //data will be added until finished
-                String descr = rs.getString("Description");
-                String date = String.valueOf(rs.getDate("Date"));
-                String time = String.valueOf(rs.getTime("Time"));
-                String spEmail = rs.getString("SPEmail");
-                String spName = getSPName(spEmail);
-                String spQualif = getSPQualif(spEmail);
-
-                Object tbData[] = {date, time, descr, spName, spQualif};
-
-                // add data into jtable
-                tblmodel.addRow(tbData);
-            }
-        }
-        catch(Exception e){
-            System.out.println(e.getMessage());
-        }
-        scroll = new JScrollPane(appointments);
-        // set sizes
-        scroll.setBounds(10, 250, 1300, 350);
-        scroll.validate();
-        appointments.getColumnModel().getColumn(0).setMaxWidth(100);
-        appointments.getColumnModel().getColumn(1).setMaxWidth(100);
-        appointments.getColumnModel().getColumn(2).setPreferredWidth(300);
-        bookPanel.add(scroll);
-        bookPanel.validate();
-        makeBookButton();
-    }
-
+    // menu actions for home and makeAppt
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == home){
             f.setVisible(false);
@@ -474,4 +426,3 @@ public class UserBookPage implements ActionListener {
         }
     }
 }
-

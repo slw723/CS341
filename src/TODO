@@ -5,15 +5,8 @@
 # For Final Demo:
 1. Set up modify (SP and User)
 2. Set up history and trend
-3. Admin deletes
 4. Help link
-5. Admin cancel
 
 
 # Sidney's To-do's
-- functionality for #9
-- should just be another copy/paste situation with a couple added things
-
-- create delete button in Users tab
-- user will select person from table and press delete
-- when button is pressed, confirmation message appears for user to press okay/yes
+- add delete sp button in admin

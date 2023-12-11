@@ -24,8 +24,7 @@ public class AdminHomePage {
     JMenuItem menu, home, reports;
     JPanel p, userPanel, spPanel, apptPanel;
     JScrollPane scroll, scroll2, scroll3;
-
-    JLabel welcome, usersLabel, noUsers, spsLabel, noSPs, userSearchLabel, spSearchLabel, apptSearchLabel;
+    JLabel welcome, userSearchLabel, spSearchLabel, apptSearchLabel;
     JTextField userSearchText, spSearchText, apptSearchText;
     JTable users, serviceProviders, appointments;
     Admin admin;
@@ -220,7 +219,6 @@ public class AdminHomePage {
         f.setVisible(true);
     }
 
-
     private void populateUsers(){
         String [] userHeaders = {"First Name", "Last Name", "Email", "Phone Number", "Active"};
         users.setModel(new DefaultTableModel(userHeaders, 0));
@@ -269,7 +267,6 @@ public class AdminHomePage {
         users.getColumnModel().getColumn(4).setMinWidth(100);
         userPanel.add(scroll);
         userPanel.validate();
-
     }
 
     private void populateSPs(){
@@ -395,7 +392,6 @@ public class AdminHomePage {
     }
 
     private void updateAppts(){
-        
         try{
             String sql = "SELECT * FROM appointment";
             ResultSet rs = db.executeSQL(sql);
@@ -494,14 +490,13 @@ public class AdminHomePage {
         userPanel.validate();
     }
 
-
     private void logoutActionPerformed(ActionEvent e) {
         f.setVisible(false);
         new LogInPage(db);
     }
 
     public void manualActionPerformed(ActionEvent e) throws MalformedURLException {
-        URL manualURL = new URL("file:///C:/Users/slw72/OneDrive/Documents/CS%20341/TestManual.pdf");
+        URL manualURL = new URL("file:///C:/Users/slw72/Downloads/User%20Guide.pdf");
         try {
             openWebpage(manualURL.toURI());
         }
@@ -555,7 +550,6 @@ public class AdminHomePage {
                     "Successfully canceled.");
             updateAppts();
         }
-
     }
 
     private String getSPEmail(String name){
