@@ -52,11 +52,6 @@ public class UserBookPage implements ActionListener {
 
         home = new JMenuItem("Home");
         home.setFont(new Font("Sarif", Font.PLAIN, 15));
-        history = new JMenuItem("History");
-        history.setFont(new Font("Sarif", Font.PLAIN, 15));
-
-        menu.add(home);
-        menu.add(history);
 
         userManual.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
