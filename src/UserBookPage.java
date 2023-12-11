@@ -14,7 +14,7 @@ public class UserBookPage implements ActionListener {
     JFrame f;
     JMenuBar mb;
     JMenuItem menu, home, makeAppt, history;
-    JLabel title, type, apptAvailable, search;
+    JLabel title, type, start, end, apptAvailable, search;
     JPanel bookPanel;
     String[] apptTypes;
     JComboBox<String> typesCB;
@@ -58,7 +58,6 @@ public class UserBookPage implements ActionListener {
         menu.add(home);
         menu.add(history);
 
-        /* Menu action listeners */
         userManual.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 try {
@@ -170,7 +169,6 @@ public class UserBookPage implements ActionListener {
 
     /*HELPERS */
 
-
     /* Generates and displays book button below table */
     private void makeBookButton(){
         bookButton = new JButton("Book Selection Now");
@@ -247,7 +245,7 @@ public class UserBookPage implements ActionListener {
     }
 
     public void manualActionPerformed(ActionEvent e) throws MalformedURLException {
-        URL manualURL = new URL("file:///C:/Users/slw72/OneDrive/Documents/CS%20341/TestManual.pdf");
+        URL manualURL = new URL("file:///C:/Users/slw72/Downloads/User%20Guide.pdf");
         try {
             openWebpage(manualURL.toURI()); // opens user manual in external file opener as a pdf
         }
@@ -279,7 +277,7 @@ public class UserBookPage implements ActionListener {
         appointments.getTableHeader().setForeground(Color.WHITE);
         try{
             // Show the available appointments
-            ResultSet rs = db.getUnbookedAppts(apptSelected);
+            ResultSet rs = db.getApptType(apptSelected);
             DefaultTableModel tblmodel = (DefaultTableModel)appointments.getModel();
             // while another appointment needs to be added to the table
             while(rs.next()){
@@ -320,7 +318,7 @@ public class UserBookPage implements ActionListener {
         appointments.getTableHeader().setForeground(Color.WHITE);
         try{
             // Show the available appointments
-            ResultSet rs = db.getUnbookedAppts(apptSelected);
+            ResultSet rs = db.executeSQL("SELECT * FROM appointment");
             DefaultTableModel tblmodel = (DefaultTableModel)appointments.getModel();
             // while another appointment needs to be added to the table
             while(rs.next()){
@@ -380,8 +378,7 @@ public class UserBookPage implements ActionListener {
 
             //reset selections
             appointments.clearSelection();
-            DefaultTableModel tblModel = (DefaultTableModel)appointments.getModel();
-            tblModel.setRowCount(0);
+            appointments.removeAll();
             typesCB.setSelectedIndex(0);
         }
     }
@@ -396,7 +393,8 @@ public class UserBookPage implements ActionListener {
             String searchText = searchBox.getText();
             // filters available appointments by text from search textbox
             public boolean include(Entry entry) {
-                boolean result = entry.getStringValue(0).indexOf(searchText) >=0 || entry.getStringValue(1).indexOf(searchText) >=0
+                boolean result = entry.getStringValue(0).indexOf(searchText) >=0
+                        || entry.getStringValue(1).indexOf(searchText) >=0
                         || entry.getStringValue(2).indexOf(searchText) >=0;
                 return result;
             }
@@ -414,9 +412,5 @@ public class UserBookPage implements ActionListener {
             appointments.removeAll();
             typesCB.setSelectedIndex(0);
         }
-        else if (e.getSource() == history) {
-
-        }
     }
 }
-

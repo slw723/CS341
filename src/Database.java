@@ -7,7 +7,7 @@ public class Database {
 
     /* Open and close database connection */
     public void connect() throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=5628";
+        String url = "jdbc:mysql://localhost:3306/cs341?user=root&password=3871";
         connection = DriverManager.getConnection(url);
     }
 
@@ -97,9 +97,27 @@ public class Database {
         }
     }
 
+    public void insertAdmin(Admin admin){
+        String sql = "INSERT INTO Admin(UserId, Password) VALUES (?, ?)";
+        try{
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, admin.getID());
+            stmt.setString(2, admin.getPassword());
+
+            if(stmt.execute())
+                System.out.println("Inserted " + admin.getID() + " into ServiceProvider");
+        }
+        catch(SQLException e){
+            System.out.println("Something went wrong.");
+            e.printStackTrace();
+        }
+    }
+
     public void insertAppt(Appointment appt){
         // sql statement
-        String sql = "INSERT INTO Appointment(Description, Date, Time, Type, Booked, UserEmail, SPEmail) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Appointment(" +
+                "Description, Date, Time, Type, Booked, UserEmail, SPEmail) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
         try{
             PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, appt.getDescription());
@@ -167,7 +185,8 @@ public class Database {
 
     public ResultSet getSPEmail (String firstName, String lastName) {
         // sql statement
-        String sql = "SELECT Email FROM ServiceProvider WHERE FirstName = \"" + firstName + "\" AND LastName = \"" + lastName + "\"";
+        String sql = "SELECT Email FROM ServiceProvider " +
+                "WHERE FirstName = \"" + firstName + "\" AND LastName = \"" + lastName + "\"";
         try {
             return executeSQL(sql);
         }
@@ -228,6 +247,25 @@ public class Database {
                 "AND Booked = 0 " +
                 "AND Canceled = 0 " +
                 "AND Date >= date(NOW());";
+        try{
+            result = executeSQL(sql);
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public ResultSet getApptType(String type){
+        ResultSet result = null;
+        if(type.equals("")){
+            return null;
+        }
+        String sql = "SELECT * "+
+                "FROM Appointment " +
+                "WHERE Type = \"" + type  + "\" " +
+                "AND Booked = 0;";
         try{
             result = executeSQL(sql);
         }
@@ -589,11 +627,11 @@ public class Database {
 
     public ResultSet findAdmin(String userID, String password) throws SQLException {
         // sql statement
-        String query = "SELECT * FROM Admin WHERE userID = ? AND Password = ?";
+        String query = "SELECT * FROM Admin WHERE userID = ?";
             try{
                 PreparedStatement stmt = connection.prepareStatement(query);
                 stmt.setString(1, userID);
-                stmt.setString(2, password);
+                //stmt.setString(2, password);
                 if(stmt.execute()){
                     return stmt.executeQuery();
                 }

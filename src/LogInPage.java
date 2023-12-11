@@ -30,6 +30,7 @@ public class LogInPage extends JFrame  {
     private static Admin admin;
     public static Database db;
 
+
     // Global variables below for log-in gui
     JFrame loginWin;
     JPanel wcPanel, shPanel, loginPanel;
@@ -54,7 +55,7 @@ public class LogInPage extends JFrame  {
             /**Admin login for testing purposes**/
 //            Admin admin = new Admin();
 //            char[] pw = {1, 2, 3, 4};
-//            admin.setUserId("admin");
+//            admin.setUserId("admin");zm
 //            admin.setPassword(hash(pw));
 //            db.insertAdmin(admin);
             loadLogin(db);
@@ -75,6 +76,7 @@ public class LogInPage extends JFrame  {
         loginWin = new JFrame(); //creates the log in frame
         loginWin.setSize(screenSize.width, screenSize.height);
         loginWin.setLayout(null);
+        //loginWin.setResizable(false); //prevents frame from being resized
         loginWin.setTitle("Appointment Booker Login");
         loginWin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //ends program when loginWin is closed
         loginWin.setBackground(new Color(220, 225, 222));
@@ -324,6 +326,7 @@ public class LogInPage extends JFrame  {
         fitness = new JRadioButton("Fitness");
         fitness.setBackground(new Color(33, 104, 105));
         fitness.setForeground(Color.WHITE);
+        // fitness.setLocation(120, 180);
         fitness.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
                 radioButtonActionPerformed(e);
@@ -332,6 +335,7 @@ public class LogInPage extends JFrame  {
         beauty = new JRadioButton("Beauty");
         beauty.setForeground(Color.WHITE);
         beauty.setBackground(new Color(33, 104, 105));
+        // beauty.setLocation(160, 180);
         beauty.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
                 radioButtonActionPerformed(e);
@@ -394,6 +398,7 @@ public class LogInPage extends JFrame  {
         regPanel.validate();
     }
 
+
     /*hashing a password*/
     private String hash(String pw) {
         try{
@@ -420,6 +425,7 @@ public class LogInPage extends JFrame  {
                     user.setLastName(results.getString("LastName"));
                     user.setPhoneNumber(results.getLong("PhoneNum"));
                     user.setActive(1);
+                    //JOptionPane.showMessageDialog(null, "User Login Successful.");
                     UserHomePage userHP = new UserHomePage(db, user);
                     loginWin.dispose();
                 }
@@ -434,6 +440,7 @@ public class LogInPage extends JFrame  {
                         sp.setQualification(results2.getString("Qualification"));
                         sp.setYearGraduated(results2.getInt("YearGraduated"));
                         sp.setActive(1); //1 is active
+                        //JOptionPane.showMessageDialog(null, "Service Provider Login Successful.");
                         SPHomePage spHP = new SPHomePage(db, sp); //creates Service Provider page instance
                         loginWin.dispose();
                     }
@@ -441,6 +448,7 @@ public class LogInPage extends JFrame  {
                         ResultSet results3 = db.findAdmin(username, password); //checks on UserID in the Admin table
                         if(results3.next()){
                             admin = new Admin(username, password);
+                            JOptionPane.showMessageDialog(null, "Admin Login Successful.");
                             AdminHomePage adHP = new AdminHomePage(db, admin);
                             loginWin.dispose();
                         }
@@ -448,6 +456,7 @@ public class LogInPage extends JFrame  {
                             JOptionPane.showMessageDialog(null, 
                                 "User not found. Use the 'Register' button to create a new account or try check your credentials");
                         }
+                        
                     }
                 }
             }
@@ -475,6 +484,8 @@ public class LogInPage extends JFrame  {
             newUser.setPhoneNumber(Long.parseLong(phText.getText()));
             newUser.setActive(1); //1 is active
 
+            //need to do data validation
+
             int ret = db.insertUser(newUser);
             if(ret == 0){
                 JOptionPane.showMessageDialog(null, "New user created under username: " + unText.getText());
@@ -483,8 +494,9 @@ public class LogInPage extends JFrame  {
 
         else if (selectedAcctType.equals("Service Provider")) {
             //create new service provider
+            // String qualifications = JOptionPane.showInputDialog("Please enter your qualifications: ");
             ServiceProvider sp = new ServiceProvider();
-            sp.setEmail(unText.getText());
+            sp.setEmail(unText.getText()); //CURRENTLY USERNAME NOT EMAIL
             sp.setPassword(hash(String.valueOf(pwText.getPassword()))); 
             sp.setFirstName(fText.getText());
             sp.setLastName(lText.getText());
@@ -493,6 +505,8 @@ public class LogInPage extends JFrame  {
             sp.setType(spType);
             sp.setPhoneNumber(Long.parseLong(phText.getText()));
             sp.setActive(1);
+
+            //need to do data validation
 
             int ret = db.insertSP(sp);
             if(ret == 0){
@@ -508,6 +522,7 @@ public class LogInPage extends JFrame  {
 
     private void selectAcctActionPerformed(ItemEvent e){
         if(e.getStateChange() == 1){
+            
             selectedAcctType = (String)e.getItem();
             if(selectedAcctType.equals("User")){
                 showUserRegister();

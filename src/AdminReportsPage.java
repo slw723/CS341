@@ -605,7 +605,7 @@ public class AdminReportsPage {
     }
 
     public void manualActionPerformed(ActionEvent e) throws MalformedURLException {
-        URL manualURL = new URL("file:///C:/Users/slw72/OneDrive/Documents/CS%20341/TestManual.pdf");
+        URL manualURL = new URL("file:///C:/Users/slw72/Downloads/User%20Guide.pdf");
         try {
             openWebpage(manualURL.toURI());
         }
@@ -692,7 +692,7 @@ public class AdminReportsPage {
         userReportFieldsPanel.add(userYear2CB);
 
         userGenButton = new JButton("Generate Report");
-        userGenButton.setBounds(500, 190, 130, 25);
+        userGenButton.setBounds(500, 190, 170, 25);
         userGenButton.setBackground(new Color(73, 160, 120));
         userGenButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -745,7 +745,7 @@ public class AdminReportsPage {
         apptReportFieldsPanel.add(categoryCB);
 
         apptGenButton = new JButton("Generate Report");
-        apptGenButton.setBounds(325, 260, 130, 25);
+        apptGenButton.setBounds(325, 260, 170, 25);
         apptGenButton.setBackground(new Color(73, 160, 120));
         apptGenButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {

@@ -9,12 +9,4 @@
 
 
 # Sidney's To-do's
-- User comment and clean up
-- change executeQuery things to Database
-- test demo3 data
-- won't let me log in for jane doe so will probably need to delete accounts and add them back in and add data using database
-- update Database in command line since Becca updated it!
-
-- User -- DONE
-- UserBookPage -- check git commits for the method at the end that I deleted if it's not working! -- DONE
-- Database
+- add delete sp button in admin
