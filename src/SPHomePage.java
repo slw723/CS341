@@ -20,7 +20,7 @@ public class SPHomePage {
     /* GLOBALS */
     JFrame f, f2, alertFrame;
     JMenuBar mb;
-    JMenuItem menu, home, makeAppt, history;
+    JMenuItem menu, home, makeAppt;
     JButton logout, cancel, modify, alerts, userManual;
     JPanel p;
     JLabel hello, upcoming, noappts;
@@ -71,12 +71,9 @@ public class SPHomePage {
         home.setFont(new Font("Sarif", Font.PLAIN, 15));
         makeAppt = new JMenuItem("Make Appointment");
         makeAppt.setFont(new Font("Sarif", Font.PLAIN, 15));
-        history = new JMenuItem("History");
-        history.setFont(new Font("Sarif", Font.PLAIN, 15));
 
         menu.add(home);
         menu.add(makeAppt);
-        menu.add(history);
 
         home.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
@@ -86,12 +83,6 @@ public class SPHomePage {
         makeAppt.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
                 makeApptActionPerformed(evt);
-            }
-        });
-
-        history.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt){
-                historyActionPerformed(evt);
             }
         });
 
@@ -145,7 +136,7 @@ public class SPHomePage {
         // make and show cancel appt button
         cancel = new JButton("Cancel Selection Now");
         Dimension cancelSize = cancel.getPreferredSize();
-        cancel.setBounds(925, 40, cancelSize.width+10, cancelSize.height);
+        cancel.setBounds(1125, 40, cancelSize.width+10, cancelSize.height);
         cancel.setBackground(new Color(156, 197, 161));
         cancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
@@ -331,12 +322,6 @@ public class SPHomePage {
 
         f.setVisible(false);
         new SPBookPage(db, this);
-    }
-
-    private void historyActionPerformed(ActionEvent e){
-
-        f.setVisible(false);
-
     }
 
     private void logoutActionPerformed(ActionEvent e) {

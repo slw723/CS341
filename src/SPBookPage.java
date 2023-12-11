@@ -14,7 +14,7 @@ import javax.swing.*;
 public class SPBookPage implements ActionListener {
     JFrame f;
     JMenuBar mb;
-    JMenuItem menu, home, makeAppt, history;
+    JMenuItem menu, home, makeAppt;
     JLabel title, descr, date, time;
     JTextField described;
     String[] times, months;
@@ -64,15 +64,9 @@ public class SPBookPage implements ActionListener {
 
         home = new JMenuItem("Home");
         home.setFont(new Font("Sarif", Font.PLAIN, 15));
-        history = new JMenuItem("History");
-        history.setFont(new Font("Sarif", Font.PLAIN, 15));
-
         menu.add(home);
-        menu.add(history);
 
         home.addActionListener(this);
-        history.addActionListener(this);
-
         f.setJMenuBar(mb);
 
         // add title
@@ -340,9 +334,6 @@ public class SPBookPage implements ActionListener {
             hp.setHomeVisible();
         }
         else if(e.getSource() == makeAppt){
-
-        }
-        else if (e.getSource() == history) {
 
         }
     }

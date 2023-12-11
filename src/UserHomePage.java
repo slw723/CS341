@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class UserHomePage extends DefaultTableCellRenderer {
     JFrame f, f2, alertFrame;
     JMenuBar mb;
-    JMenuItem menu, home, makeAppt, history;
+    JMenuItem menu, home, makeAppt;
     JButton logout,cancel, modify, alerts, userManual;
     JPanel p;
     JLabel hello, upcoming, noappts;

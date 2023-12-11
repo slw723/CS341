@@ -15,7 +15,7 @@ import javax.swing.table.TableRowSorter;
 public class UserBookPage implements ActionListener {
     JFrame f;
     JMenuBar mb;
-    JMenuItem menu, home, makeAppt, history;
+    JMenuItem menu, home, makeAppt;
     JLabel title, type, start, end, apptAvailable, search;
     JPanel bookPanel;
     String[] apptTypes;
@@ -71,14 +71,8 @@ public class UserBookPage implements ActionListener {
 
         home = new JMenuItem("Home");
         home.setFont(new Font("Sarif", Font.PLAIN, 15));
-        history = new JMenuItem("History");
-        history.setFont(new Font("Sarif", Font.PLAIN, 15));
-
         menu.add(home);
-        menu.add(history);
-
         home.addActionListener(this);
-        history.addActionListener(this);
 
         f.setJMenuBar(mb);
 
@@ -477,9 +471,6 @@ public class UserBookPage implements ActionListener {
         else if(e.getSource() == makeAppt){
             appointments.removeAll();
             typesCB.setSelectedIndex(0);
-        }
-        else if (e.getSource() == history) {
-
         }
     }
 }
